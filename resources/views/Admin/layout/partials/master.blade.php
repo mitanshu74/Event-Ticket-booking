@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>@yield('title', 'Home')</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,minimal-ui" />
+    <meta http-equiv="X-UA-Compatible" />
+    <!-- [Font] Family -->
+    <link rel="stylesheet" href="assets/fonts/inter/inter.css" id="main-font-link" />
+    <!-- [Tabler Icons] https://tablericons.com -->
+    <link rel="stylesheet" href="assets/fonts/tabler-icons.min.css" />
+    <!-- [Feather Icons] https://feathericons.com -->
+    <link rel="stylesheet" href="assets/fonts/feather.css" />
+    <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
+    <link rel="stylesheet" href="assets/fonts/fontawesome.css" />
+    <!-- [Material Icons] https://fonts.google.com/icons -->
+    <link rel="stylesheet" href="assets/fonts/material.css" />
+    <!-- [Template CSS Files] -->
+    <link rel="stylesheet" href="assets/css/style.css" id="main-style-link" />
+    <!-- <link rel="stylesheet" href="./View/admin_panel/assets/css/style-preset.css" /> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="Bootstrap/css/bootstrap.min.css" />
+    <style>
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .table thead th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .user-avtar {
+            border-radius: 50%;
+            width: 60px;
+        }
+    </style>
+</head><!-- [Head] end --><!-- [Body] Start -->
+
+<body>
+
+    @include('Admin.layout.partials.header')
+    @include('Admin.layout.partials.sidebar')
+
+    <div class="pc-container">
+
+        @yield('content')
+    </div>
+
+    <!-- [ Main Content ] end -->
+    @include('Admin.layout.partials.footer')
+
+    <script>
+        // Get all the dropdown toggle elements
+        const dropdownToggles = document.querySelectorAll('.pc-link');
+        this.addEventListener('click', function(event) {
+            this.classList.toggle('show'); // Toggle the 'show' class to show/hide the submenu
+        });
+    </script>
+    <script src="assets/js/plugins/popper.min.js"></script>
+    <script src="assets/js/plugins/bootstrap.min.js"></script>
+    <script src="assets/js/fonts/custom-font.js"></script>
+    <script src="assets/js/pcoded.js"></script>
+    <script src="assets/js/plugins/feather.min.js"></script>
+
+    <script>
+        layout_rtl_change("false");
+    </script>
+</body>
+
+</html>
