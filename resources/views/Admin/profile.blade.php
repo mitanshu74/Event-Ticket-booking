@@ -64,6 +64,3 @@
         </script>
     @endif
 @endsection
-@endsection
-@endsection
-@endsection
