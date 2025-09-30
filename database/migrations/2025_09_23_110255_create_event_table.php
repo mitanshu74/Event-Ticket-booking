@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->date('date');
             $table->string('location');
+            $table->bigInteger('price');
             $table->bigInteger('total_tickets');
             $table->string('image');
             $table->timestamps();

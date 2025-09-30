@@ -13,48 +13,65 @@
                         <form class="g-3 needs-validation" method="POST" action="{{ route('admin.storeEvent') }}"
                             enctype="multipart/form-data" novalidate>
                             @csrf
+                            <div class="row mx-2">
+                                <div class="col-md-6 mt-3">
+                                    <label for="Name" class="form-label"><b>Name</b></label>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                        name="name" id="Name" placeholder="Enter Event Name"
+                                        value="{{ old('name') }}">
+                                    @error('name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row mx-2">
+                                <div class="col-md-6 mt-3">
+                                    <label for="Date" class="form-label"><b>Date</b></label>
+                                    <input type="date" class="form-control @error('date') is-invalid @enderror"
+                                        name="date" id="Date" value="{{ old('date') }}">
+                                    @error('date')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row mx-2">
+                                <div class="col-md-6 mt-3">
+                                    <label for="Location" class="form-label"><b>Location</b></label>
+                                    <input type="text" class="form-control @error('location') is-invalid @enderror"
+                                        name="location" id="Location" placeholder="Enter Event Location"
+                                        value="{{ old('location') }}">
+                                    @error('location')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row mx-2">
 
-                            <div class="col-md-6 mt-3">
-                                <label for="Name" class="form-label"><b>Name</b></label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                    name="name" id="Name" placeholder="Enter Event Name"
-                                    value="{{ old('name') }}">
-                                @error('name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <div class="col-md-6 mt-3">
+                                    <label for="Price" class="form-label"><b>Price</b></label>
+                                    <input type="number" class="form-control @error('price') is-invalid @enderror"
+                                        name="price" id="Price" placeholder="Enter Event Price"
+                                        value="{{ old('price') }}">
+                                    @error('price')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
 
-                            <div class="col-md-6 mt-3">
-                                <label for="Date" class="form-label"><b>Date</b></label>
-                                <input type="date" class="form-control @error('date') is-invalid @enderror"
-                                    name="date" id="Date" value="{{ old('date') }}">
-                                @error('date')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                            <div class="row mx-2">
+                                <div class="col-md-6 mt-3">
+                                    <label for="total_tickets" class="form-label"><b>Tickets</b></label>
+                                    <input type="number" class="form-control @error('total_tickets') is-invalid @enderror"
+                                        name="total_tickets" id="total_tickets" placeholder="Enter Event Tickets"
+                                        value="{{ old('total_tickets') }}">
+                                    @error('total_tickets')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
 
-                            <div class="col-md-6 mt-3">
-                                <label for="Location" class="form-label"><b>Location</b></label>
-                                <input type="text" class="form-control @error('location') is-invalid @enderror"
-                                    name="location" id="Location" placeholder="Enter Event Location"
-                                    value="{{ old('location') }}">
-                                @error('location')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6 mt-3">
-                                <label for="total_tickets" class="form-label"><b>Tickets</b></label>
-                                <input type="number" class="form-control @error('total_tickets') is-invalid @enderror"
-                                    name="total_tickets" id="total_tickets" placeholder="Enter Event Tickets"
-                                    value="{{ old('total_tickets') }}">
-                                @error('total_tickets')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="row mt-3">
-                                <div class="col-md-6 py-0">
+                            <div class="row mx-2">
+                                <div class="col-md-6 py-0 mt-3">
                                     <label for="EventImage" class="form-label"><b>Choose image</b></label>
                                     <input type="file" class="form-control @error('EventImage') is-invalid @enderror"
                                         name="EventImage" id="EventImage" accept="image/*" required>
@@ -68,8 +85,10 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 mt-3">
-                                <button class="btn btn-primary" type="submit" name="submit">Submit</button>
+                            <div class="row ">
+                                <div class="col-12 m-3">
+                                    <button class="btn btn-primary" type="submit" name="submit">Submit</button>
+                                </div>
                             </div>
                         </form>
 

@@ -18,6 +18,7 @@ class Event extends Model
         'date',
         'location',
         'total_tickets',
+        'price',
         'image',
     ];
 

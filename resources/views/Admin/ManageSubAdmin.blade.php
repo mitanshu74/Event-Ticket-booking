@@ -9,47 +9,77 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered data-table text-center">
-                        <thead>
-                            <tr>
-                                <th>id</th>
-                                <th>image</th>
-                                <th>first heading</th>
-                                <th>second heading</th>
-                                <th>slogan</th>
-                                <th>button</th>
-                                <th>created_at</th>
-                                <th>updated_at</th>
-                                <th>action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td></td>
-                                <td><img src="" alt="slider img" class="img-thumbnails"></td>
-
-                                <td></td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                    <a href="update_slider.html" class="btn btn-success rounded">Update</a>
-                                    <a href="manage_slider.html"
-                                        onclick="return confirm('do you realy want to delete data');"
-                                        class="btn btn-danger rounded">Delete</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    {!! $html->table(['class' => 'table table-striped table-bordered', 'id' => 'subAdmin-table']) !!}
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).on('submit', '.delete-form', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            const deleteUrl = form.attr('action');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This SubAdmin will be deleted permanently.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (!result.isConfirmed) return;
+
+                $.ajax({
+                    url: deleteUrl,
+                    type: 'DELETE',
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(data) {
+                        $('#subAdmin-table').DataTable().ajax.reload(null, false);
+                        Swal.fire({
+                            icon: data.success ? 'success' : 'error',
+                            title: data.success ? 'Deleted!' : 'Error',
+                            text: data.message,
+                            confirmButtonText: 'OK'
+                        });
+                    },
+                    error: function(xhr) {
+                        Swal.fire('Error!', 'Something went wrong!', 'error');
+                    }
+                });
+            });
+        });
+    </script>
+    {!! $html->scripts() !!}
+
+    @if (session('add_subAdmin'))
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('add_subAdmin') }}',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
+
+    @if (session('Update-SubAdmin'))
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('Update-SubAdmin') }}',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
 @endsection

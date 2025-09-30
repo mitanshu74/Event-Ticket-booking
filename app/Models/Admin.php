@@ -10,7 +10,7 @@ class Admin extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'admins';
+    protected $table = 'admin';
 
     protected $fillable = [
         'name',
@@ -22,14 +22,16 @@ class Admin extends Authenticatable
     protected $hidden = [
         'password',
     ];
+    protected $attributes = [
+        'role' => 2, // default role
+    ];
+    // public function isAdmin()
+    // {
+    //     return $this->role === 1;
+    // }
 
-    public function isAdmin()
-    {
-        return $this->role === 1;
-    }
-
-    public function isSubAdmin()
-    {
-        return $this->role === 2;
-    }
+    // public function isSubAdmin()
+    // {
+    //     return $this->role === 2;
+    // }
 }

@@ -1,76 +1,81 @@
-<?php
+    <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\AdminCheckMiddleware;
+    use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth:admin'])->group(function () {
+    Route::middleware(['admin'])->group(function () {
 
-    // Admin Home
-    Route::get('/admin/home', function () {
-        return view('Admin.home');
-    })->name('admin.home');
+        // Admin Home
+        Route::get('/admin/home', function () {
+            return view('Admin.home');
+        })->name('admin.home');
 
+        Route::get('/admin/profile', 'Admin\AdminController@profile')->name('admin.profile');
+        Route::post('/admin/profile', 'Admin\AdminController@ProfileUpdate')->name('admin.profile.update');
 
-    // Add Sub Admin
-    Route::get('/admin/AddSubAdmin', function () {
-        return view('Admin.add_event');
-    })->name('admin.AddSubAdmin');
+        Route::post('admin/logout', 'Admin\AdminController@logout')->name('admin.logout');
 
-    Route::get('/admin/profile', 'Admin\AdminController@profile')->name('admin.profile');
-    Route::post('/admin/profile', 'Admin\AdminController@ProfileUpdate')->name('admin.profile.update');
+        // Event Routes
+        Route::get('admin/manageEvent', 'Admin\EventController@index')->name('admin.manageEvent');
+        Route::get('admin/addEvent', 'Admin\EventController@create')->name('admin.addEvent');
+        Route::post('admin/storeEvent', 'Admin\EventController@store')->name('admin.storeEvent');
+        Route::get('admin/EditEvent/{id}', 'Admin\EventController@edit')->name('admin.EditEvent');
+        Route::post('admin/UpdateEvent/{id}', 'Admin\EventController@update')->name('admin.UpdateEvent');
+        Route::delete('admin/DeleteEvent/{id}', 'Admin\EventController@destroy')->name('admin.DeleteEvent');
 
-    Route::get('admin/logout', 'Admin\AdminController@logout')->name('admin.logout');
+        // SubAdmin Routes
+        Route::get('admin/manageSubAdmin', 'Admin\SubAdminController@index')->name('admin.manageSubAdmin');
+        Route::get('admin/addSubAdmin', 'Admin\SubAdminController@create')->name('admin.addSubAdmin');
+        Route::post('admin/storeSubAdmin', 'Admin\SubAdminController@store')->name('admin.storeSubAdmin');
+        Route::get('admin/EditSubAdmin/{id}', 'Admin\SubAdminController@edit')->name('admin.EditSubAdmin');
+        Route::put('admin/UpdateSubAdmin/{id}', 'Admin\SubAdminController@update')->name('admin.UpdateSubAdmin');
+        Route::delete('admin/DeleteSubAdmin/{id}', 'Admin\SubAdminController@destroy')->name('admin.DeleteSubAdmin');
 
-    // Event Routes
-    Route::get('admin/manageEvent', 'Admin\EventController@index')->name('admin.manageEvent');
-    Route::get('admin/addEvent', 'Admin\EventController@create')->name('admin.addEvent');
-    Route::post('admin/storeEvent', 'Admin\EventController@store')->name('admin.storeEvent');
-    // Route::get('admin/ShowEvent/{id}', 'Admin\EventController@show')->name('admin.ShowEvent');
-    // Route::get('admin/EditEvent/{id}', 'Admin\EventController@edit')->name('admin.EditEvent');
-    // Route::post('admin/UpdateEvent/{id}', 'Admin\EventController@update')->name('admin.UpdateEvent');
-    // Route::delete('admin/DeleteEvent/{id}', 'Admin\EventController@destroy')->name('admin.DeleteEvent');
+        // Booking
 
-    // SubAdmin Routes
-    Route::get('admin/manageSubAdmin', 'Admin\SubAdminController@index')->name('admin.manageSubAdmin');
-    Route::get('admin/addSubAdmin', 'Admin\SubAdminController@create')->name('admin.addSubAdmin');
-    Route::post('admin/storeSubAdmin', 'Admin\SubAdminController@store')->name('admin.storeSubAdmin');
-    // Route::get('admin/ShowSubAdmin/{id}', 'Admin\SubAdminController@show')->name('admin.ShowSubAdmin');
-    // Route::get('admin/EditSubAdmin/{id}', 'Admin\SubAdminController@edit')->name('admin.EditSubAdmin');
-    // Route::post('admin/UpdateSubAdmin/{id}', 'Admin\SubAdminController@update')->name('admin.UpdateSubAdmin');
-    // Route::delete('admin/DeleteSubAdmin/{id}', 'Admin\SubAdminController@destroy')->name('admin.DeleteSubAdmin');
+        Route::resource('admin/booking', 'Admin\BookingController');
+    });
 
+    Route::middleware(['CheckAdmin'])->group(function () {
 
-});
+        // Show login form 
+        Route::get('/admin/login', function () {
+            return view('Admin.login');
+        })->name('admin.login');
 
-Route::middleware([AdminCheckMiddleware::class])->group(function () {
-
-    // Show login form 
-    Route::get('/admin/login', function () {
-        return view('Admin.login');
-    })->name('admin.login');
-
-    // Handle login form submit 
-    Route::post('/admin/login', 'Admin\AdminController@login')->name('admin.login.submit');
-});
+        // Handle login form submit 
+        Route::post('/admin/login', 'Admin\AdminController@login')->name('admin.login.submit');
+    });
 
 
-// User Roure
-Route::get('/user/home', function () {
-    return view('User.home');
-});
+    // User Roure
 
-Route::get('/user/event-details', function () {
-    return view('User.event-details');
-});
 
-Route::get('/user/booking', function () {
-    return view('User.booking');
-});
+    Route::get('/user/booking', function () {
+        return view('User.booking');
+    });
 
-Route::get('/user/login', function () {
-    return view('User.login');
-})->name('user.login');
+    Route::middleware(['user.checklogin'])->group(function () {
+        Route::get('/user/register', 'User\UserController@showRegisterForm')->name('user.register');
+        Route::post('/user/register', 'User\UserController@register');
 
-Route::get('user/register', function () {
-    return view('User.register');
-})->name('user.register');
+        Route::get('/user/login', 'User\UserController@showLoginForm')->name('user.login');
+        Route::post('/user/login', 'User\UserController@login');
+    });
+
+    Route::get('/user/verify-otp', 'User\UserController@showVerifyForm')->name('verify-otp');
+    Route::post('/user/verify-otp', 'User\UserController@verifyOtp');
+    Route::post('/user/resend-otp', 'User\UserController@resendOtp')->name('resend-otp');
+
+    Route::middleware(['user.login'])->group(function () {
+
+        // home logout
+        Route::get('/user/home', 'User\UserController@home')->name('home');
+        Route::post('/user/logout', 'User\UserController@logout')->name('user.logout');
+
+        // profile
+        Route::get('/user/profile', 'User\UserController@User_profile')->name('profile');
+        Route::put('/user/profile', 'User\UserController@Update_User_profile')->name('profile.update');
+
+        // events
+        Route::get('/user/event-details/{id}', 'User\UserController@eventDetails')->name('user.event.details');
+    });

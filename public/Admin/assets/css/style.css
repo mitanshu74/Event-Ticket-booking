@@ -435,6 +435,7 @@ pre[class*="language-"] {
 .pc-sidebar .pc-navbar > .pc-item {
   margin: 0 10px;
 }
+
 .pc-sidebar .pc-navbar > .pc-item > .pc-link::after {
   content: "";
   border-radius: var(--bs-border-radius);

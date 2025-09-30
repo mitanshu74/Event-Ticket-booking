@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Domain\Api\Request\LoginRequest;
-use App\Domain\Api\Request\LogoutAdminRequest;
 use App\Domain\Api\Request\UpdateProfileRequest;
 use Illuminate\Http\Request;
 use App\Models\Admin;
@@ -59,7 +58,7 @@ class AdminController extends Controller
         return redirect()->back()->with('profile-updated', 'Profile updated successfully!');
     }
 
-    public function logout(LogoutAdminRequest $request)
+    public function logout(Request $request)
     {
         $this->guard()->logout();
         $request->session()->invalidate();

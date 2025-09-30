@@ -10,7 +10,7 @@ class UpdateProfileRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        // Only logged-in admins can update profile
+        // Only logged-in admin can update profile
         return Auth::guard('admin')->check();
     }
 
@@ -20,7 +20,7 @@ class UpdateProfileRequest extends FormRequest
 
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:admins,email,' . $adminId,
+            'email' => 'required|email|unique:admin,email,' . $adminId,
             'password' => ['nullable', Password::min(6)->letters()->numbers()->symbols()],
         ];
     }

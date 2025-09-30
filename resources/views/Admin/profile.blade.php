@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header d-flex justify-content-between">
                         <h4>Admin Profile</h4>
                         <a href="{{ route('admin.home') }}" class="btn btn-success rounded text-white">Back</a>
                     </div>
@@ -15,7 +15,7 @@
                             @csrf
 
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-6 mt-3">
                                     <label for="adminName" class="form-label">Name</label>
                                     <input type="text" class="form-control" name="name" id="adminName"
                                         value="{{ old('name', auth()->guard('admin')->user()->name) }}"
