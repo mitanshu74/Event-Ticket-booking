@@ -4,45 +4,73 @@
 
 @section('content')
 
-
-    <!-- Event Details -->
     <div class="container py-5 mt-5" style="padding-top:120px;">
         <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card shadow-lg ">
-                    <!-- Event Image -->
-                    <img src="{{ $event->image ? asset('storage/' . $event->image) : '' }}" class="event_image"
-                        alt="{{ $event->title }}">
+            <div class="col-lg-10">
+                <div class="card shadow-lg p-4">
+                    <div class="row align-items-center">
 
-                    <div class="card-body">
-                        <!-- Event Title -->
-                        <h2 class="fw-bold mb-3">{{ $event->name }}</h2>
+                        <!-- Event Image -->
+                        <div class="col-md-6 text-center">
+                            <img src="{{ $event->image ? asset('storage/' . $event->image) : '' }}" alt="{{ $event->title }}"
+                                class="img-fluid rounded" style="max-height:500px;">
+                        </div>
 
-                        <!-- Event Info -->
-                        <p class="mb-2"><strong>📅 Date:</strong> {{ $event->date->format('d-m-Y') }}</p>
-                        <p class="mb-2"><strong>⏰ Time:</strong> 7:00 PM - 11:00 PM</p>
-                        <p class="mb-2"><strong>📍 Venue:</strong> {{ $event->location }}</p>
-                        <p class="mb-4 text-muted">
-                            Join us for a night of unforgettable music performances featuring top artists from around the
-                            world. Experience live concerts like never before in an electrifying atmosphere.
-                        </p>
+                        <!-- Booking Form -->
+                        <div class="col-md-6">
+                            <form id="bookingForm" method="POST" action="{{ route('user.booking') }}">
+                                @csrf
+                                <input type="hidden" name="event_id" value="{{ $event->id }}">
 
-                        <!-- Event Highlights -->
-                        <h5 class="fw-bold mb-2">Event Highlights:</h5>
-                        <ul class="mb-4">
-                            <li>Live performances by top international and local artists</li>
-                            <li>Food & beverage stalls</li>
-                            <li>Exclusive merchandise</li>
-                            <li>VIP lounge with special seating</li>
-                            <li>Interactive fan experiences</li>
-                        </ul>
+                                <h2 class="fw-bold mb-3">{{ $event->name }}</h2>
+                                <p><strong>📅 Date :</strong> {{ $event->date->format('d-m-Y') }}</p>
+                                <p><strong>⏰ Time :</strong> 7:00 PM - 11:00 PM</p>
+                                <p><strong>📍 Venue :</strong> {{ $event->location }}</p>
+                                <p><strong>💰 Price per Ticket :</strong> ₹ {{ $event->price }}</p>
 
-                        <!-- Book Ticket Button -->
-                        <a href="{{ url('/user/booking') }}" class="btn btn-gradient w-100 btn-lg">🎟️ Book Tickets Now</a>
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>🎫 Number of Tickets:</strong></label>
+                                    <input type="number" name="tickets_booked" id="ticket_quantity" class="form-control"
+                                        min="1" value="{{ old('tickets_booked', 1) }}">
+                                    @error('tickets_booked')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>🧾 Total Price:</strong></label>
+                                    <input type="text" id="total_price" class="form-control"
+                                        value="₹ {{ $event->price }}" readonly>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label d-block">Booking Type</label>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="booking_type" value="online"
+                                            checked>
+                                        <label class="form-check-label">Online</label>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-gradient w-100 btn-lg">🎟️ Book Tickets Now</button>
+                            </form>
+
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        const ticketInput = document.getElementById('ticket_quantity');
+        const totalPriceInput = document.getElementById('total_price');
+        const pricePerTicket = {{ $event->price }};
+
+        ticketInput.addEventListener('input', () => {
+            const quantity = parseInt(ticketInput.value) || 1;
+            totalPriceInput.value = '₹ ' + (quantity * pricePerTicket);
+        });
+    </script>
 
 @endsection

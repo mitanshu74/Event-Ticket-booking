@@ -96,27 +96,39 @@ class BookingDataTable extends BaseDatatableScope
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
+                // Check admin role
+                $admin = auth()->guard('admin')->user();
+                if ($admin->role == 2) {
+                    return ''; // hide buttons for role 2
+                }
                 $btn = '<div style="display:flex; gap:5px;">';
-
-                // Edit button (adjust routes if needed)
-                $editUrl = route('admin.EditEvent', $row->id);
-                $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm" style="height:31px;position:relative;top:5px">
-                        <i class="fa fa-edit" style="font-size:20px;color:white"></i>
-                    </a>';
-
                 $deleteUrl = route('booking.destroy', $row->id);
                 $btn .= '<form action="' . $deleteUrl . '" method="POST" style="display:inline;" class="delete-form">
-            ' . csrf_field() . '
-            ' . method_field('DELETE') . '
-            <button type="submit" class="btn btn-danger btn-sm" style="margin:5px;">
-                <i class="fa fa-trash-o" style="font-size:20px;color:white;"></i>
-            </button>
-        </form>';
-                $btn .= '</div>';
+                        ' . csrf_field() . '
+                        ' . method_field('DELETE') . '
+                        <button type="submit" class="btn btn-danger btn-sm" style="margin:5px;">
+                            <i class="fa fa-trash-o" style="font-size:20px;color:white;"></i>
+                        </button>
+                    </form>';
 
-
+                // Cancel button (only show on booking is confirmed)
+                if ($row->status === 'confirmed') {
+                    $cancelUrl = route('admin.booking.cancel', $row->id); // make sure you define this route
+                    $btn .= '<form action="' . $cancelUrl . '" method="POST" style="display:inline;" class="cancel-form">
+                    ' . csrf_field() . '
+                    <button type="submit" class="btn btn-warning btn-sm">Cancel</button>
+                </form>';
+                }
                 return $btn;
-            })
+            })->editColumn('status', function ($row) {
+                if ($row->status === 'confirmed') {
+                    return '<span class="badge bg-success">Confirmed</span>';
+                } elseif ($row->status === 'cancelled') {
+                    return '<span class="badge bg-danger">Cancelled</span>';
+                } else {
+                    return '<span class="badge bg-secondary">Pending</span>';
+                }
+            })->rawColumns(['status', 'action'])
             ->make(true);
     }
 }

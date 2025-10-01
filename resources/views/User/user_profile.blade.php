@@ -40,169 +40,147 @@
         .login_heading {}
     </style>
 </head>
+<!-- KEEP YOUR HEAD & CSS SAME -->
 
-<body>
+<body class="bg-light">
 
-    <section class="background-main-image">
-        <div class="container py-4 h-100">
-            <div class="row d-flex justify-content-center align-items-center 100vh">
-                <div class="col col-xl-10 mx-4">
-                    <div class="card" style="border-radius: 1rem; box-shadow: 3px 3px 25px #0A306C;">
-                        <div class="row p-4 ">
+    <section class="py-5">
+        <div class="container">
 
-                            {{-- <div class="col-md-10 col-lg-7 mt-4 d-flex ">
-                                <div class="card-body text-black" style="position: relative;left: 250px;"> --}}
+            <div class="pc-content pb-2">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h4 class="mb-0">👤 Profile Information</h4>
+                        <a href="{{ route('show_profile') }}" class="btn btn-primary rounded text-white">Update
+                            Profile</a>
+                    </div>
+                    <div class="card-body">
 
-                            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data"
-                                class="needs-validation" novalidate>
-                                @csrf
-                                @method('PUT')
+                        <div class="card-header bg-white border-0">
+                            <h5 class="mb-0">🎟 My Booked Events</h5>
+                        </div>
+                        <div class="card-body">
 
-                                <div class="text-center mb-3">
-                                    <span class="h1 fw-bold mb-0 login_heading">User Information</span>
+                            @if (Auth::user()->bookings->isEmpty())
+                                <p class="text-muted">No bookings yet.</p>
+                            @else
+                                <div class="table-responsive">
+                                    <table class="table align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Event</th>
+                                                <th>Price</th>
+                                                <th>Tickets</th>
+                                                <th>Total</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (Auth::user()->bookings as $index => $booking)
+                                                <tr>
+                                                    <td>{{ $index + 1 }}</td>
+                                                    <td>{{ $booking->event->name }}</td>
+                                                    <td>₹{{ $booking->event->price }}</td>
+                                                    <td>{{ $booking->tickets_booked }}</td>
+                                                    <td>₹{{ $booking->total_price }}</td>
+                                                    <td>
+                                                        @if (strtolower($booking->status) == 'confirmed')
+                                                            <span class="badge bg-success">{{ $booking->status }}</span>
+                                                        @elseif(strtolower($booking->status) == 'cancelled')
+                                                            <span class="badge bg-danger">{{ $booking->status }}</span>
+                                                        @else
+                                                            <span
+                                                                class="badge bg-secondary">{{ $booking->status }}</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $booking->created_at->format('d M Y') }}</td>
+                                                    <td>
+                                                        <form action="{{ route('user.booking.cancel', $booking->id) }}"
+                                                            method="POST" class="cancel-booking-form">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            @if ($booking->status == 'confirmed')
+                                                                <button type="submit"
+                                                                    class="btn btn-sm btn-warning">Cancel</button>
+                                                            @endif
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
-
-                                {{-- Username --}}
-                                <div class="mb-3">
-                                    <label class="form-label">Username</label>
-                                    <input type="text" name="username"
-                                        class="form-control @error('username') is-invalid @enderror"
-                                        value="{{ old('username', Auth::user()->username) }}" required>
-                                    @error('username')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                {{-- Email --}}
-                                <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" name="email"
-                                        class="form-control @error('email') is-invalid @enderror"
-                                        value="{{ old('email', Auth::user()->email) }}" required>
-                                    @error('email')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                {{-- Password --}}
-                                <div class="mb-3">
-                                    <label class="form-label">New Password <small class="text-muted">(Leave blank to
-                                            keep current)</small></label>
-                                    <input type="password" name="password"
-                                        class="form-control @error('password') is-invalid @enderror"
-                                        placeholder="Enter New Password">
-                                    @error('password')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                {{-- Phone Number --}}
-                                <div class="mb-3">
-                                    <label class="form-label">Phone Number</label>
-                                    <input type="tel" name="number"
-                                        class="form-control @error('number') is-invalid @enderror"
-                                        value="{{ old('number', Auth::user()->number) }}" required>
-                                    @error('number')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                {{-- Address --}}
-                                <div class="mb-3">
-                                    <label class="form-label">Address</label>
-                                    <textarea name="address" class="form-control @error('address') is-invalid @enderror" required>{{ old('address', Auth::user()->address) }}</textarea>
-                                    @error('address')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                {{-- Gender --}}
-                                <div class="mb-3">
-                                    <label class="form-label">Gender</label>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="gender" value="male"
-                                            {{ old('gender', Auth::user()->gender) == 'male' ? 'checked' : '' }}>
-                                        <label class="form-check-label">Male</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="gender" value="female"
-                                            {{ old('gender', Auth::user()->gender) == 'female' ? 'checked' : '' }}>
-                                        <label class="form-check-label">Female</label>
-                                    </div>
-                                    @error('gender')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                {{-- Profile Image --}}
-                                <div class="mb-3">
-                                    <label class="form-label">Profile Image</label>
-                                    <input type="file" name="UserImage" id="imageInput"
-                                        class="form-control @error('UserImage') is-invalid @enderror" accept="image/*"
-                                        onchange="displayImage()">
-                                    @error('UserImage')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                    <img id="previewImage"
-                                        src="{{ Auth::user()->image ? asset('storage/' . Auth::user()->image) : '' }}"
-                                        alt="Selected Image"
-                                        style="height:100px; width:100px; border:1px solid #ccc; margin-top:10px;">
-                                </div>
-                                <div class="col-1">
-                                    <button type="submit" class="btn btn-success btn-sm w-100">Update</button>
-                                </div>
-                            </form>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
     </section>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const forms = document.querySelectorAll('.cancel-booking-form');
 
-</body>
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault(); // Prevent default form submission
 
-<script>
-    (function() {
-        'use strict'
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, cancel it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit(); // Submit form if confirmed
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 
-        // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        var forms = document.querySelectorAll('.needs-validation')
 
-        // Loop over them and prevent submission
-        Array.prototype.slice.call(forms)
-            .forEach(function(form) {
-                form.addEventListener('submit', function(event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
+    @if (session('user-booking-cansel'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('user-booking-cansel') }}',
+                showConfirmButton: true,
+            });
+        </script>
+    @endif
 
-                    form.classList.add('was-validated')
-                }, false)
-            })
-    })()
-</script>
 
-<script>
-    function displayImage() {
-        const imageInput = document.getElementById('imageInput');
-        const previewImage = document.getElementById('previewImage');
+    <script>
+        (function() {
+            'use strict'
 
-        if (imageInput.files && imageInput.files[0]) {
-            const reader = new FileReader();
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
 
-            reader.onload = function(e) {
-                previewImage.src = e.target.result;
-            };
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
 
-            reader.readAsDataURL(imageInput.files[0]);
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
 
-        } else {
-            previewImage.src = '';
-        }
-    }
-</script>
 </body>
 
 </html>

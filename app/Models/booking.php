@@ -33,8 +33,10 @@ class booking extends Model
     }
 
     // A booking belongs to an event
+    // relationships many to one
+    // This booking belongs to one event via the event_id column in the bookings table
     public function event()
     {
-        return $this->belongsTo(Event::class);
+        return $this->belongsTo(\App\Models\Event::class, 'event_id');
     }
 }

@@ -33,6 +33,7 @@
         // Booking
 
         Route::resource('admin/booking', 'Admin\BookingController');
+        Route::post('admin/booking/cancel/{id}', 'Admin\BookingController@cancel')->name('admin.booking.cancel');
     });
 
     Route::middleware(['CheckAdmin'])->group(function () {
@@ -48,7 +49,6 @@
 
 
     // User Roure
-
 
     Route::get('/user/booking', function () {
         return view('User.booking');
@@ -66,16 +66,21 @@
     Route::post('/user/verify-otp', 'User\UserController@verifyOtp');
     Route::post('/user/resend-otp', 'User\UserController@resendOtp')->name('resend-otp');
 
+    // user login access route
     Route::middleware(['user.login'])->group(function () {
 
         // home logout
-        Route::get('/user/home', 'User\UserController@home')->name('home');
         Route::post('/user/logout', 'User\UserController@logout')->name('user.logout');
 
         // profile
         Route::get('/user/profile', 'User\UserController@User_profile')->name('profile');
+        Route::get('/user/profile/edit', 'User\UserController@show_profile')->name('show_profile');
         Route::put('/user/profile', 'User\UserController@Update_User_profile')->name('profile.update');
 
         // events
-        Route::get('/user/event-details/{id}', 'User\UserController@eventDetails')->name('user.event.details');
+        Route::post('User/booking', 'User\UserBookingController@store')->name('user.booking');
+        Route::delete('User/booking/cancel/{id}', 'User\UserBookingController@cancel')->name('user.booking.cancel');
     });
+
+    Route::get('/user/home', 'User\UserController@home')->name('home');
+    Route::get('/user/event-details/{id}', 'User\UserController@eventDetails')->name('user.event.details');

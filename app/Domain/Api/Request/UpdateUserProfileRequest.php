@@ -2,11 +2,11 @@
 
 namespace App\Domain\Api\Request;
 
-use App\Http\Requests\ApiRequest;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 
-class UpdateUserProfileRequest extends ApiRequest
+class UpdateUserProfileRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -24,7 +24,7 @@ class UpdateUserProfileRequest extends ApiRequest
             'number' => 'required|digits_between:10,15',
             'address' => 'required|string',
             'gender' => 'required|in:male,female',
-            'UserImage' => 'required|image|mimes:jpeg,png,jpg,gif',
+            'UserImage' => 'nullable|image|mimes:jpeg,png,jpg,gif',
         ];
     }
 

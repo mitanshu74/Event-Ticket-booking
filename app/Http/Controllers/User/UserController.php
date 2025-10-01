@@ -140,7 +140,8 @@ class UserController extends Controller
 
     public function User_profile(Request $request)
     {
-        return view('User.user_profile');
+        $user = Auth::user()->load('bookings.event');
+        return view('User.user_profile', compact('user'));
     }
     public function Update_User_profile(UpdateUserProfileRequest $request)
     {
@@ -170,12 +171,17 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect()->back()->with('success', 'Profile updated successfully!');
+        return redirect()->back()->with('user_profile_update', 'Profile updated successfully!');
     }
 
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('user.login');
+        return redirect()->route('home');
+    }
+
+    public function show_profile(Request $request)
+    {
+        return view('User.update_profile');
     }
 }

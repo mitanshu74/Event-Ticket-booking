@@ -86,6 +86,26 @@ class BookingController extends Controller
     {
         //
     }
+    public function cancel($id)
+    {
+        $booking = booking::findOrFail($id);
+
+        if ($booking->status === 'confirmed') {
+            $booking->status = 'cancelled';
+            $booking->save();
+
+            // Optionally: add tickets back to event
+            $event = Event::find($booking->event_id);
+            if ($event) {
+                $event->total_tickets += $booking->tickets_booked;
+                $event->save();
+            }
+
+            return redirect()->back()->with('booking', 'Booking cancelled successfully!');
+        }
+
+        return redirect()->back()->with('error', 'Booking cannot be cancelled.');
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -95,6 +115,6 @@ class BookingController extends Controller
         $booking = booking::find($id);
 
         $booking->delete();
-        return redirect()->back()->with('success', 'Booking deleted successfully.');
+        return redirect()->back()->with('delete-booking', 'Booking deleted successfully.');
     }
 }
