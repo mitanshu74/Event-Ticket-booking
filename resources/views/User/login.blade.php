@@ -67,6 +67,19 @@
             <p class="text-center mt-3">Don't have an account? <a href="{{ route('user.register') }}">Register</a></p>
         </form>
 
+        <!-- SweetAlert2 -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>
+            @if (session('login_first'))
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Login Required',
+                    text: "{{ session('login_first') }}",
+                    confirmButtonColor: '#4A90E2'
+                });
+            @endif
+        </script>
 
     </div>
 

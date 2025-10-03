@@ -15,7 +15,7 @@ class UpdateUserProfileRequest extends FormRequest
 
     public function rules(): array
     {
-        $userId = Auth::id(); // get current user id for unique email
+        $userId = Auth::guard('web')->id(); // get current user id for unique email
 
         return [
             'username' => 'required|string|max:255',

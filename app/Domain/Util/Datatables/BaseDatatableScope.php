@@ -33,23 +33,27 @@ abstract class BaseDatatableScope
                     'searchable' => false,
                 ],
             ],
-            $this->partialHtml,
-            [
-                [
-                    'data' => 'action',
-                    'name' => 'action',
-                    'title' => 'Action',
-                    'searchable' => false,
-                    'orderable' => false,
-                ],
-            ]
+            $this->partialHtml
         );
+
+        // Check admin role == 2 then not show 
+        $admin = auth()->guard('admin')->user();
+        if ($admin->role != 2) {
+            $columns[] = [
+                'data' => 'action',
+                'name' => 'action',
+                'title' => 'Action',
+                'searchable' => false,
+                'orderable' => false,
+            ];
+        }
 
         $builder = app('datatables.html');
         return $builder->columns($columns)->parameters([
             'order' => [0, 'desc'],
         ])->ajax($url ?: request()->fullUrl());
     }
+
 
     /**
      * @param array $html

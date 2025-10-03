@@ -12,19 +12,31 @@
 
                         <!-- Event Image -->
                         <div class="col-md-6 text-center">
-                            <img src="{{ $event->image ? asset('storage/' . $event->image) : '' }}" alt="{{ $event->title }}"
+                            <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->title }}"
                                 class="img-fluid rounded" style="max-height:500px;">
                         </div>
 
                         <!-- Booking Form -->
                         <div class="col-md-6">
-                            <form id="bookingForm" method="POST" action="{{ route('user.booking') }}">
+                            <form id="bookingForm" method="POST" action="{{ route('razorpay.payment') }}">
                                 @csrf
                                 <input type="hidden" name="event_id" value="{{ $event->id }}">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h2 class="fw-bold mb-0">{{ $event->name }}</h2>
+                                    @if ($event->total_tickets > 0)
+                                        <span class="badge bg-success">Available</span>
+                                    @else
+                                        <span class="badge bg-danger">Sold Out</span>
+                                    @endif
+                                </div>
 
-                                <h2 class="fw-bold mb-3">{{ $event->name }}</h2>
                                 <p><strong>📅 Date :</strong> {{ $event->date->format('d-m-Y') }}</p>
-                                <p><strong>⏰ Time :</strong> 7:00 PM - 11:00 PM</p>
+                                <p><strong>⏰ Time :</strong> 7:00 PM - 11:00 PM
+                                    @error('date')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </p>
+                                {{-- event_id --}}
                                 <p><strong>📍 Venue :</strong> {{ $event->location }}</p>
                                 <p><strong>💰 Price per Ticket :</strong> ₹ {{ $event->price }}</p>
 
@@ -39,7 +51,7 @@
 
                                 <div class="mb-3">
                                     <label class="form-label"><strong>🧾 Total Price:</strong></label>
-                                    <input type="text" id="total_price" class="form-control"
+                                    <input type="text" id="total_price" name="amount" class="form-control"
                                         value="₹ {{ $event->price }}" readonly>
                                 </div>
 
@@ -52,7 +64,7 @@
                                     </div>
                                 </div>
 
-                                <button type="submit" class="btn btn-gradient w-100 btn-lg">🎟️ Book Tickets Now</button>
+                                <button type="submit" class="btn btn-gradient w-100 btn-lg">Proceed to Pay</button>
                             </form>
 
                         </div>

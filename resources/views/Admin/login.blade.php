@@ -126,7 +126,7 @@
                     <div class="form-group">
                         <label class="label_custome">Email Address <span>*</span></label>
                         <input type="email" placeholder="Enter Your Email" name="email" class="gd-form-control"
-                            value="{{ old('email') }}" required>
+                            value="{{ old('email') }}">
                         @error('email')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -136,7 +136,7 @@
                         <label class="label_custome">Password <span>*</span></label>
                         <div class="password-container position-relative">
                             <input type="password" placeholder="Enter Your password" name="password"
-                                class="gd-form-control" required>
+                                class="gd-form-control">
                             <i class="fa fa-eye-slash toggle-password"></i>
                         </div>
                         @error('password')

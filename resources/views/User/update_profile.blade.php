@@ -51,7 +51,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h4 class="mb-0">👤 Profile Information</h4>
-                        <a href="{{ route('home') }}" class="btn btn-success rounded text-white">Back</a>
+                        <a href="{{ route('user.home') }}" class="btn btn-success rounded text-white">Back</a>
                     </div>
                     <div class="card-body">
 
@@ -63,13 +63,13 @@
                             <div class="col-md-6">
                                 <label class="form-label">Username</label>
                                 <input type="text" name="username" class="form-control"
-                                    value="{{ old('username', Auth::user()->username) }}" required>
+                                    value="{{ old('username', Auth::guard('web')->user()->username) }}" required>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Email</label>
                                 <input type="email" name="email" class="form-control"
-                                    value="{{ old('email', Auth::user()->email) }}" required>
+                                    value="{{ old('email', Auth::guard('web')->user()->email) }}" required>
                             </div>
 
                             <div class="col-md-6">
@@ -81,24 +81,24 @@
                             <div class="col-md-6">
                                 <label class="form-label">Phone</label>
                                 <input type="tel" name="number" class="form-control"
-                                    value="{{ old('number', Auth::user()->number) }}" required>
+                                    value="{{ old('number', Auth::guard('web')->user()->number) }}" required>
                             </div>
 
                             <div class="col-12">
                                 <label class="form-label">Address</label>
-                                <textarea name="address" class="form-control" rows="2" required>{{ old('address', Auth::user()->address) }}</textarea>
+                                <textarea name="address" class="form-control" rows="2" required>{{ old('address', Auth::guard('web')->user()->address) }}</textarea>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Gender</label><br>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="gender" value="male"
-                                        {{ old('gender', Auth::user()->gender) == 'male' ? 'checked' : '' }}>
+                                        {{ old('gender', Auth::guard('web')->user()->gender) == 'male' ? 'checked' : '' }}>
                                     <label class="form-check-label">Male</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="gender" value="female"
-                                        {{ old('gender', Auth::user()->gender) == 'female' ? 'checked' : '' }}>
+                                        {{ old('gender', Auth::guard('web')->user()->gender) == 'female' ? 'checked' : '' }}>
                                     <label class="form-check-label">Female</label>
                                 </div>
                             </div>
@@ -108,7 +108,7 @@
                                 <input type="file" name="UserImage" class="form-control" id="imageInput"
                                     onchange="displayImage()">
                                 <img id="previewImage"
-                                    src="{{ Auth::user()->image ? asset('storage/' . Auth::user()->image) : '' }}"
+                                    src="{{ Auth::guard('web')->user()->image ? asset('storage/' . Auth::guard('web')->user()->image) : '' }}"
                                     class="mt-2 rounded border" style="height:80px; width:80px;">
                             </div>
 

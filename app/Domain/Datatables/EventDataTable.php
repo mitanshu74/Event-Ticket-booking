@@ -73,13 +73,14 @@ class EventDataTable extends BaseDatatableScope
                         <i class="fa fa-edit" style="font-size:20px;color:white"></i>
                     </a>';
 
+                // Delete button
                 $deleteUrl = route('admin.DeleteEvent', $row->id);
                 $btn .= '<form action="' . $deleteUrl . '" method="POST" style="display:inline;" class="delete-form">
-            ' . csrf_field() . '
-            <button type="submit" class="btn btn-danger btn-sm" style="margin:5px;">
-                <i class="fa fa-trash-o" style="font-size:20px;color:white;"></i>
-            </button>
-        </form>';
+                ' . csrf_field() . '
+                        <button type="submit" class="btn btn-danger btn-sm" style="margin:5px;">
+                            <i class="fa fa-trash-o" style="font-size:20px;color:white;"></i>
+                        </button>
+                    </form>';
                 $btn .= '</div>';
 
                 return $btn;

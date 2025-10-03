@@ -13,6 +13,11 @@ use Illuminate\Validation\Rules\Password;
 
 class AdminController extends Controller
 {
+    public function show_login()
+    {
+        return view('Admin.login');
+    }
+
     public function login(LoginRequest $request)
     {
         $credentials = $request->only('email', 'password');
@@ -36,11 +41,14 @@ class AdminController extends Controller
             ->withInput();
     }
 
+    public function home()
+    {
+        return view('Admin.home');
+    }
     public function profile()
     {
         return view('Admin.profile');
     }
-
 
     public function ProfileUpdate(UpdateProfileRequest $request)
     {
@@ -58,12 +66,13 @@ class AdminController extends Controller
         return redirect()->back()->with('profile-updated', 'Profile updated successfully!');
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
-        $this->guard()->logout();
-        $request->session()->invalidate();
+        // dd('d');
+        Auth::guard('admin')->logout();
         return redirect('/admin/login')->with('logout_message', 'You have been successfully logged out.');
     }
+
     // guard define karelu hase to J logout kam karse
     // guard required for logout
     public function guard()

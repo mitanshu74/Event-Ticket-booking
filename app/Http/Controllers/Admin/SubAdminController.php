@@ -17,7 +17,6 @@ class SubAdminController extends Controller
 {
     public function index(SubAdminDataTable $datatable)
     {
-
         if (request()->ajax()) {
             return $datatable->query();
         }

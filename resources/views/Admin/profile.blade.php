@@ -18,7 +18,7 @@
                                 <div class="col-md-6 mt-3">
                                     <label for="adminName" class="form-label">Name</label>
                                     <input type="text" class="form-control" name="name" id="adminName"
-                                        value="{{ old('name', auth()->guard('admin')->user()->name) }}"
+                                        value="{{ old('name', Auth::guard('admin')->user()->name) }}"
                                         placeholder="Enter Admin Name" required>
                                 </div>
                             </div>
@@ -27,7 +27,7 @@
                                 <div class="col-md-6 mt-3">
                                     <label for="adminEmail" class="form-label">Email</label>
                                     <input type="email" class="form-control" name="email" id="adminEmail"
-                                        value="{{ old('email', auth()->guard('admin')->user()->email) }}"
+                                        value="{{ old('email', Auth::guard('admin')->user()->email) }}"
                                         placeholder="Enter Admin Email" required>
                                 </div>
                             </div>

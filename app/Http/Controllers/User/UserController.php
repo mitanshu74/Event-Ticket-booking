@@ -18,11 +18,12 @@ use Carbon\Carbon;
 
 class UserController extends Controller
 {
-    public function showRegisterForm()
+    public function home(Request $request)
     {
-        return view('User.register');
-    }
+        $events = Event::orderBy('date', 'asc')->get();
 
+        return view('User.home', compact('events'));
+    }
 
     public function eventDetails($id)
     {
@@ -30,6 +31,10 @@ class UserController extends Controller
         return view('User.event-details', compact('event'));
     }
 
+    public function showRegisterForm()
+    {
+        return view('User.register');
+    }
 
     public function register(UserRegisterRequest $request)
     {
@@ -58,7 +63,6 @@ class UserController extends Controller
         return redirect()->route('verify-otp')->with('success', 'Registration successful. Check your email for OTP.');
     }
 
-
     public function showVerifyForm()
     {
         $email = session('otp_email'); // get from session
@@ -81,9 +85,9 @@ class UserController extends Controller
         $user->otp_expires_at = null;
         $user->save();
 
-        Auth::login($user);
+        Auth::guard('web')->login($user);
 
-        return redirect()->route('home');
+        return redirect()->route('user.home');
     }
 
     public function showLoginForm()
@@ -104,8 +108,9 @@ class UserController extends Controller
         }
 
         // Attempt login
-        if (Auth::attempt($credentials)) {
-            return redirect()->route('home')
+
+        if (Auth::guard('web')->attempt($credentials)) {
+            return redirect()->route('user.home')
                 ->with('login', 'Successfully logged in!');
         }
 
@@ -131,21 +136,20 @@ class UserController extends Controller
         return back()->withErrors(['email' => 'No user found with this email.']);
     }
 
-    public function home(Request $request)
-    {
-        $events = Event::orderBy('date', 'asc')->get();
-
-        return view('User.home', compact('events'));
-    }
-
     public function User_profile(Request $request)
     {
-        $user = Auth::user()->load('bookings.event');
+        $user = Auth::guard('web')->user()->load('bookings.event');
         return view('User.user_profile', compact('user'));
     }
+
+    public function show_profile()
+    {
+        return view('User.update_profile');
+    }
+
     public function Update_User_profile(UpdateUserProfileRequest $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('web')->user();
 
         $user->username = $request->username;
         $user->email = $request->email;
@@ -176,12 +180,7 @@ class UserController extends Controller
 
     public function logout()
     {
-        Auth::logout();
-        return redirect()->route('home');
-    }
-
-    public function show_profile(Request $request)
-    {
-        return view('User.update_profile');
+        Auth::guard('web')->logout(); // Only logout user
+        return redirect()->route('user.home');
     }
 }

@@ -102,22 +102,23 @@ class BookingDataTable extends BaseDatatableScope
                     return ''; // hide buttons for role 2
                 }
                 $btn = '<div style="display:flex; gap:5px;">';
-                $deleteUrl = route('booking.destroy', $row->id);
-                $btn .= '<form action="' . $deleteUrl . '" method="POST" style="display:inline;" class="delete-form">
-                        ' . csrf_field() . '
-                        ' . method_field('DELETE') . '
-                        <button type="submit" class="btn btn-danger btn-sm" style="margin:5px;">
-                            <i class="fa fa-trash-o" style="font-size:20px;color:white;"></i>
-                        </button>
-                    </form>';
 
-                // Cancel button (only show on booking is confirmed)
+                // Cancel button (only show on booking is confirmed  delete btn show on Cancelled Pending )
                 if ($row->status === 'confirmed') {
                     $cancelUrl = route('admin.booking.cancel', $row->id); // make sure you define this route
                     $btn .= '<form action="' . $cancelUrl . '" method="POST" style="display:inline;" class="cancel-form">
                     ' . csrf_field() . '
                     <button type="submit" class="btn btn-warning btn-sm">Cancel</button>
                 </form>';
+                } else {
+                    $deleteUrl = route('booking.destroy', $row->id);
+                    $btn .= '<form action="' . $deleteUrl . '" method="POST" style="display:inline;" class="delete-form">
+                        ' . csrf_field() . '
+                        ' . method_field('DELETE') . '
+                        <button type="submit" class="btn btn-danger btn-sm" style="margin:5px;">
+                            <i class="fa fa-trash-o" style="font-size:20px;color:white;"></i>
+                        </button>
+                    </form>';
                 }
                 return $btn;
             })->editColumn('status', function ($row) {

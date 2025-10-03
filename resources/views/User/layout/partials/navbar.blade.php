@@ -15,7 +15,7 @@
                     <a href="{{ route('profile') }}" class="user_fafa" style="text-decoration: none; color:black;">
                         <i class="fa fa-user" aria-hidden="true"></i>
                         <span class="login_name">
-                            {{ Auth::check() ? Auth::user()->username : 'Guest' }}
+                            {{ Auth::guard('web')->check() ? Auth::guard('web')->user()->username : 'Guest' }}
                         </span>
                     </a>
                 </li>

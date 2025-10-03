@@ -51,8 +51,12 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h4 class="mb-0">👤 Profile Information</h4>
-                        <a href="{{ route('show_profile') }}" class="btn btn-primary rounded text-white">Update
-                            Profile</a>
+                        <div class="button">
+                            <a href="{{ route('user.home') }}" class="btn btn-success rounded text-white">Back</a>
+
+                            <a href="{{ route('show_profile') }}" class="btn btn-primary rounded text-white">Update
+                                Profile</a>
+                        </div>
                     </div>
                     <div class="card-body">
 
@@ -61,7 +65,7 @@
                         </div>
                         <div class="card-body">
 
-                            @if (Auth::user()->bookings->isEmpty())
+                            @if (Auth::guard('web')->user()->bookings->isEmpty())
                                 <p class="text-muted">No bookings yet.</p>
                             @else
                                 <div class="table-responsive">
@@ -79,7 +83,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach (Auth::user()->bookings as $index => $booking)
+                                            @foreach (Auth::guard('web')->user()->bookings as $index => $booking)
                                                 <tr>
                                                     <td>{{ $index + 1 }}</td>
                                                     <td>{{ $booking->event->name }}</td>

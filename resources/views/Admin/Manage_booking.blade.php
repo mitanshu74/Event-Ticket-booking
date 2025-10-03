@@ -11,33 +11,84 @@
             <div class="card-body">
                 <div class="table-responsive">
 
-                    {!! $html->table(['class' => 'table table-striped table-bordered', 'id' => 'events-table']) !!}
+                    {!! $html->table(['class' => 'table table-striped table-bordered', 'id' => 'bookingTable']) !!}
                 </div>
             </div>
         </div>
     </div>
     {!! $html->scripts() !!}
     <script>
-        $(document).on('submit', '.delete-form', function(e) {
-            e.preventDefault(); // prevent default form submit
+        $(document).ready(function() {
+            $(document).on('click', '.delete-form button', function(e) {
+                e.preventDefault();
+                const form = $(this).closest('form');
 
-            const form = this;
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: form.attr('action'),
+                            type: 'POST',
+                            data: form.serialize(),
+                            success: function(response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Deleted!',
+                                    text: response.message ||
+                                        'Booking deleted successfully.',
+                                    showConfirmButton: true,
+                                });
+                                // Refresh datatable
+                                $('#bookingTable').DataTable().ajax.reload();
+                            },
+                        });
+                    }
+                });
+            });
 
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit(); // submit the form if confirmed
-                }
+            // Cancel confirmation with AJAX
+            $(document).on('click', '.cancel-form button', function(e) {
+                e.preventDefault();
+                const form = $(this).closest('form');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to cancel this booking?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, cancel it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: form.attr('action'),
+                            type: 'POST',
+                            data: form.serialize(),
+                            success: function(response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Cancelled!',
+                                    text: response.message ||
+                                        'Booking cancelled successfully.',
+                                    showConfirmButton: true,
+                                });
+                                $('#bookingTable').DataTable().ajax.reload();
+                            },
+                        });
+                    }
+                });
             });
         });
     </script>
+    {{-- 
     <script>
         document.addEventListener('submit', function(e) {
             if (e.target.classList.contains('cancel-form')) {
@@ -57,19 +108,9 @@
                 });
             }
         });
-    </script>
+    </script> --}}
 
-
-    @if (session('delete-booking'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: '{{ session('delete-booking') }}',
-                showConfirmButton: true,
-            });
-        </script>
-    @endif
+    {{-- 
     @if (session('booking'))
         <script>
             Swal.fire({
@@ -79,7 +120,7 @@
                 showConfirmButton: true,
             });
         </script>
-    @endif
+    @endif --}}
 
 
 @endsection
