@@ -116,9 +116,6 @@
     <div class="container d-flex justify-content-center align-items-center min-vh-100">
         <div class="col-md-4 m-auto col-12">
             <div class="gd__login">
-                <div class="gd__form__logo">
-                    <!-- <img src="{{ asset('image/logo_change2.png') }}" alt="Logo"> -->
-                </div>
                 <form class="gd__contact__form" method="POST" action="{{ route('admin.login.submit') }}">
                     @csrf
                     <h1 class="text-center sign_in">Login</h1>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Api\Request\UserBookingRequest;
+use App\Domain\Api\Request\PaymentRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\BookingConfirmationMail;
@@ -99,12 +100,12 @@ class RazorpayController extends Controller
         return redirect()->back()->withErrors(['tickets_booked' => 'Tickets Not Available.']);
     }
 
-    public function success(Request $request)
+    public function success(PaymentRequest $request)
     {
         // 1️⃣ Validate Razorpay response
-        if (!$request->razorpay_payment_id || !$request->razorpay_order_id) {
-            return back()->with('error', 'Payment failed. Please try again.');
-        }
+        // if (!$request->razorpay_payment_id || !$request->razorpay_order_id) {
+        //     return back()->with('error', 'Payment failed. Please try again.');
+        // }
 
         // 2️⃣ Find the payment record
         $payment = Payment::where('order_id', $request->razorpay_order_id)->first();

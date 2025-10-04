@@ -17,7 +17,7 @@
                              <div class="flex-grow-1 ms-3">
                                  <p class="mb-1">Total User</p>
                                  <div class="d-flex align-items-center justify-content-between">
-                                     <h6 class="mb-0">0</h6>
+                                     <h6 class="mb-0">{{ $totalUser }}</h6>
                                      <a href="" class="text-success fw-medium">View All</a>
                                  </div>
                              </div>
@@ -30,15 +30,16 @@
                      <div class="card-body">
                          <div class="d-flex align-items-center">
                              <div class="flex-shrink-0">
-                                 <div class="avtar bg-light-warning">
+                                 <div class="avtar bg-light-primary">
                                      <i class="ti ti-users f-24"></i>
                                  </div>
                              </div>
                              <div class="flex-grow-1 ms-3">
-                                 <p class="mb-1">Total Seller</p>
+                                 <p class="mb-1">Total SubAdmin</p>
                                  <div class="d-flex align-items-center justify-content-between">
-                                     <h6 class="mb-0">0</h6>
-                                     <a href="" class="text-warning fw-medium">View All</a>
+                                     <h6 class="mb-0">{{ $totalSubAdmin }}</h6>
+                                     <a href="{{ route('admin.manageSubAdmin') }}" class="text-success fw-medium">View
+                                         All</a>
                                  </div>
                              </div>
                          </div>
@@ -50,35 +51,15 @@
                      <div class="card-body">
                          <div class="d-flex align-items-center">
                              <div class="flex-shrink-0">
-                                 <div class="avtar bg-light-success">
-                                     <i class="ti ti-notebook f-24"></i>
-                                 </div>
-                             </div>
-                             <div class="flex-grow-1 ms-3">
-                                 <p class="mb-1">Total Product</p>
-                                 <div class="d-flex align-items-center justify-content-between">
-                                     <h6 class="mb-0">0</h6>
-                                     <a href="" class="text-success fw-medium">View All</a>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-             <div class="col-lg-3 col-md-6">
-                 <div class="card">
-                     <div class="card-body">
-                         <div class="d-flex align-items-center">
-                             <div class="flex-shrink-0">
-                                 <div class="avtar bg-light-danger">
+                                 <div class="avtar bg-light-primary">
                                      <i class="ti ti-credit-card f-24"></i>
                                  </div>
                              </div>
                              <div class="flex-grow-1 ms-3">
-                                 <p class="mb-1">Total Order</p>
+                                 <p class="mb-1">Total Event</p>
                                  <div class="d-flex align-items-center justify-content-between">
-                                     <h6 class="mb-0">0</h6>
-                                     <a href="" class="text-danger fw-medium">View All</a>
+                                     <h6 class="mb-0">{{ $totalevent }}</h6>
+                                     <a href="{{ route('admin.manageEvent') }}" class="text-success fw-medium">View All</a>
                                  </div>
                              </div>
                          </div>
@@ -86,6 +67,28 @@
                  </div>
              </div>
              <div class="col-lg-3 col-md-6">
+                 <div class="card">
+                     <div class="card-body">
+                         <div class="d-flex align-items-center">
+                             <div class="flex-shrink-0">
+                                 <div class="avtar bg-light-primary">
+                                     <i class="ti ti-notebook f-24"></i>
+                                 </div>
+                             </div>
+                             <div class="flex-grow-1 ms-3">
+                                 <p class="mb-1">Total Booking</p>
+                                 <div class="d-flex align-items-center justify-content-between">
+                                     <h6 class="mb-0">{{ $totalbooking }}</h6>
+                                     <a href="{{ route('booking.index') }}" class="text-success fw-medium">View
+                                         All</a>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+             {{--  <div class="col-lg-3 col-md-6">
                  <div class="card">
                      <div class="card-body">
                          <div class="d-flex align-items-center">
@@ -172,7 +175,7 @@
                          </div>
                      </div>
                  </div>
-             </div>
+             </div> --}}
          </div>
          <!-- new user authentication data table-->
          <div class="cards_design p-3 mb-4 bg-white border">
@@ -185,42 +188,54 @@
                  <div class="table-responsive pt-3 rounded-1">
                      <table class="table table-bordered data-table">
                          <thead>
-                             <tr>
-                                 <th>ID</th>
-                                 <th>Name</th>
-                                 <th>Email</th>
-                                 <th>Mobile Number</th>
-                                 <th>City</th>
-                                 <th>Action</th>
-                             </tr>
+                             {!! $html->table(['class' => 'table table-striped table-bordered', 'id' => 'User-table']) !!}
+
                          </thead>
                          <tbody>
 
-                             <tr>
-                                 <td></td>
-                                 <td>
-                                     <div class="user_details d-flex align-items-center">
-                                         <div class="user_profile_photo">
-                                             <img src="" alt="Profile Photo" class="profile-photo" />
-                                         </div>
-                                         <div>
-                                             <p class="mb-0"></p>
-                                             <small></small>
-                                         </div>
-                                     </div>
-                                 </td>
-                                 <td></td>
-                                 <td></td>
-                                 <td></td>
-                                 <td>
-                                     <a href="" class="btn btn-success rounded-pill text-white">Approve</a>
-                                     <a href="" class="btn btn-danger rounded-pill text-white">Deny</a>
-                                 </td>
-                             </tr>
+                             {!! $html->scripts() !!}
+
                          </tbody>
                      </table>
                  </div>
              </div>
+             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+             <script>
+                 document.addEventListener("DOMContentLoaded", function() {
+                     $(document).on('submit', '.delete-form', function(e) {
+                         e.preventDefault();
+                         let form = this;
+
+                         Swal.fire({
+                             title: "Are you sure?",
+                             text: "This action will permanently delete the user!",
+                             icon: "warning",
+                             showCancelButton: true,
+                             confirmButtonColor: "#d33",
+                             cancelButtonColor: "#3085d6",
+                             confirmButtonText: "Yes, delete it!",
+                             cancelButtonText: "Cancel"
+                         }).then((result) => {
+                             if (result.isConfirmed) {
+                                 $.ajax({
+                                     url: form.action,
+                                     type: 'POST',
+                                     data: $(form).serialize(),
+                                     success: function(response) {
+                                         Swal.fire(
+                                             "Deleted!",
+                                             response.success,
+                                             "success"
+                                         );
+                                         $('#User-table').DataTable().ajax
+                                             .reload(); // reload datatable
+                                     },
+                                 });
+                             }
+                         });
+                     });
+                 });
+             </script>
 
          </div>
      </div>

@@ -20,7 +20,7 @@ class AddSubAdminRequest extends FormRequest
             'email'    => [
                 'required',
                 'email',
-                'unique:admin,email',
+                'unique:admins,email',
                 'regex:/^[a-zA-Z0-9._%+-]+@gmail\.com$/i'
             ],
         ];

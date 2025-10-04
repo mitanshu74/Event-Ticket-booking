@@ -15,7 +15,7 @@ class bookingRequest extends FormRequest
     {
         return [
             'user_id'        => 'required|exists:users,id',
-            'event_id'       => 'required|exists:event,id',
+            'event_id'       => 'required|exists:events,id',
             'tickets_booked' => 'required|integer|min:1|max:5',
             'total_price'    => 'required|numeric|min:1',
             'booking_type'   => 'required|in:offline',

@@ -3,8 +3,6 @@
 namespace App\Domain\Api\Request;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Password;
-use Illuminate\Support\Facades\Auth;
 
 class UserLoginRequest extends FormRequest
 {

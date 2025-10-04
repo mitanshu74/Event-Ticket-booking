@@ -83,15 +83,15 @@ class BookingDataTable extends BaseDatatableScope
     public function query()
     {
         $query = booking::select(
-            'booking.*',
+            'bookings.*',
             'users.username as username',
-            'event.name as event_name',
-            'event.date',
-            'event.price',
-            'event.location'
+            'events.name as event_name',
+            'events.date',
+            'events.price',
+            'events.location'
         )
-            ->join('users', 'users.id', '=', 'booking.user_id')
-            ->join('event', 'event.id', '=', 'booking.event_id');
+            ->join('users', 'users.id', '=', 'bookings.user_id')
+            ->join('events', 'events.id', '=', 'bookings.event_id');
 
         return DataTables::of($query)
             ->addIndexColumn()

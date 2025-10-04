@@ -9,11 +9,11 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->booking_id();
+            $table->foreignId('booking_id')->constrained('bookings')->onDelete('cascade');
             $table->string('name');
             $table->string('email');
             $table->string('phone');

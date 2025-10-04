@@ -30,11 +30,13 @@
                                     @endif
                                 </div>
 
-                                <p><strong>📅 Date :</strong> {{ $event->date->format('d-m-Y') }}</p>
-                                <p><strong>⏰ Time :</strong> 7:00 PM - 11:00 PM
+                                <p><strong>📅 Date :</strong> {{ $event->date->format('d-m-Y') }}
                                     @error('date')
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
+                                </p>
+                                <p><strong>⏰ Time :</strong> 7:00 PM - 11:00 PM
+
                                 </p>
                                 {{-- event_id --}}
                                 <p><strong>📍 Venue :</strong> {{ $event->location }}</p>

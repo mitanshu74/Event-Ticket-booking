@@ -21,7 +21,7 @@ class editSubAdminRequest extends ApiRequest
                 'required',
                 'email',
                 'regex:/^[A-Za-z0-9._%+-]+@gmail\.com$/',
-                'unique:admin,email,' . $id . ',id',
+                'unique:admins,email,' . $id . ',id',
             ],
         ];
     }

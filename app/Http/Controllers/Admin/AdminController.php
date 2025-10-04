@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Domain\Api\Request\LoginRequest;
 use App\Domain\Api\Request\UpdateProfileRequest;
-use Illuminate\Http\Request;
+use App\Domain\Api\Request\LoginRequest;
+use App\Domain\Datatables\UserDataTable;
 use App\Models\Admin;
+use App\Models\booking;
+use App\Models\Event;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rules\Password;
 
 class AdminController extends Controller
 {
@@ -41,10 +43,19 @@ class AdminController extends Controller
             ->withInput();
     }
 
-    public function home()
+    public function home(UserDataTable $datatable)
     {
-        return view('Admin.home');
+        if (request()->ajax()) {
+            return $datatable->query();
+        }
+
+        $totalUser = User::count();
+        $totalSubAdmin = Admin::where('role', 2)->count();
+        $totalevent = Event::count();
+        $totalbooking = booking::count();
+        return view('Admin.home', ['html' => $datatable->html()], compact('totalSubAdmin', 'totalevent', 'totalbooking', 'totalUser'));
     }
+
     public function profile()
     {
         return view('Admin.profile');
@@ -78,5 +89,20 @@ class AdminController extends Controller
     public function guard()
     {
         return Auth::guard('admin');
+    }
+
+    // user delete
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+
+        // Delete user image if exists
+        if ($user->image && file_exists(storage_path('app/public/' . $user->image))) {
+            unlink(storage_path('app/public/' . $user->image));
+        }
+
+        $user->delete();
+
+        return response()->json(['success' => 'User deleted successfully.']);
     }
 }

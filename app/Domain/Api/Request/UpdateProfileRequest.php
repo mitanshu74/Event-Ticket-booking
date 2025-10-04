@@ -20,7 +20,7 @@ class UpdateProfileRequest extends FormRequest
 
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:admin,email,' . $adminId,
+            'email' => 'required|email|unique:admins,email,' . $adminId,
             'password' => ['nullable', Password::min(6)->letters()->numbers()->symbols()],
         ];
     }

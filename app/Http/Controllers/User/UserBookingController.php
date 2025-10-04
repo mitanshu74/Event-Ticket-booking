@@ -27,6 +27,8 @@ class UserBookingController extends Controller
         $event = Event::find($booking->event_id);
         if ($event) {
             $event->total_tickets += $booking->tickets_booked;
+            // booking tbl mathi tickets_booked minus this aatle user pachi ticket book kari sake
+            // $booking->tickets_booked -= $booking->tickets_booked;
             $event->save();
         }
 

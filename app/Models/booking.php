@@ -10,7 +10,7 @@ class booking extends Model
     use HasFactory;
 
     // Define table name if it's not plural of model name
-    protected $table = 'booking';
+    protected $table = 'bookings';
 
     // Mass assignable fields
     protected $fillable = [

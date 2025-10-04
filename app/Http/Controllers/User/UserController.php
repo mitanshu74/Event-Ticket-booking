@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Domain\Api\Request\UpdateUserProfileRequest;
 use App\Domain\Api\Request\UserRegisterRequest;
 use App\Domain\Api\Request\UserLoginRequest;
+use App\Domain\Api\Request\VerifyOtpRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -69,12 +70,8 @@ class UserController extends Controller
         return view('User.verifyOtp', compact('email'));
     }
 
-    public function verifyOtp(Request $request)
+    public function verifyOtp(VerifyOtpRequest $request)
     {
-        $request->validate([
-            'otp' => 'required|numeric|digits:6',
-        ]);
-
         $user = User::where('email', session('otp_email'))->first();
 
         if (!$user || $user->otp !== $request->otp || $user->otp_expires_at < now()) {
@@ -87,12 +84,29 @@ class UserController extends Controller
 
         Auth::guard('web')->login($user);
 
-        return redirect()->route('user.home');
+        return redirect()->route('user.home')->with('verify-otp', 'Otp Verify Successfully.');
     }
 
     public function showLoginForm()
     {
         return view('User.login');
+    }
+
+    public function resendOtp()
+    {
+        $user = User::where('email', session('otp_email'))->first();
+        if ($user) {
+            $otp = rand(100000, 999999);
+            $user->otp = $otp;
+            $user->otp_expires_at = Carbon::now()->addMinute(10);
+            $user->save();
+
+            Mail::to($user->email)->send(new WelcomeMail($user->username, $otp));
+
+            return back()->with('success', 'OTP resent successfully.');
+        }
+
+        return back()->withErrors(['email' => 'No user found with this email.']);
     }
 
     public function login(UserLoginRequest $request)
@@ -119,22 +133,6 @@ class UserController extends Controller
             ->withInput();
     }
 
-    public function resendOtp()
-    {
-        $user = User::where('email', session('otp_email'))->first();
-        if ($user) {
-            $otp = rand(100000, 999999);
-            $user->otp = $otp;
-            $user->otp_expires_at = Carbon::now()->addMinute(10);
-            $user->save();
-
-            Mail::to($user->email)->send(new WelcomeMail($user->username, $otp));
-
-            return back()->with('success', 'OTP resent successfully.');
-        }
-
-        return back()->withErrors(['email' => 'No user found with this email.']);
-    }
 
     public function User_profile(Request $request)
     {

@@ -14,6 +14,9 @@
         Route::get('/admin/profile', 'Admin\AdminController@profile')->name('admin.profile');
         Route::post('/admin/profile', 'Admin\AdminController@ProfileUpdate')->name('admin.profile.update');
 
+        // User delete
+        Route::delete('admin/DeleteUser/{id}', 'Admin\AdminController@destroy')->name('admin.DeleteUser');
+
         // Event Routes
         Route::get('admin/manageEvent', 'Admin\EventController@index')->name('admin.manageEvent');
         Route::get('admin/addEvent', 'Admin\EventController@create')->name('admin.addEvent');

@@ -10,7 +10,7 @@ class Event extends Model
     use HasFactory;
 
     // Specify the table name if it doesn't follow Laravel's plural naming convention
-    protected $table = 'event';
+    protected $table = 'events';
 
     // The attributes that are mass assignable
     protected $fillable = [

@@ -30,6 +30,22 @@
                         <a class="pc-link">
                             <span class="pc-micon">
                                 <svg class="pc-icon">
+                                    <use xlink:href="#custom-shopping-bag"></use>
+                                </svg>
+                            </span>
+                            <span class="pc-mtext">Sub Admin</span>
+                            <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('admin.manageSubAdmin') }}">Manage Sub Admin</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="pc-item pc-hasmenu">
+                        <a class="pc-link">
+                            <span class="pc-micon">
+                                <svg class="pc-icon">
                                     <use xlink:href="#custom-layer"></use>
                                 </svg>
                             </span>
@@ -43,22 +59,7 @@
                         </ul>
                     </li>
 
-                    <li class="pc-item pc-hasmenu">
-                        <a class="pc-link">
-                            <span class="pc-micon">
-                                <svg class="pc-icon">
-                                    <use xlink:href="#custom-shopping-bag"></use>
-                                </svg>
-                            </span>
-                            <span class="pc-mtext">Sub Admin</span>
-                            <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item">
-                                <a class="pc-link" href="{{ route('admin.manageSubAdmin') }}">Manage Sub Admin</a>
-                            </li>
-                        </ul>
-                    </li>
+
                     <li class="pc-item pc-hasmenu">
                         <a class="pc-link">
                             <span class="pc-micon">

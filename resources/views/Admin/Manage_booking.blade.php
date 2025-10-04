@@ -88,29 +88,7 @@
             });
         });
     </script>
-    {{-- 
-    <script>
-        document.addEventListener('submit', function(e) {
-            if (e.target.classList.contains('cancel-form')) {
-                e.preventDefault();
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You want to cancel this booking!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, cancel it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        e.target.submit();
-                    }
-                });
-            }
-        });
-    </script> --}}
 
-    {{-- 
     @if (session('booking'))
         <script>
             Swal.fire({
@@ -120,7 +98,7 @@
                 showConfirmButton: true,
             });
         </script>
-    @endif --}}
+    @endif
 
 
 @endsection

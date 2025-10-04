@@ -101,19 +101,40 @@
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
             </div>
-
             <div class="mb-3">
                 <label class="form-label">Profile Image</label>
-                <input type="file" name="UserImage" class="form-control @error('UserImage') is-invalid @enderror">
+                <input type="file" name="UserImage" id="UserImage"
+                    class="form-control @error('UserImage') is-invalid @enderror" accept="image/*">
+
                 @error('UserImage')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
+
+                <!-- Image Preview -->
+                <div class="mt-2">
+                    <img id="previewImage" src="#" alt="Preview"
+                        style="width: 120px; height: 100px; display: none; border:1px solid #ccc; padding:3px;">
+                </div>
             </div>
 
             <button type="submit" class="btn btn-gradient w-100">Register</button>
             <p class="text-center mt-3">Already have an account? <a href="{{ route('user.login') }}">Login</a></p>
         </form>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#UserImage").change(function(e) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    $("#previewImage")
+                        .attr("src", e.target.result)
+                        .show();
+                };
+                reader.readAsDataURL(this.files[0]);
+            });
+        });
+    </script>
 </body>
 
 </html>

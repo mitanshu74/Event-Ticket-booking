@@ -14,7 +14,7 @@ class UserBookingRequest extends FormRequest
     public function rules()
     {
         return [
-            'event_id'       => 'required|exists:event,id',
+            'event_id'       => 'required|exists:events,id',
             'tickets_booked' => 'required|integer|min:1|max:5',
             'booking_type'   => 'required|in:online,',
         ];
