@@ -17,9 +17,9 @@
                                 <div class="d-flex mb-1">
                                     <div class="flex-grow-1 ms-3">
                                         <h6 class="mb-1">🖖</h6>
-                                        @if (auth()->guard('admin')->user()->role == 1)
+                                        @if (Auth::guard('admin')->user()->role == 1)
                                             <small>Administrator</small>
-                                        @elseif(auth()->guard('admin')->user()->role == 2)
+                                        @elseif(Auth::guard('admin')->user()->role == 2)
                                             <small>SubAdmin</small>
                                         @endif
                                     </div>

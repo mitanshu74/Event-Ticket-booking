@@ -4,9 +4,8 @@ namespace App\Domain\Datatables;
 
 use App\Domain\Util\Datatables\BaseDatatableScope;
 use App\Models\booking;
-use App\Models\User;
-use App\Models\Event;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Auth;
 
 class BookingDataTable extends BaseDatatableScope
 {
@@ -77,6 +76,13 @@ class BookingDataTable extends BaseDatatableScope
                 'searchable' => false,
                 'orderable' => false,
             ],
+            [
+                'data' => 'checkbox',
+                'name' => 'checkbox',
+                'title' => '<input type="checkbox"  id="select-all">',
+                'orderable' => false,
+                'searchable' => false,
+            ],
         ]);
     }
 
@@ -97,7 +103,7 @@ class BookingDataTable extends BaseDatatableScope
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
                 // Check admin role
-                $admin = auth()->guard('admin')->user();
+                $admin = Auth::guard('admin')->user();
                 if ($admin->role == 2) {
                     return ''; // hide buttons for role 2
                 }
@@ -129,7 +135,12 @@ class BookingDataTable extends BaseDatatableScope
                 } else {
                     return '<span class="badge bg-secondary">Pending</span>';
                 }
-            })->rawColumns(['status', 'action'])
+            })->addColumn('checkbox', function ($row) {
+                if ($row->status === 'cancelled') {
+                    return '<input type="checkbox" class="task-checkbox" value="' . $row->id . '">';
+                }
+                return '';
+            })->rawColumns(['status', 'action', 'checkbox'])
             ->make(true);
     }
 }

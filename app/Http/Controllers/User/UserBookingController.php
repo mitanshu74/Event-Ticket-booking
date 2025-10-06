@@ -4,7 +4,6 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Domain\Api\Request\UserBookingRequest;
-use Illuminate\Support\Facades\Auth;
 use App\Mail\BookingCancelledMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;

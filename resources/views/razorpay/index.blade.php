@@ -6,6 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Razorpay Payment</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .btn-gradient {
+            background: linear-gradient(90deg, #50E3C2, #4A90E2) !important;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 30px;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s;
+        }
+    </style>
 </head>
 
 <body class="container mt-5">
@@ -26,7 +36,7 @@
                 <p><strong>Amount:</strong> ₹{{ session('payment')->amount }}</p>
             </div>
             <div class="card-body">
-                <a href="{{ route('user.home') }}" class="btn btn-primary rounded text-white">Back to Home</a>
+                <a href="{{ route('user.home') }}" class="btn btn-gradient rounded text-white">Back to Home</a>
             </div>
         </div>
     @endif

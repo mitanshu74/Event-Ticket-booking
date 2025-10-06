@@ -11,9 +11,9 @@
                         <div class="flex-grow-1">
                             <h6 class="mb-0"></h6>
 
-                            @if (auth()->guard('admin')->user()->role == 1)
+                            @if (Auth::guard('admin')->user()->role == 1)
                                 <small>Administrator</small>
-                            @elseif(auth()->guard('admin')->user()->role == 2)
+                            @elseif(Auth::guard('admin')->user()->role == 2)
                                 <small>SubAdmin</small>
                             @endif
                         </div>
@@ -25,7 +25,7 @@
                     <label>Admin Panel</label>
                 </li>
                 {{-- Role 1: Show Event & Sub Admin --}}
-                @if (auth()->guard('admin')->user()->role == 1)
+                @if (Auth::guard('admin')->user()->role == 1)
                     <li class="pc-item pc-hasmenu">
                         <a class="pc-link">
                             <span class="pc-micon">
@@ -79,7 +79,7 @@
                 @endif
 
                 {{-- Role 2: Show Booking --}}
-                @if (auth()->guard('admin')->user()->role == 2)
+                @if (Auth::guard('admin')->user()->role == 2)
                     <li class="pc-item pc-hasmenu">
                         <a class="pc-link">
                             <span class="pc-micon">

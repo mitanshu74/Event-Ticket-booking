@@ -3,6 +3,7 @@
 namespace App\Domain\Util\Datatables;
 
 use Yajra\Datatables\Html\Builder;
+use Illuminate\Support\Facades\Auth;
 
 abstract class BaseDatatableScope
 {
@@ -37,7 +38,7 @@ abstract class BaseDatatableScope
         );
 
         // Check admin role == 2 then not show 
-        $admin = auth()->guard('admin')->user();
+        $admin = Auth::guard('admin')->user();
         if ($admin->role != 2) {
             $columns[] = [
                 'data' => 'action',

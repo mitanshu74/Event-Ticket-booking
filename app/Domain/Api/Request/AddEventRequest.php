@@ -3,13 +3,14 @@
 namespace App\Domain\Api\Request;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class AddEventRequest extends FormRequest
 {
     public function authorize(): bool
     {
         // Only logged-in admin can add events
-        return auth()->guard('admin')->check();
+        return Auth::guard('admin')->check();
     }
 
     public function rules(): array

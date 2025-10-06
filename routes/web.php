@@ -36,6 +36,7 @@
         // Booking
         Route::resource('admin/booking', 'Admin\BookingController');
         Route::post('admin/booking/cancel/{id}', 'Admin\BookingController@cancel')->name('admin.booking.cancel');
+        Route::post('/admin/booking/multi-delete', 'Admin\BookingController@MultiDelete')->name('admin.MultiDelete');
         Route::post('admin/logout', 'Admin\AdminController@logout')->name('admin.logout');
     });
 

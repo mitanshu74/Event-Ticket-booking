@@ -25,47 +25,51 @@
                      </div>
                  </div>
              </div>
-             <div class="col-lg-3 col-md-6">
-                 <div class="card">
-                     <div class="card-body">
-                         <div class="d-flex align-items-center">
-                             <div class="flex-shrink-0">
-                                 <div class="avtar bg-light-primary">
-                                     <i class="ti ti-users f-24"></i>
+             @if (Auth::guard('admin')->user()->role != 2)
+                 <div class="col-lg-3 col-md-6">
+                     <div class="card">
+                         <div class="card-body">
+                             <div class="d-flex align-items-center">
+                                 <div class="flex-shrink-0">
+                                     <div class="avtar bg-light-primary">
+                                         <i class="ti ti-users f-24"></i>
+                                     </div>
                                  </div>
-                             </div>
-                             <div class="flex-grow-1 ms-3">
-                                 <p class="mb-1">Total SubAdmin</p>
-                                 <div class="d-flex align-items-center justify-content-between">
-                                     <h6 class="mb-0">{{ $totalSubAdmin }}</h6>
-                                     <a href="{{ route('admin.manageSubAdmin') }}" class="text-success fw-medium">View
-                                         All</a>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-             <div class="col-lg-3 col-md-6">
-                 <div class="card">
-                     <div class="card-body">
-                         <div class="d-flex align-items-center">
-                             <div class="flex-shrink-0">
-                                 <div class="avtar bg-light-primary">
-                                     <i class="ti ti-credit-card f-24"></i>
-                                 </div>
-                             </div>
-                             <div class="flex-grow-1 ms-3">
-                                 <p class="mb-1">Total Event</p>
-                                 <div class="d-flex align-items-center justify-content-between">
-                                     <h6 class="mb-0">{{ $totalevent }}</h6>
-                                     <a href="{{ route('admin.manageEvent') }}" class="text-success fw-medium">View All</a>
+                                 <div class="flex-grow-1 ms-3">
+                                     <p class="mb-1">Total SubAdmin</p>
+                                     <div class="d-flex align-items-center justify-content-between">
+                                         <h6 class="mb-0">{{ $totalSubAdmin }}</h6>
+                                         <a href="{{ route('admin.manageSubAdmin') }}" class="text-success fw-medium">View
+                                             All</a>
+                                     </div>
                                  </div>
                              </div>
                          </div>
                      </div>
                  </div>
-             </div>
+                 <div class="col-lg-3 col-md-6">
+                     <div class="card">
+                         <div class="card-body">
+                             <div class="d-flex align-items-center">
+                                 <div class="flex-shrink-0">
+                                     <div class="avtar bg-light-primary">
+                                         <i class="ti ti-credit-card f-24"></i>
+                                     </div>
+                                 </div>
+                                 <div class="flex-grow-1 ms-3">
+                                     <p class="mb-1">Total Event</p>
+                                     <div class="d-flex align-items-center justify-content-between">
+                                         <h6 class="mb-0">{{ $totalevent }}</h6>
+                                         <a href="{{ route('admin.manageEvent') }}" class="text-success fw-medium">View
+                                             All</a>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             @endif
+
              <div class="col-lg-3 col-md-6">
                  <div class="card">
                      <div class="card-body">

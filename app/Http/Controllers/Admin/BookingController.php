@@ -3,21 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\domain\Api\Request\bookingRequest;
+use App\domain\Api\Request\MultiDeleteRequest;
 use App\domain\Datatables\BookingDataTable;
-use Illuminate\Http\Request;
-use App\Mail\BookingCancelledMail;
+use App\domain\Api\Request\bookingRequest;
+use App\Mail\BookingConfirmationMail;
 use Illuminate\Support\Facades\Mail;
-use App\Models\User;
-use App\Models\Event;
+use App\Mail\BookingCancelledMail;
+use Illuminate\Http\Request;
 use App\Models\booking;
+use App\Models\Event;
+use App\Models\User;
 
 class BookingController extends Controller
 {
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(bookingdatatable $datatable)
     {
 
@@ -29,9 +28,6 @@ class BookingController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $users = User::all();
@@ -67,7 +63,7 @@ class BookingController extends Controller
             // Create booking
             $booking = booking::create($validated);
             // send mail
-            Mail::to($booking->user->email)->send(new BookingCancelledMail($booking));
+            Mail::to($booking->user->email)->send(new BookingConfirmationMail($booking));
 
             return redirect()->route('booking.index')
                 ->with('booking', 'Booking Created Successfully!');
@@ -77,25 +73,15 @@ class BookingController extends Controller
         return redirect()->back()->withErrors(['tickets_booked' => 'tickets Not available.']);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
@@ -122,13 +108,20 @@ class BookingController extends Controller
         return redirect()->back()->with('error', 'Booking cannot be cancelled.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
+    public function MultiDelete(MultiDeleteRequest $request)
     {
-        $booking = booking::find($id);
+        $ids = $request->ids;
 
+        Booking::whereIn('id', $ids)->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Selected bookings deleted successfully',
+        ]);
+    }
+
+    public function destroy(booking $booking)
+    {
         $booking->delete();
         return redirect()->back()->with('delete-booking', 'Booking deleted successfully.');
     }

@@ -8,7 +8,6 @@ class PaymentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        // Set to true if all users can make this request
         return true;
     }
 

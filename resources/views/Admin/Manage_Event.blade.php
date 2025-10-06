@@ -6,7 +6,10 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h4 class="mb-0">Manage Event</h4>
-                <a href="{{ route('admin.addEvent') }}" class="btn btn-primary rounded text-white">Add Event</a>
+                <div class="button">
+                    <a href="{{ route('admin.home') }}" class="btn btn-success rounded text-white">Back</a>
+                    <a href="{{ route('admin.addEvent') }}" class="btn btn-primary rounded text-white">Add Event</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
