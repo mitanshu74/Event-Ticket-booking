@@ -18,12 +18,4 @@ class PaymentRequest extends FormRequest
             'razorpay_order_id' => 'required|string',
         ];
     }
-
-    public function messages(): array
-    {
-        return [
-            'razorpay_payment_id.required' => 'Payment ID is required.',
-            'razorpay_order_id.required' => 'Order ID is required.',
-        ];
-    }
 }

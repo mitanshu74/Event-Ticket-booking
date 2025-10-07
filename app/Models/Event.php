@@ -9,21 +9,27 @@ class Event extends Model
 {
     use HasFactory;
 
-    // Specify the table name if it doesn't follow Laravel's plural naming convention
+    // Table name (optional, Laravel will assume 'events' automatically)
     protected $table = 'events';
 
-    // The attributes that are mass assignable
+    // Fillable fields for mass assignment
     protected $fillable = [
         'name',
         'date',
+        'start_time',
+        'end_time',
         'location',
-        'total_tickets',
         'price',
+        'total_tickets',
         'image',
     ];
 
+    // Optional: Cast columns to specific types
     protected $casts = [
         'date' => 'date',
+        'start_time' => 'datetime:H:i:s',
+        'end_time' => 'datetime:H:i:s',
+        'price' => 'integer',
         'total_tickets' => 'integer',
     ];
 }

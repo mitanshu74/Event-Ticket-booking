@@ -23,20 +23,21 @@ class RazorpayController extends Controller
     public function payment(UserBookingRequest $request)
     {
         $data = $request->validated();
-
-        $userId = Auth::guard('web')->user();
-        $eventId = $data['event_id'];
-
+        $user = Auth::guard('web')->user();
         $event = Event::find($data['event_id']);
+
+        if (!$event) {
+            return redirect()->back()->withErrors(['event_id' => 'Event not found']);
+        }
 
         // Check event date
         if ($event->date->isPast()) {
             return redirect()->back()->withErrors(['date' => 'This event has already occurred.']);
         }
 
-        // Check total tickets already booked by this user for this event
-        $existingTickets = booking::where('user_id', $userId->id)
-            ->where('event_id', $eventId)
+        // Check total tickets already booked by this user
+        $existingTickets = booking::where('user_id', $user->id)
+            ->where('event_id', $event->id)->where('status', 'confirmed')
             ->sum('tickets_booked');
 
         if ($existingTickets + $data['tickets_booked'] > 5) {
@@ -45,95 +46,90 @@ class RazorpayController extends Controller
             ]);
         }
 
-        // Check if tickets are available 
-        if ($event && $event->total_tickets >= $data['tickets_booked']) {
-
-            // Fill additional data
-            $data['user_id'] = Auth::guard('web')->id();
-            $data['total_price'] = $data['tickets_booked'] * $event->price;
-            $data['status'] = 'pending';
-
-            // Save booking
-            $booking = booking::create($data);
-
-            // Decrement total tickets
-            $event->total_tickets -= $data['tickets_booked'];
-            $event->save();
-
-
-            // Razorpay API Init
-            $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
-
-            // ✅ FIX: Clean amount (remove ₹ and convert to number)
-            $amount = (int) filter_var($request->amount, FILTER_SANITIZE_NUMBER_INT);
-
-            $order = $api->order->create([
-                'receipt' => 'order_' . uniqid(),
-                'amount' => $amount * 100, // razorpay takes amount in paise
-                'currency' => 'INR',
-                'payment_capture' => 1
-            ]);
-
-            // ✅ Taking Logged-in User Details
-            $payment = Payment::create([
-                'booking_id' => $booking->id,
-                'user_id' => Auth::guard('web')->id(),
-                'name' => Auth::guard('web')->user()->username,
-                'email' => Auth::guard('web')->user()->email,
-                'phone' => Auth::guard('web')->user()->number,
-                'amount' => $amount,
-                'order_id' => $order['id'],
-                'status' => 0
-            ]);
-
-            return view('razorpay.payment', [
-                'orderId' => $order['id'],
-                'name' => $payment->name,
-                'email' => $payment->email,
-                'phone' => $payment->phone,
-                'amount' => $amount,
-                'razorpayKey' => env('RAZORPAY_KEY'),
-            ]);
+        // Check if tickets are available
+        if ($event->total_tickets < $data['tickets_booked']) {
+            return redirect()->back()->withErrors(['tickets_booked' => 'Tickets not available']);
         }
 
-        // Tickets Not available
-        return redirect()->back()->withErrors(['tickets_booked' => 'Tickets Not Available.']);
+        // --- Create  booking with panding data  ---
+        $booking = booking::create([
+            'user_id' => $user->id,
+            'event_id' => $event->id,
+            'tickets_booked' => $data['tickets_booked'],
+            'total_price' => $data['tickets_booked'] * $event->price,
+            'status' => 'pending'
+        ]);
+
+        // Decrement available tickets
+        $event->total_tickets -= $data['tickets_booked'];
+        $event->save();
+
+        // Razorpay Order 
+        $amount = $booking->total_price; // total amount in ₹
+        $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
+        $order = $api->order->create([
+            'receipt' => 'order_' . uniqid(),
+            'amount' => $amount * 100, // in paise
+            'currency' => 'INR',
+            'payment_capture' => 1
+        ]);
+
+        // Create Payment  
+        $payment = Payment::create([
+            'booking_id' => $booking->id,
+            'user_id' => $user->id,
+            'name' => $user->username,
+            'email' => $user->email,
+            'phone' => $user->number,
+            'amount' => $amount,
+            'order_id' => $order['id'],
+            'status' => 0
+        ]);
+
+
+        // Open Razorpay Payment Page 
+        return view('razorpay.payment', [
+            'orderId' => $order['id'],
+            'name' => $payment->name,
+            'email' => $payment->email,
+            'phone' => $payment->phone,
+            'amount' => $amount,
+            'razorpayKey' => env('RAZORPAY_KEY'),
+            // // send event-id payment.blade file
+            'event' => $event,
+        ]);
     }
 
     public function success(PaymentRequest $request)
     {
-        // 1️⃣ Validate Razorpay response
-        // if (!$request->razorpay_payment_id || !$request->razorpay_order_id) {
-        //     return back()->with('error', 'Payment failed. Please try again.');
-        // }
+        $validated = $request->validated();
+        // Find payment record
+        $payment = Payment::where('order_id', $validated['razorpay_order_id'])->first();
 
-        // 2️⃣ Find the payment record
-        $payment = Payment::where('order_id', $request->razorpay_order_id)->first();
         if (!$payment) {
-            return back()->with('error', 'Invalid payment record.');
+            return back()->with('error', 'Invalid payment record');
         }
 
-        // 3️⃣ Mark payment as successful
+        // Update payment
         $payment->update([
-            'razorpay_payment_id' => $request->razorpay_payment_id,
+            'razorpay_payment_id' => $validated['razorpay_payment_id'],
             'status' => 1
         ]);
 
-        // 4️⃣ Update the booking status if linked
-        if ($payment->booking_id) {
-            $booking = booking::with('user', 'event')->find($payment->booking_id);
-            if ($booking) {
-                $booking->update(['status' => 'confirmed']);
+        // Confirm booking
+        $booking = booking::find($payment->booking_id);
+        if ($booking) {
+            $booking->update(['status' => 'confirmed']);
 
-                // 5️⃣ Send email to the user who made the booking
-                Mail::to($booking->user->email)->send(new BookingConfirmationMail($booking));
-            }
+            // Send booking confirmation email
+            Mail::to($booking->user->email)->send(new BookingConfirmationMail($booking));
         }
 
-        // 6️⃣ Redirect with success message
-        return redirect('/razorpay')->with([
-            'success' => 'Payment Successful!',
-            'payment' => $payment
+        // 5️⃣ Redirect with success message
+        return view('razorpay.success', [
+            'payment' => $payment,
+            'booking' => $booking,
+            'event' => $booking->event
         ]);
     }
 }

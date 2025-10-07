@@ -76,9 +76,9 @@
 
 
         // profile
-        Route::get('/user/profile', 'User\UserController@User_profile')->name('profile');
-        Route::get('/user/profile/edit', 'User\UserController@show_profile')->name('show_profile');
-        Route::put('/user/profile', 'User\UserController@Update_User_profile')->name('profile.update');
+        Route::get('/user/tickets', 'User\UserController@booked_ticket')->name('booked_ticket');
+        Route::get('/user/profile/edit', 'User\UserController@view_profile')->name('view_profile');
+        Route::put('/user/profile', 'User\UserController@User_profile')->name('User_profile.update');
 
         // logout
         Route::post('/user/logout', 'User\UserController@logout')->name('user.logout');

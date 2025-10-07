@@ -1,92 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('User.layout.partials.master')
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-    <link rel="stylesheet" href="{{ asset('Admin\Bootstrap\css\bootstrap.min.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <style>
-        .login_heading {
-            color: #0A306C;
-        }
+@section('title', 'booked ticket')
 
-        .login_btn {
-            border: 1px solid #0A306C;
-        }
+@section('content')
 
-        .login_btn:hover {
-            color: white;
-            background-color: #0A306C;
-        }
-
-        .side-image {
-            width: 93%;
-            height: 658px !important;
-        }
-
-        .card-body {
-            padding-right: 50px !important;
-        }
-
-        .select_image {
-            height: 100px !important;
-            width: 100px;
-        }
-
-        .login_heading {}
-    </style>
-</head>
-<!-- KEEP YOUR HEAD & CSS SAME -->
-
-<body class="bg-light">
-
-    <section class="py-5">
-        <div class="container">
+    <section class="py-5 mt-5">
+        <div class="container pt-4">
 
             <div class="card shadow-sm border-0 mb-4">
-                <div class="card">
+                <div class="card hei">
                     <div class="card-header d-flex justify-content-between">
                         <h4 class="mb-0">👤 Profile Information</h4>
                         <a href="{{ route('user.home') }}" class="btn btn-success rounded text-white">Back</a>
                     </div>
                     <div class="card-body">
 
-                        <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data"
-                            class="row g-3 needs-validation" novalidate>
+                        <form method="POST" action="{{ route('User_profile.update') }}" enctype="multipart/form-data"
+                            class="row g-3 needs-validation">
                             @csrf
                             @method('PUT')
 
                             <div class="col-md-6">
                                 <label class="form-label">Username</label>
                                 <input type="text" name="username" class="form-control"
-                                    value="{{ old('username', Auth::guard('web')->user()->username) }}" required>
+                                    value="{{ old('username', Auth::guard('web')->user()->username) }}">
+                                @error('username')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Email</label>
                                 <input type="email" name="email" class="form-control"
-                                    value="{{ old('email', Auth::guard('web')->user()->email) }}" required>
+                                    value="{{ old('email', Auth::guard('web')->user()->email) }}">
+                                @error('email')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
                             </div>
-
-                            <div class="col-md-6">
+                            <div class="col-md-6 password-wrapper">
                                 <label class="form-label">New Password</label>
                                 <input type="password" name="password" class="form-control"
                                     placeholder="Leave blank to keep same">
+                                <i class="fa fa-eye-slash toggle-password"
+                                    style="position: relative;left: 590px;bottom: 32px;"></i>
+                                @error('password')
+                                    <div class="invalid-feedback d-block" style="position: relative;bottom: 25px;">
+                                        {{ $message }}</div>
+                                @enderror
                             </div>
-
                             <div class="col-md-6">
                                 <label class="form-label">Phone</label>
                                 <input type="tel" name="number" class="form-control"
-                                    value="{{ old('number', Auth::guard('web')->user()->number) }}" required>
+                                    value="{{ old('number', Auth::guard('web')->user()->number) }}">
+                                @error('number')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-12">
                                 <label class="form-label">Address</label>
-                                <textarea name="address" class="form-control" rows="2" required>{{ old('address', Auth::guard('web')->user()->address) }}</textarea>
+                                <textarea name="address" class="form-control" rows="2">{{ old('address', Auth::guard('web')->user()->address) }}</textarea>
+                                @error('address')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-md-6">
@@ -101,6 +78,9 @@
                                         {{ old('gender', Auth::guard('web')->user()->gender) == 'female' ? 'checked' : '' }}>
                                     <label class="form-check-label">Female</label>
                                 </div>
+                                @error('gender')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-md-6">
@@ -110,6 +90,9 @@
                                 <img id="previewImage"
                                     src="{{ Auth::guard('web')->user()->image ? asset('storage/' . Auth::guard('web')->user()->image) : '' }}"
                                     class="mt-2 rounded border" style="height:80px; width:80px;">
+                                @error('UserImage')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-12 text-end">
@@ -132,26 +115,22 @@
         </script>
     @endif
 
+    <!-- Include Font Awesome if not already -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
     <script>
-        (function() {
-            'use strict'
+        document.addEventListener('DOMContentLoaded', function() {
+            const togglePassword = document.querySelector('.password-wrapper .toggle-password');
+            const passwordInput = document.querySelector('.password-wrapper input[name="password"]');
 
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.querySelectorAll('.needs-validation')
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
 
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function(form) {
-                    form.addEventListener('submit', function(event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        });
     </script>
 
     <script>
@@ -173,6 +152,4 @@
             }
         }
     </script>
-</body>
-
-</html>
+@endsection

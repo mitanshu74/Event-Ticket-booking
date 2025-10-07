@@ -7,20 +7,46 @@
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-center">
-                <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-                <li class="nav-item"><a class="nav-link" href="#events">Events</a></li>
-                <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                <li class="nav-item">
-                    <a href="{{ route('profile') }}" class="user_fafa" style="text-decoration: none; color:black;">
+                <li class="nav-item"><a class="nav-link" href="{{ route('user.home') }}#">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('user.home') }}#about">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('user.home') }}#events">Events</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('user.home') }}#contact">Contact</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle user_fafa" href="#" id="navbarDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none; color:black;">
                         <i class="fa fa-user" aria-hidden="true"></i>
                         <span class="login_name">
                             {{ Auth::guard('web')->check() ? Auth::guard('web')->user()->username : 'Guest' }}
                         </span>
                     </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        @if (Auth::guard('web')->check())
+                            <li><a class="dropdown-item" href="{{ route('booked_ticket') }}"> <i
+                                        class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                    Orders</a></li>
+                            <li><a class="dropdown-item" href="{{ route('view_profile') }}"><i class="fa fa-user"
+                                        aria-hidden="true"></i>
+                                    View Profile</a></li>
+                            <li>
+                                @auth
+                                    <form id="logout-form" action="{{ route('user.logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn dropdown-item"><i class="fa fa-lock"
+                                                aria-hidden="true"></i>
+                                            Logout</button>
+                                    </form>
+                                @else
+                                    <a class="btn btn-signup ms-3" href="{{ route('user.login') }}">Login</a>
+                                @endauth
+                            </li>
+                        @else
+                            <li><a class="dropdown-item" href="{{ route('user.login') }}">Login</a></li>
+                            <li><a class="dropdown-item" href="{{ route('user.register') }}">Register</a></li>
+                        @endif
+                    </ul>
                 </li>
 
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     @auth
                         <form id="logout-form" action="{{ route('user.logout') }}" method="POST" style="display: inline;">
                             @csrf
@@ -30,7 +56,7 @@
                         <a class="btn btn-signup ms-3" href="{{ route('user.login') }}">Login</a>
                     @endauth
 
-                </li>
+                </li> --}}
                 <!-- Add this script at the bottom of your Blade (before </body>) -->
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 <script>

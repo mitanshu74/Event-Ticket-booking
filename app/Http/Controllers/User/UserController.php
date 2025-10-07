@@ -6,6 +6,7 @@ use App\Domain\Api\Request\UpdateUserProfileRequest;
 use App\Domain\Api\Request\UserRegisterRequest;
 use App\Domain\Api\Request\UserLoginRequest;
 use App\Domain\Api\Request\VerifyOtpRequest;
+use App\Domain\Datatables\UserBookingDatatable as UserOrderDataTable;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -87,10 +88,7 @@ class UserController extends Controller
         return redirect()->route('user.home')->with('verify-otp', 'Otp Verify Successfully.');
     }
 
-    public function showLoginForm()
-    {
-        return view('User.login');
-    }
+
 
     public function resendOtp()
     {
@@ -107,6 +105,11 @@ class UserController extends Controller
         }
 
         return back()->withErrors(['email' => 'No user found with this email.']);
+    }
+
+    public function showLoginForm()
+    {
+        return view('User.login');
     }
 
     public function login(UserLoginRequest $request)
@@ -133,19 +136,29 @@ class UserController extends Controller
             ->withInput();
     }
 
-
-    public function User_profile(Request $request)
+    public function booked_ticket(UserOrderDataTable $datatable)
     {
-        $user = Auth::guard('web')->user()->load('bookings.event');
-        return view('User.user_profile', compact('user'));
+        // if (request()->ajax()) {
+        //     return $datatable->query();
+        // }
+
+        // $user = Auth::guard('web')->user()->load('bookings.event');
+        // return view('User.ticket_booked', compact('user'),['html' => $datatable]);
+        if (request()->ajax()) {
+            return $datatable->query();
+        }
+        return view('User.ticket_booked', [
+            'html' => $datatable->html(),
+        ]);
     }
 
-    public function show_profile()
+
+    public function view_profile()
     {
         return view('User.update_profile');
     }
 
-    public function Update_User_profile(UpdateUserProfileRequest $request)
+    public function User_profile(UpdateUserProfileRequest $request)
     {
         $user = Auth::guard('web')->user();
 

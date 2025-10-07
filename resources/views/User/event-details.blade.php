@@ -1,9 +1,6 @@
 @extends('User.layout.partials.master')
-
 @section('title', 'Event Details')
-
 @section('content')
-
     <div class="container py-5 mt-5" style="padding-top:120px;">
         <div class="row justify-content-center">
             <div class="col-lg-10">
@@ -86,5 +83,4 @@
             totalPriceInput.value = '₹ ' + (quantity * pricePerTicket);
         });
     </script>
-
 @endsection
