@@ -3,10 +3,26 @@
         <h2 class="fw-bold text-center mb-5">🔥 Upcoming Events</h2>
         <div class="row g-4">
             @forelse($events as $event)
+                @php
+                    $images = json_decode($event->image, true) ?? []; // decode JSON array
+                    $firstImage = $images[0] ?? 'placeholder.jpg';
+                @endphp
                 <div class="col-md-4">
                     <div class="event-card shadow-sm">
-                        <img src="{{ asset('storage/' . $event->image) }}" class="w-100" alt="{{ $event->title }}">
-                        <div class="event-body  p-3">
+                        <a href="{{ asset('storage/' . $firstImage) }}" data-lightbox="event-{{ $event->id }}">
+                            <img src="{{ asset('storage/' . $firstImage) }}" class="w-100" alt="{{ $event->title }}"
+                                style="height:280px; object-fit:cover;">
+                        </a>
+
+                        {{-- Add hidden images for lightbox --}}
+                        @if (count($images) > 1)
+                            @foreach (array_slice($images, 1) as $img)
+                                <a href="{{ asset('storage/' . $img) }}" data-lightbox="event-{{ $event->id }}"
+                                    class="d-none"></a>
+                            @endforeach
+                        @endif
+
+                        <div class="event-body p-3">
                             <h5 class="d-flex justify-content-between">
                                 {{ $event->name }}
                                 @if ($event->total_tickets > 0)

@@ -35,6 +35,28 @@
                                 @enderror
                             </div>
 
+                            <div class="row mx-2">
+                                <div class="col-md-3 mt-3">
+                                    <label for="start_time" class="form-label"><b>Start Time</b></label>
+                                    <input type="time" class="form-control @error('start_time') is-invalid @enderror"
+                                        name="start_time" id="start_time"
+                                        value="{{ old('start_time', \Carbon\Carbon::parse($event->start_time)->format('h:i')) }}">
+                                    @error('start_time')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-3 mt-3">
+                                    <label for="end_time" class="form-label"><b>End Time</b></label>
+                                    <input type="time" class="form-control @error('end_time') is-invalid @enderror"
+                                        name="end_time" id="end_time"
+                                        value="{{ old('end_time', \Carbon\Carbon::parse($event->end_time)->format('h:i')) }}">
+                                    @error('end_time')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
                             <div class="col-md-6 mt-3">
                                 <label for="Location" class="form-label"><b>Location</b></label>
                                 <input type="text" class="form-control @error('location') is-invalid @enderror"
@@ -66,27 +88,25 @@
 
                             <div class="row">
                                 <div class="col-md-6 mt-3">
-                                    <label for="EventImage" class="form-label"><b>Choose image</b></label>
-                                    <input type="file" class="form-control @error('EventImage') is-invalid @enderror"
-                                        name="EventImage" id="EventImage" accept="image/*">
-
-                                    @error('EventImage')
+                                    <label for="EventImages" class="form-label"><b>Choose Images</b></label>
+                                    <input type="file" class="form-control @error('EventImages') is-invalid @enderror"
+                                        name="EventImages[]" id="EventImages" accept="image/*" multiple>
+                                    @error('EventImages')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="col-md-6 mt-3">
 
+                                <div class="col-md-6 mt-3" id="previewContainer">
                                     @if ($event->image)
-                                        <img id="EventImagePreview" src="{{ asset('storage/' . $event->image) }}"
-                                            alt="Selected Image" class="img-thumbnail mt-2"
-                                            style="width:160px; height:120px;">
-                                    @else
-                                        <img id="EventImagePreview" src="#" alt="Selected Image"
-                                            class="img-thumbnail mt-2 d-none" style="width:160px; height:120px;">
+                                        @php $images = json_decode($event->image, true); @endphp
+                                        @foreach ($images as $img)
+                                            <img src="{{ asset('storage/' . $img) }}" class="img-thumbnail m-1"
+                                                style="width:100px;height:80px;">
+                                        @endforeach
                                     @endif
-
                                 </div>
                             </div>
+
                             <div class="row mt-3">
                                 <div class="col-12">
                                     <button class="btn btn-success" type="submit">Update</button>
@@ -97,25 +117,29 @@
                 </div>
             </div>
         </div>
-
-        <script>
-            // Preview image on change
-            document.getElementById('EventImage').addEventListener('change', function(event) {
-                const preview = document.getElementById('EventImagePreview');
-                const file = event.target.files[0];
-
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        preview.src = e.target.result;
-                        preview.classList.remove('d-none');
-                    }
-                    reader.readAsDataURL(file);
-                } else {
-                    preview.src = '#';
-                    preview.classList.add('d-none');
-                }
-            });
-        </script>
     </div>
 @endsection
+@push('script')
+    <script>
+        const input = document.getElementById('EventImages');
+        const previewContainer = document.getElementById('previewContainer');
+
+        input.addEventListener('change', function() {
+            previewContainer.innerHTML = ''; // clear previews
+            const files = input.files;
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.classList.add('img-thumbnail', 'm-1');
+                    img.style.width = '100px';
+                    img.style.height = '80px';
+                    previewContainer.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            });
+        });
+    </script>
+@endpush

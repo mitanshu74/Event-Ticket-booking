@@ -7,13 +7,50 @@
                 <div class="card shadow-lg p-4">
                     <div class="row align-items-center">
 
-                        <!-- Event Image -->
+                        {{-- Event Images --}}
                         <div class="col-md-6 text-center">
-                            <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->title }}"
-                                class="img-fluid rounded" style="max-height:500px;">
-                        </div>
+                            @php
+                                $images = json_decode($event->image, true) ?? [];
+                                $firstImage = $images[0] ?? null;
+                            @endphp
 
-                        <!-- Booking Form -->
+                            @if ($firstImage)
+                                <a href="{{ asset('storage/' . $firstImage) }}" data-lightbox="event-gallery">
+                                    <img src="{{ asset('storage/' . $firstImage) }}" alt="{{ $event->title }}"
+                                        class="img-fluid rounded mb-3" style="max-height:500px; object-fit:cover;">
+                                </a>
+                            @endif
+
+                            {{-- Hidden images for lightbox --}}
+                            @if (count($images) > 1)
+                                @foreach (array_slice($images, 1) as $img)
+                                    <a href="{{ asset('storage/' . $img) }}" data-lightbox="event-gallery"
+                                        class="d-none"></a>
+                                @endforeach
+                            @endif
+
+                            {{-- 🔹 Static Additional Facilities --}}
+                            <div class="text-start">
+                                <h5 class="fw-bold mb-3 text-primary">
+                                    🍽 Additional Facilities
+                                </h5>
+                                <ul class="list-unstyled ps-2 mb-0">
+                                    <li class="mb-2"><i class="fa fa-check-circle text-success me-2"></i><span
+                                            class="fw-semibold fs-6">Welcome Drink</span></li>
+                                    <li class="mb-2"><i class="fa fa-check-circle text-success me-2"></i><span
+                                            class="fw-semibold fs-6">Lunch Included</span></li>
+                                    <li class="mb-2"><i class="fa fa-check-circle text-success me-2"></i><span
+                                            class="fw-semibold fs-6">Dinner Buffet</span></li>
+                                    <li class="mb-2"><i class="fa fa-check-circle text-success me-2"></i><span
+                                            class="fw-semibold fs-6">Swimming Pool Access</span></li>
+                                    <li class="mb-2"><i class="fa fa-check-circle text-success me-2"></i><span
+                                            class="fw-semibold fs-6">Live Music & Entertainment</span></li>
+                                    <li class="mb-2"><i class="fa fa-check-circle text-success me-2"></i><span
+                                            class="fw-semibold fs-6">Parking Facility</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                        {{-- Booking Form --}}
                         <div class="col-md-6">
                             <form id="bookingForm" method="POST" action="{{ route('razorpay.payment') }}">
                                 @csrf
@@ -29,22 +66,21 @@
 
                                 <p><strong>📅 Date :</strong> {{ $event->date->format('d-m-Y') }}
                                     @error('date')
-                                        <small class="text-danger">{{ $message }}</small>
+                                        <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </p>
-                                <p><strong>⏰ Time :</strong> 7:00 PM - 11:00 PM
 
-                                </p>
-                                {{-- event_id --}}
+                                <p><strong>⏰ Time :</strong> {{ $event->start_time->format('h:i A') }} -
+                                    {{ $event->end_time->format('h:i A') }}</p>
                                 <p><strong>📍 Venue :</strong> {{ $event->location }}</p>
                                 <p><strong>💰 Price per Ticket :</strong> ₹ {{ $event->price }}</p>
 
                                 <div class="mb-3">
                                     <label class="form-label"><strong>🎫 Number of Tickets:</strong></label>
                                     <input type="number" name="tickets_booked" id="ticket_quantity" class="form-control"
-                                        min="1" value="{{ old('tickets_booked', 1) }}">
+                                        value="{{ old('tickets_booked', 1) }}">
                                     @error('tickets_booked')
-                                        <small class="text-danger">{{ $message }}</small>
+                                        <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
 
@@ -65,14 +101,12 @@
 
                                 <button type="submit" class="btn btn-gradient w-100 btn-lg">Proceed to Pay</button>
                             </form>
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     <script>
         const ticketInput = document.getElementById('ticket_quantity');
         const totalPriceInput = document.getElementById('total_price');

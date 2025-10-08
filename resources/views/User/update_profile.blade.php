@@ -104,6 +104,9 @@
                 </div>
             </div>
     </section>
+
+@endsection
+@push('script')
     @if (session('user_profile_update'))
         <script>
             Swal.fire({
@@ -114,10 +117,7 @@
             });
         </script>
     @endif
-
-    <!-- Include Font Awesome if not already -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
+    {{-- password hide show --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const togglePassword = document.querySelector('.password-wrapper .toggle-password');
@@ -132,7 +132,7 @@
             });
         });
     </script>
-
+    {{-- image preview --}}
     <script>
         function displayImage() {
             const imageInput = document.getElementById('imageInput');
@@ -152,4 +152,4 @@
             }
         }
     </script>
-@endsection
+@endpush

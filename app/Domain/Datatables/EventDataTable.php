@@ -26,6 +26,20 @@ class EventDataTable extends BaseDatatableScope
                 'orderable' => true,
             ],
             [
+                'data' => 'start_time',
+                'name' => 'start_time',
+                'title' => 'Start Time',
+                'searchable' => true,
+                'orderable' => true,
+            ],
+            [
+                'data' => 'end_time',
+                'name' => 'end_time',
+                'title' => 'End Time',
+                'searchable' => true,
+                'orderable' => true,
+            ],
+            [
                 'data' => 'location',
                 'name' => 'location',
                 'title' => 'Location',
@@ -84,12 +98,34 @@ class EventDataTable extends BaseDatatableScope
                 $btn .= '</div>';
 
                 return $btn;
+            })->editColumn('start_time', function ($event) {
+                return $event->start_time ? $event->start_time->format('h:m A') : '';
+            })->editColumn('end_time', function ($event) {
+                return $event->end_time ? $event->end_time->format('h:m A') : '';
             })
             ->editColumn('image', function ($event) {
-                return $event->image
-                    ? '<img src="' . asset('storage/' . $event->image) . '" style="max-width:180px; min-height:60px; object-fit:cover;">'
-                    : 'No Image';
+                if (!$event->image) {
+                    return 'No Image';
+                }
+
+                $images = json_decode($event->image, true); // decode JSON array
+                $firstImage = $images[0]; // show only the first as thumbnail
+
+                // Hidden links for lightbox (for other images)
+                $html = '<a href="' . asset('storage/' . $firstImage) . '" data-lightbox="event-' . $event->id . '" data-title="' . $event->name . '">';
+                $html .= '<img src="' . asset('storage/' . $firstImage) . '" style="width:80px;height:80px;object-fit:cover;margin:2px;">';
+                $html .= '</a>';
+
+                // Add remaining images as hidden links for Lightbox gallery
+                foreach ($images as $key => $img) {
+                    if ($key == 0) continue; // skip first, already shown
+                    $html .= '<a href="' . asset('storage/' . $img) . '" data-lightbox="event-' . $event->id . '" data-title="' . $event->name . '" style="display:none;"></a>';
+                }
+
+                return $html;
             })
+            ->rawColumns(['image', 'action'])
+
             ->editColumn('date', function ($event) {
                 return $event->date ? $event->date->format('d-m-Y') : '';
             })

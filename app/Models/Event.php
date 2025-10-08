@@ -27,8 +27,8 @@ class Event extends Model
     // Optional: Cast columns to specific types
     protected $casts = [
         'date' => 'date',
-        'start_time' => 'datetime:H:i:s',
-        'end_time' => 'datetime:H:i:s',
+        'start_time' => 'datetime:H:i:s A',
+        'end_time' => 'datetime:H:i:s A',
         'price' => 'integer',
         'total_tickets' => 'integer',
     ];

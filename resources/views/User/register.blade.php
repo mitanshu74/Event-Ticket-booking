@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Eventify</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             background: #F8F9FA;
@@ -63,11 +64,15 @@
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
             </div>
-
-            <div class="mb-3">
+            <div class="mb-3 position-relative">
                 <label class="form-label">Password</label>
-                <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
-                    placeholder="Enter password">
+                <input type="password" name="password" id="password"
+                    class="form-control pe-5 @error('password') is-invalid @enderror" placeholder="Enter password">
+                <!-- Eye icon -->
+                <span class="toggle-password"
+                    style="position: absolute; top: 70%; right: 15px; transform: translateY(-50%); cursor: pointer;">
+                    <i class="fa fa-eye-slash" id="toggleIcon"></i>
+                </span>
                 @error('password')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
@@ -118,9 +123,10 @@
             </div>
 
             <button type="submit" class="btn btn-gradient w-100">Register</button>
-            <p class="text-center mt-3">Already have an account? <a href="{{ route('user.login') }}">Login</a></p>
+            <p class="text-center mt-3">Already have an account ? <a href="{{ route('user.login') }}">Login</a></p>
         </form>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -132,6 +138,22 @@
                         .show();
                 };
                 reader.readAsDataURL(this.files[0]);
+            });
+        });
+    </script> <!-- jQuery Password Toggle Script -->
+    <script>
+        $(document).ready(function() {
+            $('.toggle-password').on('click', function() {
+                const passwordField = $('#password');
+                const toggleIcon = $('#toggleIcon');
+
+                if (passwordField.attr('type') === 'password') {
+                    passwordField.attr('type', 'text');
+                    toggleIcon.removeClass('fa-eye-slash').addClass('fa-eye');
+                } else {
+                    passwordField.attr('type', 'password');
+                    toggleIcon.removeClass('fa-eye').addClass('fa-eye-slash');
+                }
             });
         });
     </script>

@@ -58,27 +58,29 @@
 
                 </li> --}}
                 <!-- Add this script at the bottom of your Blade (before </body>) -->
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                <script>
-                    document.getElementById('logout-button')?.addEventListener('click', function(e) {
-                        e.preventDefault(); // prevent default link behavior
-                        Swal.fire({
-                            title: 'Are you sure?',
-                            text: "You will be logged out from your account.",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Yes, logout!'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                document.getElementById('logout-form').submit();
-                            }
-                        });
-                    });
-                </script>
 
             </ul>
         </div>
     </div>
 </nav>
+@push('script')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('logout-button')?.addEventListener('click', function(e) {
+            e.preventDefault(); // prevent default link behavior
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You will be logged out from your account.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, logout!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        });
+    </script>
+@endpush

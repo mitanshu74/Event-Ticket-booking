@@ -36,6 +36,6 @@ class UserBookingController extends Controller
         // Optional: Refund logic or seat reversal here
         $booking->update(['status' => 'Cancelled']);
 
-        return back()->with('user-booking-cansel', 'Booking cancelled successfully.');
+        return back()->with('success', 'Booking cancelled successfully.');
     }
 }

@@ -88,15 +88,12 @@
                     <input type="password" name="otp" id="otp" class="form-control" placeholder="Enter  otp"
                         required />
                 </div>
-
-
                 <div class="sign_in d-grid my-4">
                     <button type="submit" class="btn btn-gradient w-100" name="verify-otp"
                         style="font-size: 16px">verify
                         OTP</button>
                 </div>
             </form>
-
             <form method="POST" action="{{ route('resend-otp') }}">
                 @csrf
                 <div class="mb-4">
@@ -114,7 +111,6 @@
             @endif
         </div>
 
-    </div>
     </div>
     @if (session('success'))
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -151,47 +147,7 @@
     @endif
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    {{-- <script>
-        $(document).ready(function() {
-
-            $('#send_otp').on('click', function(e) {
-                e.preventDefault();
-
-                let formData = new FormData();
-                formData.append('email', $('#email').val());
-                formData.append('password', $('#password').val());
-                formData.append('_token', '{{ csrf_token() }}');
-
-                $.ajax({
-                    url: "{{ route('otp_send') }}",
-                    method: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        if (response.success) {
-                            Swal.fire({
-                                title: 'Success!',
-                                text: response.message,
-                                icon: 'success',
-                                confirmButtonText: 'OK'
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: response.message || 'Failed to send OTP!',
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    },
-                });
-            });
-        });
-    </script> --}}
-
     <script src="{{ asset('admin/js/custom.js') }}"></script>
-
 </body>
 
 </html>

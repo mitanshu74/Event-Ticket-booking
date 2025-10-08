@@ -203,45 +203,46 @@
                      </table>
                  </div>
              </div>
-             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-             <script>
-                 document.addEventListener("DOMContentLoaded", function() {
-                     $(document).on('submit', '.delete-form', function(e) {
-                         e.preventDefault();
-                         let form = this;
-
-                         Swal.fire({
-                             title: "Are you sure?",
-                             text: "This action will permanently delete the user!",
-                             icon: "warning",
-                             showCancelButton: true,
-                             confirmButtonColor: "#d33",
-                             cancelButtonColor: "#3085d6",
-                             confirmButtonText: "Yes, delete it!",
-                             cancelButtonText: "Cancel"
-                         }).then((result) => {
-                             if (result.isConfirmed) {
-                                 $.ajax({
-                                     url: form.action,
-                                     type: 'POST',
-                                     data: $(form).serialize(),
-                                     success: function(response) {
-                                         Swal.fire(
-                                             "Deleted!",
-                                             response.success,
-                                             "success"
-                                         );
-                                         $('#User-table').DataTable().ajax
-                                             .reload(); // reload datatable
-                                     },
-                                 });
-                             }
-                         });
-                     });
-                 });
-             </script>
-
          </div>
      </div>
-
  @endsection
+
+ @push('script')
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+     <script>
+         document.addEventListener("DOMContentLoaded", function() {
+             $(document).on('submit', '.delete-form', function(e) {
+                 e.preventDefault();
+                 let form = this;
+
+                 Swal.fire({
+                     title: "Are you sure?",
+                     text: "This action will permanently delete the user!",
+                     icon: "warning",
+                     showCancelButton: true,
+                     confirmButtonColor: "#d33",
+                     cancelButtonColor: "#3085d6",
+                     confirmButtonText: "Yes, delete it!",
+                     cancelButtonText: "Cancel"
+                 }).then((result) => {
+                     if (result.isConfirmed) {
+                         $.ajax({
+                             url: form.action,
+                             type: 'POST',
+                             data: $(form).serialize(),
+                             success: function(response) {
+                                 Swal.fire(
+                                     "Deleted!",
+                                     response.success,
+                                     "success"
+                                 );
+                                 $('#User-table').DataTable().ajax
+                                     .reload(); // reload datatable
+                             },
+                         });
+                     }
+                 });
+             });
+         });
+     </script>
+ @endpush

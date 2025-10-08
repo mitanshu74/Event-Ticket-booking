@@ -6,6 +6,7 @@ use App\Domain\Datatables\EventDataTable;
 use App\Domain\Api\Request\AddEventRequest;
 use App\Domain\Api\Request\editEventRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Http\Request;
 use App\Models\Event;
@@ -31,20 +32,23 @@ class EventController extends Controller
     {
         $validated = $request->validated();
 
-        if ($request->hasFile('EventImage')) {
-            $imagePath = $request->file('EventImage')->store('events', 'public');
-            $validated['image'] = $imagePath;
-        }
+        // Keep MySQL-friendly 24-hour format
+        $validated['start_time'] = date('H:i:s', strtotime($validated['start_time']));
+        $validated['end_time']   = date('H:i:s', strtotime($validated['end_time']));
 
+        if ($request->hasFile('EventImages')) {
+            $imagePaths = [];
+            foreach ($request->file('EventImages') as $image) {
+                $path = $image->store('events', 'public');
+                $imagePaths[] = $path;
+            }
+            // Save as JSON in database
+            $validated['image'] = json_encode($imagePaths);
+        }
         Event::create($validated);
 
         return redirect()->route('admin.manageEvent')
             ->with('Add-Event', 'Event added successfully!');
-    }
-
-    public function show(string $id)
-    {
-        //
     }
 
     public function edit(string $id)
@@ -57,32 +61,56 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($id);
         $validated = $request->validated();
+        $validated['start_time'] = date('H:i:s', strtotime($validated['start_time']));
+        $validated['end_time']   = date('H:i:s', strtotime($validated['end_time']));
 
-        // Handle image
-        if ($request->hasFile('EventImage')) {
-            if ($event->image && file_exists(storage_path('app/public/' . $event->image))) {
-                unlink(storage_path('app/public/' . $event->image));
+        $existingImages = $event->image ? json_decode($event->image, true) : [];
+        if ($request->hasFile('EventImages')) {
+            // Delete old images if you want to replace them
+            foreach ($existingImages as $oldImage) {
+                if (Storage::disk('public')->exists($oldImage)) {
+                    Storage::disk('public')->delete($oldImage);
+                }
             }
-            $validated['image'] = $request->file('EventImage')->store('events', 'public');
+            $imagePaths = [];
+            foreach ($request->file('EventImages') as $image) {
+                $imagePaths[] = $image->store('events', 'public');
+            }
+            $validated['image'] = json_encode($imagePaths);
         } else {
+            // Keep old images if no new images uploaded
             $validated['image'] = $event->image;
         }
-
         $event->update($validated);
 
         return redirect()->route('admin.manageEvent')
             ->with('Add-Event', 'Event updated successfully!');
     }
 
-
-
     public function destroy(Event $id)
     {
         if ($id) {
+            // Delete all images if exist
+            if ($id->image) {
+                $images = json_decode($id->image, true);
+                if (is_array($images)) {
+                    foreach ($images as $img) {
+                        if (Storage::disk('public')->exists($img)) {
+                            Storage::disk('public')->delete($img);
+                        }
+                    }
+                }
+            }
             $id->delete();
-            return response()->json(['success' => true, 'message' => 'Event deleted successfully.']);
+            return response()->json([
+                'success' => true,
+                'message' => 'Event deleted successfully.'
+            ]);
         } else {
-            return response()->json(['success' => true, 'message' => 'Event not found.']);
+            return response()->json([
+                'success' => false,
+                'message' => 'Event not found.'
+            ]);
         }
     }
 }

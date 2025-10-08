@@ -96,10 +96,14 @@ class UserBookingDatatable extends BaseDatatableScope
             <form action="' . $cancelUrl . '" method="POST" class="cancel-booking-form" style="display:inline;">
                 ' . csrf_field() . '
                 ' . method_field('DELETE') . '
-                <button type="submit" class="btn btn-warning btn-sm">Cancel </button>
+                <button type="submit" class="btn btn-warning btn-sm">Cancel</button>
             </form>
         ';
+                } elseif ($row->status === 'pending') {
+                    $payUrl = route('razorpay.payment.redirect', $row->id);
+                    return '<a href="' . $payUrl . '" class="btn btn-primary btn-sm pay-booking-btn">Pay Now</a>';
                 }
+
                 return '';
             })
             ->editColumn('status', function ($row) {

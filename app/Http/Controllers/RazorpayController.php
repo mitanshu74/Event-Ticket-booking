@@ -132,4 +132,79 @@ class RazorpayController extends Controller
             'event' => $booking->event
         ]);
     }
+
+    public function redirectToPayment($bookingId)
+    {
+        // Fetch the booking
+        $booking = booking::findOrFail($bookingId);
+
+        // Check if booking is pending
+        if ($booking->status !== 'pending') {
+            return redirect()->back()->with('error', 'Booking is already paid or cancelled.');
+        }
+
+        $event = $booking->event; // Related event
+        $user = $booking->user;   // Related user
+
+        if (!$event) {
+            return redirect()->back()->with(['error' => 'Event not found']);
+        }
+
+        // Check event date
+        if ($event->date->isPast()) {
+            return redirect()->back()->with(['error' => 'This event has already occurred.']);
+        }
+
+        // Check total tickets already booked by this user
+        $existingTickets = booking::where('user_id', $user->id)
+            ->where('event_id', $event->id)
+            ->where('status', 'confirmed')
+            ->sum('tickets_booked');
+
+        // Cannot book more than 5 tickets
+        if ($existingTickets + $booking->tickets_booked > 5) {
+            return redirect()->back()->with('error', 'You cannot book more than 5 tickets for this event in total.');
+        }
+
+        // Check if tickets are available
+        if ($event->total_tickets < $booking->tickets_booked) {
+            return redirect()->back()->with('error', 'Tickets not available');
+        }
+
+
+        // Razorpay Order
+        $amount = $booking->total_price;
+        $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
+        $order = $api->order->create([
+            'receipt' => 'order_' . uniqid(),
+            'amount' => $amount * 100, // in paise
+            'currency' => 'INR',
+            'payment_capture' => 1
+        ]);
+
+        // Update or create payment record
+        $payment = Payment::updateOrCreate(
+            ['booking_id' => $booking->id],
+            [
+                'user_id' => $user->id,
+                'name' => $user->username,
+                'email' => $user->email,
+                'phone' => $user->number,
+                'amount' => $amount,
+                'order_id' => $order['id'],
+                'status' => 0
+            ]
+        );
+
+        // Show Razorpay payment page
+        return view('razorpay.payment', [
+            'orderId' => $order['id'],
+            'name' => $payment->name, // Fixed typo here
+            'email' => $payment->email,
+            'phone' => $payment->phone,
+            'amount' => $amount,
+            'razorpayKey' => env('RAZORPAY_KEY'),
+            'event' => $event,
+        ]);
+    }
 }

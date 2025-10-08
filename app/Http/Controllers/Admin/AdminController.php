@@ -92,16 +92,16 @@ class AdminController extends Controller
     }
 
     // user delete
-    public function destroy($id)
+    public function destroy(User $id)
     {
-        $user = User::findOrFail($id);
+        // $user = User::findOrFail($id);
 
         // Delete user image if exists
-        if ($user->image && file_exists(storage_path('app/public/' . $user->image))) {
-            unlink(storage_path('app/public/' . $user->image));
+        if ($id->image && file_exists(storage_path('app/public/' . $id->image))) {
+            unlink(storage_path('app/public/' . $id->image));
         }
 
-        $user->delete();
+        $id->delete();
 
         return response()->json(['success' => 'User deleted successfully.']);
     }

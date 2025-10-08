@@ -33,13 +33,18 @@
                             </div>
                             <div class="row">
                                 <!-- Password -->
-                                <div class="col-md-6 mt-3">
+                                <div class="col-md-6 mt-3 position-relative">
                                     <label for="adminPassword" class="form-label">Password</label>
-                                    <input type="password" class="form-control" name="password" id="adminPassword"
+                                    <input type="password" class="form-control pe-5" name="password" id="adminPassword"
                                         placeholder="Enter New Password (optional)">
+
+                                    <!-- Eye icon -->
+                                    <span class="toggle-password"
+                                        style="position: absolute; top: 72%; right: 20px;font-size:17px; transform: translateY(-50%); cursor: pointer;">
+                                        <i class="fa fa-eye-slash" id="toggleAdminPassword"></i>
+                                    </span>
                                 </div>
                             </div>
-
                             <!-- Submit -->
                             <div class="col-12 mt-3">
                                 <button class="btn btn-success" type="submit">Update</button>
@@ -51,6 +56,9 @@
             </div>
         </div>
     </div>
+
+@endsection
+@push('script')
     @if (session('profile-updated'))
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
@@ -63,4 +71,21 @@
             });
         </script>
     @endif
-@endsection
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.toggle-password').on('click', function() {
+                const passwordField = $('#adminPassword');
+                const toggleIcon = $('#toggleAdminPassword');
+
+                if (passwordField.attr('type') === 'password') {
+                    passwordField.attr('type', 'text');
+                    toggleIcon.removeClass('fa-eye-slash').addClass('fa-eye');
+                } else {
+                    passwordField.attr('type', 'password');
+                    toggleIcon.removeClass('fa-eye').addClass('fa-eye-slash');
+                }
+            });
+        });
+    </script>
+@endpush

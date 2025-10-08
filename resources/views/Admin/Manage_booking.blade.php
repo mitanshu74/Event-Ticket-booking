@@ -24,9 +24,10 @@
         </div>
     </div>
     {!! $html->scripts() !!}
+@endsection
+@push('script')
     <script>
         $(document).ready(function() {
-
             // Select/Deselect All Checkboxes
             $(document).on('click', '#select-all', function() {
                 $('.task-checkbox').prop('checked', this.checked);
@@ -158,4 +159,4 @@
             });
         </script>
     @endif
-@endsection
+@endpush

@@ -138,12 +138,6 @@ class UserController extends Controller
 
     public function booked_ticket(UserOrderDataTable $datatable)
     {
-        // if (request()->ajax()) {
-        //     return $datatable->query();
-        // }
-
-        // $user = Auth::guard('web')->user()->load('bookings.event');
-        // return view('User.ticket_booked', compact('user'),['html' => $datatable]);
         if (request()->ajax()) {
             return $datatable->query();
         }
