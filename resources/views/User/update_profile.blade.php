@@ -11,7 +11,6 @@
                 <div class="card hei">
                     <div class="card-header d-flex justify-content-between">
                         <h4 class="mb-0">👤 Profile Information</h4>
-                        <a href="{{ route('user.home') }}" class="btn btn-success rounded text-white">Back</a>
                     </div>
                     <div class="card-body">
 

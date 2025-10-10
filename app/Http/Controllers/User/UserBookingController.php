@@ -21,19 +21,14 @@ class UserBookingController extends Controller
     {
         $booking = Booking::findOrFail($id);
 
-
-        // Optionally: add tickets back to event
+        // Add tickets back to event
         $event = Event::find($booking->event_id);
         if ($event) {
             $event->total_tickets += $booking->tickets_booked;
-            // booking tbl mathi tickets_booked minus this aatle user pachi ticket book kari sake
-            // $booking->tickets_booked -= $booking->tickets_booked;
             $event->save();
         }
 
         Mail::to($booking->user->email)->send(new BookingCancelledMail($booking));
-
-        // Optional: Refund logic or seat reversal here
         $booking->update(['status' => 'Cancelled']);
 
         return back()->with('success', 'Booking cancelled successfully.');

@@ -132,19 +132,25 @@ class RazorpayController extends Controller
         if ($fromPage === 'ticket_booked') {
             return redirect()
                 ->route('booked_ticket')
-                ->with('success', 'Payment successful! Your booking has been confirmed.');
+                ->with('success', 'Payment successfully ! Your booking has been confirmed.');
         }
 
         // Default → event details page
         return redirect()
             ->route('user.home')
-            ->with('success', 'Payment successful! Your booking has been confirmed.');
+            ->with('success', 'Payment successfully! Your booking has been confirmed.');
     }
 
     public function redirectToPayment($bookingId)
     {
         // Fetch the booking
-        $booking = booking::findOrFail($bookingId);
+        $booking = booking::find($bookingId);
+
+        // check in database this record existing or not
+        if (!$booking) {
+            return redirect()->back()->with(['error' => 'Event not found']);
+        }
+
 
         // Check if booking is pending
         if ($booking->status !== 'pending') {
@@ -190,7 +196,7 @@ class RazorpayController extends Controller
             'payment_capture' => 1
         ]);
 
-        // Update or create payment record
+        // Update or create payment record 
         $payment = Payment::updateOrCreate(
             ['booking_id' => $booking->id],
             [

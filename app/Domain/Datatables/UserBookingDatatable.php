@@ -103,7 +103,7 @@ class UserBookingDatatable extends BaseDatatableScope
                 $end = $row->end_time ? Carbon::parse($row->end_time)->format('h:i A') : '';
                 return $start && $end ? "$start - $end" : $start;
             })
-            ->editColumn('status', function ($row) {
+            ->editColumn('status', function ($row) {    
                 if ($row->status === 'confirmed') {
                     return '<span class="badge bg-success">Confirmed</span>';
                 } elseif ($row->status === 'cancelled') {

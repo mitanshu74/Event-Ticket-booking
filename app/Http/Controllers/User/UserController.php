@@ -6,7 +6,6 @@ use App\Domain\Api\Request\UpdateUserProfileRequest;
 use App\Domain\Api\Request\UserRegisterRequest;
 use App\Domain\Api\Request\UserLoginRequest;
 use App\Domain\Api\Request\VerifyOtpRequest;
-use App\Domain\Datatables\UserBookingDatatable as UserOrderDataTable;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -17,6 +16,7 @@ use App\Mail\WelcomeMail;
 use App\Models\Event;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Client\Request as ClientRequest;
 
 class UserController extends Controller
 {
@@ -136,16 +136,18 @@ class UserController extends Controller
             ->withInput();
     }
 
-    public function booked_ticket(UserOrderDataTable $datatable)
+    public function booked_ticket(Request $request)
     {
-        if (request()->ajax()) {
-            return $datatable->query();
-        }
-        return view('User.ticket_booked', [
-            'html' => $datatable->html(),
-        ]);
-    }
+        $userId = auth()->id();
 
+        // Get bookings of the logged-in user with related event data
+        $bookings = \App\Models\booking::with('event')
+            ->where('user_id', $userId)
+            ->latest()
+            ->get();
+
+        return view('User.ticket_booked', compact('bookings'));
+    }
 
     public function view_profile()
     {

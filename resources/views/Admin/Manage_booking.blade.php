@@ -20,14 +20,26 @@
 
                     {!! $html->table(['class' => 'table table-striped table-bordered', 'id' => 'bookingTable']) !!}
                 </div>
+                {{-- loader --}}
+                <div id="loading-overlay">
+                    <div class="spinner"></div>
+                </div>
             </div>
         </div>
+    </div>
     </div>
     {!! $html->scripts() !!}
 @endsection
 @push('script')
     <script>
         $(document).ready(function() {
+
+            const overlay = document.getElementById('loading-overlay');
+            // Show overlay
+            function showLoader() {
+                overlay.style.display = 'flex';
+            }
+
             // Select/Deselect All Checkboxes
             $(document).on('click', '#select-all', function() {
                 $('.task-checkbox').prop('checked', this.checked);
@@ -114,10 +126,9 @@
             });
 
             // Cancel confirmation with AJAX
-            $(document).on('click', '.cancel-form button', function(e) {
-                e.preventDefault();
-                const form = $(this).closest('form');
-
+            $(document).on('submit', '.cancel-form', function(e) {
+                e.preventDefault(); // prevent default submit
+                const form = this;
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "You want to cancel this booking?",
@@ -128,21 +139,9 @@
                     confirmButtonText: 'Yes, cancel it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        $.ajax({
-                            url: form.attr('action'),
-                            type: 'POST',
-                            data: form.serialize(),
-                            success: function(response) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Cancelled!',
-                                    text: response.message ||
-                                        'Booking cancelled successfully.',
-                                    showConfirmButton: true,
-                                });
-                                $('#bookingTable').DataTable().ajax.reload();
-                            },
-                        });
+                        // submit the form normally
+                        showLoader();
+                        form.submit();
                     }
                 });
             });

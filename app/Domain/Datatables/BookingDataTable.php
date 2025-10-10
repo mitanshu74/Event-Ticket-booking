@@ -111,11 +111,11 @@ class BookingDataTable extends BaseDatatableScope
 
                 // Cancel button (only show on booking is confirmed  delete btn show on Cancelled Pending )
                 if ($row->status === 'confirmed') {
-                    $cancelUrl = route('admin.booking.cancel', $row->id); // make sure you define this route
+                    $cancelUrl = route('admin.booking.cancel', $row->id);
                     $btn .= '<form action="' . $cancelUrl . '" method="POST" style="display:inline;" class="cancel-form">
-                    ' . csrf_field() . '
-                    <button type="submit" class="btn btn-warning btn-sm">Cancel</button>
-                </form>';
+                ' . csrf_field() . '
+                <button type="submit" class="btn btn-warning btn-sm">Cancel</button>
+            </form>';
                 } else {
                     $deleteUrl = route('booking.destroy', $row->id);
                     $btn .= '<form action="' . $deleteUrl . '" method="POST" style="display:inline;" class="delete-form">
