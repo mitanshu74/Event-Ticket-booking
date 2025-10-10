@@ -40,7 +40,6 @@
         Route::post('admin/logout', 'Admin\AdminController@logout')->name('admin.logout');
     });
 
-
     // User Roure
     // No Login Required
     Route::get('/user/home', 'User\UserController@home')->name('user.home');
@@ -73,8 +72,7 @@
 
         // payment method in tickets booking logic
         Route::post('/razorpay/payment', 'RazorpayController@payment')->name('razorpay.payment');
-
-        Route::get('/razorpay/pay/{booking}', 'RazorpayController@redirectToPayment')->name('razorpay.payment.redirect');
+        Route::get('/razorpay/pay/{bookingId}', 'RazorpayController@redirectToPayment')->name('razorpay.payment.redirect');
 
         // profile
         Route::get('/user/tickets', 'User\UserController@booked_ticket')->name('booked_ticket');

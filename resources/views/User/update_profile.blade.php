@@ -51,7 +51,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Phone</label>
-                                <input type="tel" name="number" class="form-control"
+                                <input type="number" name="number" class="form-control"
                                     value="{{ old('number', Auth::guard('web')->user()->number) }}">
                                 @error('number')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -106,50 +106,48 @@
     </section>
 
 @endsection
-@push('script')
-    @if (session('user_profile_update'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Profile Updated',
-                text: 'Your profile has been updated successfully!',
-                confirmButtonText: 'OK'
-            });
-        </script>
-    @endif
-    {{-- password hide show --}}
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Success alert for profile update
+            @if (session('user_profile_update'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Profile Updated',
+                    text: '{{ session('user_profile_update') }}',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+
+            // Password toggle
             const togglePassword = document.querySelector('.password-wrapper .toggle-password');
             const passwordInput = document.querySelector('.password-wrapper input[name="password"]');
+            if (togglePassword) {
+                togglePassword.addEventListener('click', function() {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                });
+            }
 
-            togglePassword.addEventListener('click', function() {
-                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordInput.setAttribute('type', type);
-
-                this.classList.toggle('fa-eye');
-                this.classList.toggle('fa-eye-slash');
-            });
-        });
-    </script>
-    {{-- image preview --}}
-    <script>
-        function displayImage() {
+            // Image preview
             const imageInput = document.getElementById('imageInput');
             const previewImage = document.getElementById('previewImage');
-
-            if (imageInput.files && imageInput.files[0]) {
-                const reader = new FileReader();
-
-                reader.onload = function(e) {
-                    previewImage.src = e.target.result;
-                };
-
-                reader.readAsDataURL(imageInput.files[0]);
-
-            } else {
-                previewImage.src = '';
+            if (imageInput) {
+                imageInput.addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewImage.src = e.target.result;
+                        };
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                });
             }
-        }
+        });
     </script>
 @endpush

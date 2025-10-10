@@ -19,9 +19,15 @@ class UpdateUserProfileRequest extends FormRequest
 
         return [
             'username' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $userId,
+            'email' => [
+                'required',
+                'email',
+                'regex:/@gmail\.com$/',
+                'unique:users,email,' . $userId,
+            ],
+
             'password' => ['nullable', Password::min(6)->letters()->numbers()->symbols()],
-            'number' => 'required|digits_between:10,15',
+            'number' => 'required|digits:10',
             'address' => 'required|string',
             'gender' => 'required|in:male,female',
             'UserImage' => 'nullable|image|mimes:jpeg,png,jpg,gif',

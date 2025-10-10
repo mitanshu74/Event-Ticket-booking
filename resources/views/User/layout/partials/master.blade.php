@@ -168,6 +168,34 @@
     </main>
 
     @include('User.layout.partials.footer')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        @elseif (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Try Again'
+            });
+            // @elseif ($errors->any())
+            //     Swal.fire({
+            //         icon: 'warning',
+            //         title: 'Validation Error',
+            //         html: '{!! implode('<br>', $errors->all()) !!}',
+            //         confirmButtonColor: '#f1c40f'
+            //     });
+            // @endif
+    </script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

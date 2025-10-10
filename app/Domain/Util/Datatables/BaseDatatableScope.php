@@ -8,19 +8,20 @@ use Illuminate\Support\Facades\Auth;
 abstract class BaseDatatableScope
 {
     /**
-     * @var
+     * @var array
      */
     protected $partialHtml;
 
     /**
-     * @return mixed
+     * Each Datatable must define its own query
      */
     abstract public function query();
 
     /**
-     * @param null $url
+     * Build datatable columns
      *
-     * @return array
+     * @param string|null $url
+     * @return \Yajra\DataTables\Html\Builder
      */
     public function html($url = null)
     {
@@ -34,12 +35,24 @@ abstract class BaseDatatableScope
                     'searchable' => false,
                 ],
             ],
-            $this->partialHtml
+            $this->partialHtml ?? []
         );
 
-        // Check admin role == 2 then not show 
         $admin = Auth::guard('admin')->user();
-        if ($admin->role != 2) {
+        $user = Auth::guard('web')->user();
+
+        if ($admin && isset($admin->role)) {
+            // action column are show only admin role ==1
+            if ($admin->role == 1) {
+                $columns[] = [
+                    'data' => 'action',
+                    'name' => 'action',
+                    'title' => 'Action',
+                    'searchable' => false,
+                    'orderable' => false,
+                ];
+            }
+        } elseif ($user) {
             $columns[] = [
                 'data' => 'action',
                 'name' => 'action',
@@ -49,22 +62,23 @@ abstract class BaseDatatableScope
             ];
         }
 
+        /** @var Builder $builder */
         $builder = app('datatables.html');
+
         return $builder->columns($columns)->parameters([
             'order' => [0, 'desc'],
         ])->ajax($url ?: request()->fullUrl());
     }
 
-
     /**
-     * @param array $html
+     * Set partial HTML columns
      *
+     * @param array $html
      * @return $this
      */
     public function setHtml(array $html)
     {
         $this->partialHtml = $html;
-
         return $this;
     }
 }

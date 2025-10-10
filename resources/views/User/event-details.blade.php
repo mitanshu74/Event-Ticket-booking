@@ -55,6 +55,8 @@
                             <form id="bookingForm" method="POST" action="{{ route('razorpay.payment') }}">
                                 @csrf
                                 <input type="hidden" name="event_id" value="{{ $event->id }}">
+                                <input type="hidden" name="from_page" value="event_details">
+
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h2 class="fw-bold mb-0">{{ $event->name }}</h2>
                                     @if ($event->total_tickets > 0)

@@ -95,8 +95,10 @@ class RazorpayController extends Controller
             'phone' => $payment->phone,
             'amount' => $amount,
             'razorpayKey' => env('RAZORPAY_KEY'),
-            // // send event-id payment.blade file
+            //send event-id payment.blade file
             'event' => $event,
+            'from_page' => request('from', 'event_details'), // page request handel
+
         ]);
     }
 
@@ -125,12 +127,18 @@ class RazorpayController extends Controller
             Mail::to($booking->user->email)->send(new BookingConfirmationMail($booking));
         }
 
-        // 5️⃣ Redirect with success message
-        return view('razorpay.success', [
-            'payment' => $payment,
-            'booking' => $booking,
-            'event' => $booking->event
-        ]);
+        $fromPage = $request->input('from_page', 'event_details');
+
+        if ($fromPage === 'ticket_booked') {
+            return redirect()
+                ->route('booked_ticket')
+                ->with('success', 'Payment successful! Your booking has been confirmed.');
+        }
+
+        // Default → event details page
+        return redirect()
+            ->route('user.home')
+            ->with('success', 'Payment successful! Your booking has been confirmed.');
     }
 
     public function redirectToPayment($bookingId)
@@ -205,6 +213,7 @@ class RazorpayController extends Controller
             'amount' => $amount,
             'razorpayKey' => env('RAZORPAY_KEY'),
             'event' => $event,
+            'from_page' => request('from', 'ticket_booked'), // page request handel
         ]);
     }
 }

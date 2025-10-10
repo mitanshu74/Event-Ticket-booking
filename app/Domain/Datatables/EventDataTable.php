@@ -28,17 +28,11 @@ class EventDataTable extends BaseDatatableScope
             [
                 'data' => 'start_time',
                 'name' => 'start_time',
-                'title' => 'Start Time',
+                'title' => 'Time',
                 'searchable' => true,
                 'orderable' => true,
             ],
-            [
-                'data' => 'end_time',
-                'name' => 'end_time',
-                'title' => 'End Time',
-                'searchable' => true,
-                'orderable' => true,
-            ],
+
             [
                 'data' => 'location',
                 'name' => 'location',
@@ -96,12 +90,11 @@ class EventDataTable extends BaseDatatableScope
                         </button>
                     </form>';
                 $btn .= '</div>';
-
                 return $btn;
             })->editColumn('start_time', function ($event) {
-                return $event->start_time ? $event->start_time->format('h:m A') : '';
-            })->editColumn('end_time', function ($event) {
-                return $event->end_time ? $event->end_time->format('h:m A') : '';
+                $start = $event->start_time ? $event->start_time->format('h:i A') : '';
+                $end = $event->end_time ? $event->end_time->format('h:i A') : '';
+                return $start && $end ? "$start - $end" : "";
             })
             ->editColumn('image', function ($event) {
                 if (!$event->image) {
