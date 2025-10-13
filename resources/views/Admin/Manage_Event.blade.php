@@ -22,23 +22,10 @@
     {!! $html->scripts() !!}
 @endsection
 @push('script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    @if (session('Add-Event'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: '{{ session('Add-Event') }}',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'OK'
-            });
-        </script>
-    @endif
     <script>
         $(document).on('submit', '.delete-form', function(e) {
             e.preventDefault();
             const form = $(this);
-            const deleteUrl = form.attr('action');
 
             Swal.fire({
                 title: 'Are you sure?',
@@ -51,7 +38,7 @@
                 if (!result.isConfirmed) return;
 
                 $.ajax({
-                    url: deleteUrl,
+                    url: form.attr('action'),
                     type: 'DELETE',
                     data: {
                         _token: "{{ csrf_token() }}"
@@ -66,7 +53,7 @@
                         });
                     },
                     error: function(xhr) {
-                        Swal.fire('Error!', 'Something went wrong!', 'error');
+                        Swal.fire('Error!', 'Event Not Found!', 'error');
                     }
                 });
             });

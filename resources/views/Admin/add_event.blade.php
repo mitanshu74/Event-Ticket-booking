@@ -98,21 +98,26 @@
                                     @enderror
                                 </div>
                             </div>
-
                             {{-- Image --}}
                             <div class="row mx-2">
-                                <div class="col-md-6 py-0 mt-3">
+                                <div class="col-md-6 mt-3">
                                     <label for="EventImages" class="form-label"><b>Choose Images</b></label>
-                                    <input type="file" class="form-control @error('EventImages') is-invalid @enderror"
-                                        name="EventImages[]" id="EventImages" accept="image/*" multiple required>
-                                    @error('EventImages')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <input type="file" class="form-control" name="EventImages[]" id="EventImages"
+                                        accept="image/*" multiple required>
+
+                                    {{-- Show array-level message first, else show first file-level message --}}
+                                    @if ($errors->has('EventImages'))
+                                        <div class="invalid-feedback d-block">{{ $errors->first('EventImages') }}</div>
+                                    @elseif ($errors->first('EventImages.*'))
+                                        <div class="invalid-feedback d-block">{{ $errors->first('EventImages.*') }}</div>
+                                    @endif
                                 </div>
-                                <div class="col-md-6 p-0" id="previewContainer">
-                                    <!-- Image previews will be appended here -->
-                                </div>
+
+                                {{-- ✅ Add this container for previews --}}
+                                <div class="col-md-6 mt-3" id="previewContainer"></div>
                             </div>
+
+
 
                             {{-- Submit --}}
                             <div class="row">
@@ -127,6 +132,7 @@
         </div>
     </div>
 @endsection
+
 @push('script')
     <script>
         const input = document.getElementById('EventImages');

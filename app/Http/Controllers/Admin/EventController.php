@@ -7,8 +7,6 @@ use App\Domain\Api\Request\AddEventRequest;
 use App\Domain\Api\Request\editEventRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
-
-use Illuminate\Http\Request;
 use App\Models\Event;
 
 class EventController extends Controller
@@ -48,18 +46,25 @@ class EventController extends Controller
         Event::create($validated);
 
         return redirect()->route('admin.manageEvent')
-            ->with('Add-Event', 'Event added successfully!');
+            ->with('success', 'Event added successfully!');
     }
 
     public function edit(string $id)
     {
-        $event = Event::findOrFail($id);
+        $event = Event::find($id); // fetch the event
+
+        if (!$event) {
+            return redirect()->route('admin.manageEvent')->with('success', 'Event Not Found.');
+        }
+
         return view('Admin.edit_Event', compact('event'));
     }
 
+
     public function update(editEventRequest $request, string $id)
     {
-        $event = Event::findOrFail($id);
+        $event = Event::find($id);
+
         $validated = $request->validated();
         $validated['start_time'] = date('H:i:s', strtotime($validated['start_time']));
         $validated['end_time']   = date('H:i:s', strtotime($validated['end_time']));
@@ -84,33 +89,26 @@ class EventController extends Controller
         $event->update($validated);
 
         return redirect()->route('admin.manageEvent')
-            ->with('Add-Event', 'Event updated successfully!');
+            ->with('success', 'Event updated successfully!');
     }
 
     public function destroy(Event $id)
     {
-        if ($id) {
-            // Delete all images if exist
-            if ($id->image) {
-                $images = json_decode($id->image, true);
-                if (is_array($images)) {
-                    foreach ($images as $img) {
-                        if (Storage::disk('public')->exists($img)) {
-                            Storage::disk('public')->delete($img);
-                        }
+        // Delete all images if exist
+        if ($id->image) {
+            $images = json_decode($id->image, true);
+            if (is_array($images)) {
+                foreach ($images as $img) {
+                    if (Storage::disk('public')->exists($img)) {
+                        Storage::disk('public')->delete($img);
                     }
                 }
             }
-            $id->delete();
-            return response()->json([
-                'success' => true,
-                'message' => 'Event deleted successfully.'
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Event not found.'
-            ]);
         }
+        $id->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Event deleted successfully.'
+        ]);
     }
 }

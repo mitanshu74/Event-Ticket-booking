@@ -5,7 +5,7 @@
             @forelse($events as $event)
                 @php
                     $images = json_decode($event->image, true) ?? []; // decode JSON array
-                    $firstImage = $images[0] ?? 'placeholder.jpg';
+                    $firstImage = $images[0];
                 @endphp
                 <div class="col-md-4">
                     <div class="event-card shadow-sm">
@@ -32,8 +32,8 @@
                                 @endif
                             </h5>
 
-                            <p>📅 {{ \Carbon\Carbon::parse($event->date)->format('jS M Y') }} <br> 📍
-                                {{ $event->location }}</p>
+                            <p>📅 {{ \Carbon\Carbon::parse($event->date)->format('jS M Y') }} <br>
+                                📍{{ $event->location }}</p>
                             <a href="{{ route('user.event.details', $event->id) }}" class="btn btn-gradient w-100">View
                                 Details</a>
                         </div>

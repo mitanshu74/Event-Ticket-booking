@@ -117,7 +117,6 @@ class EventDataTable extends BaseDatatableScope
 
                 return $html;
             })
-            ->rawColumns(['image', 'action'])
 
             ->editColumn('date', function ($event) {
                 return $event->date ? $event->date->format('d-m-Y') : '';

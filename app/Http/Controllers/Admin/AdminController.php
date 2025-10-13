@@ -63,7 +63,7 @@ class AdminController extends Controller
 
     public function ProfileUpdate(UpdateProfileRequest $request)
     {
-        $admin = auth('admin')->user();
+        $admin = Auth::guard('admin')->user();
 
         $admin->name = $request->name;
         $admin->email = $request->email;
@@ -94,15 +94,12 @@ class AdminController extends Controller
     // user delete
     public function destroy(User $id)
     {
-        // $user = User::findOrFail($id);
-
         // Delete user image if exists
         if ($id->image && file_exists(storage_path('app/public/' . $id->image))) {
             unlink(storage_path('app/public/' . $id->image));
         }
 
         $id->delete();
-
         return response()->json(['success' => 'User deleted successfully.']);
     }
 }

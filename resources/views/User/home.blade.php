@@ -14,7 +14,7 @@
     @include('User.events')
 @endsection
 
-@push('scripts')
+{{-- @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const el = document.getElementById('heroCarousel');
@@ -27,4 +27,4 @@
             }
         });
     </script>
-@endpush
+@endpush --}}

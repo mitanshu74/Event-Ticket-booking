@@ -40,8 +40,9 @@
                             <div class="d-grid mb-0">
                                 <form id="logoutForm" method="POST" action="{{ route('admin.logout') }}">
                                     @csrf
-                                    <button type="button" class="btn btn-danger" id="logoutBtn">Logout</button>
+                                    <button type="submit" class="btn btn-danger">Logout</button>
                                 </form>
+
 
                             </div>
                         </div>

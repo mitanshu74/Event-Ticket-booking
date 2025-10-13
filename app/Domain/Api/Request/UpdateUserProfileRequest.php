@@ -30,7 +30,7 @@ class UpdateUserProfileRequest extends FormRequest
             'number' => 'required|digits:10',
             'address' => 'required|string',
             'gender' => 'required|in:male,female',
-            'UserImage' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'UserImage' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 
@@ -46,12 +46,14 @@ class UpdateUserProfileRequest extends FormRequest
             'password.numbers' => 'Password must contain at least one number.',
             'password.symbols' => 'Password must contain at least one special character.',
             'number.required' => 'Please enter your phone number.',
-            'number.digits_between' => 'Phone number must be between 10 and 15 digits.',
+            'number.digits'    => 'Mobile number must be exactly 10 digits.',
             'address.required' => 'Please enter your address.',
             'gender.required' => 'Please select your gender.',
             'gender.in' => 'Gender must be either male or female.',
             'UserImage.image' => 'The file must be an image.',
             'UserImage.mimes' => 'Allowed image formats: jpeg, png, jpg, gif.',
+            'UserImage.max'    => 'Image size must not exceed 2 MB.',
+
         ];
     }
 }

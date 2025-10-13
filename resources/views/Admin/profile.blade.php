@@ -14,42 +14,53 @@
                             novalidate>
                             @csrf
 
+                            {{-- Name --}}
                             <div class="row">
                                 <div class="col-md-6 mt-3">
                                     <label for="adminName" class="form-label">Name</label>
-                                    <input type="text" class="form-control" name="name" id="adminName"
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                        name="name" id="adminName"
                                         value="{{ old('name', Auth::guard('admin')->user()->name) }}"
-                                        placeholder="Enter Admin Name" required>
+                                        placeholder="Enter Admin Name">
+                                    @error('name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
+
+                            {{-- Email --}}
                             <div class="row">
-                                <!-- Email -->
                                 <div class="col-md-6 mt-3">
                                     <label for="adminEmail" class="form-label">Email</label>
-                                    <input type="email" class="form-control" name="email" id="adminEmail"
+                                    <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                        name="email" id="adminEmail"
                                         value="{{ old('email', Auth::guard('admin')->user()->email) }}"
-                                        placeholder="Enter Admin Email" required>
+                                        placeholder="Enter Admin Email">
+                                    @error('email')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
+                            {{-- Password --}}
                             <div class="row">
-                                <!-- Password -->
                                 <div class="col-md-6 mt-3 position-relative">
                                     <label for="adminPassword" class="form-label">Password</label>
-                                    <input type="password" class="form-control pe-5" name="password" id="adminPassword"
-                                        placeholder="Enter New Password (optional)">
-
-                                    <!-- Eye icon -->
+                                    <input type="password" class="form-control pe-5 @error('password') is-invalid @enderror"
+                                        name="password" id="adminPassword" placeholder="Enter New Password (optional)">
+                                    @error('password')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                     <span class="toggle-password"
-                                        style="position: absolute; top: 72%; right: 20px;font-size:17px; transform: translateY(-50%); cursor: pointer;">
+                                        style="position: absolute; top: 72%; right: 20px; font-size:17px; transform: translateY(-50%); cursor: pointer;">
                                         <i class="fa fa-eye-slash" id="toggleAdminPassword"></i>
                                     </span>
                                 </div>
                             </div>
+
                             <!-- Submit -->
                             <div class="col-12 mt-3">
                                 <button class="btn btn-success" type="submit">Update</button>
                             </div>
-
                         </form>
                     </div>
                 </div>

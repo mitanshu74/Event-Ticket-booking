@@ -9,7 +9,6 @@ class Event extends Model
 {
     use HasFactory;
 
-    // Table name (optional, Laravel will assume 'events' automatically)
     protected $table = 'events';
 
     // Fillable fields for mass assignment

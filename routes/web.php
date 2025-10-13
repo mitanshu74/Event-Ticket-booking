@@ -18,7 +18,7 @@
         Route::delete('admin/DeleteUser/{id}', 'Admin\AdminController@destroy')->name('admin.DeleteUser');
 
         // Event Routes
-        Route::get('admin/manageEvent', 'Admin\EventController@index')->name('admin.manageEvent');
+        Route::get('admin/manageEvent', 'Admin\a@index')->name('admin.manageEvent');
         Route::get('admin/addEvent', 'Admin\EventController@create')->name('admin.addEvent');
         Route::post('admin/storeEvent', 'Admin\EventController@store')->name('admin.storeEvent');
         Route::get('admin/EditEvent/{id}', 'Admin\EventController@edit')->name('admin.EditEvent');
@@ -31,7 +31,7 @@
         Route::post('admin/storeSubAdmin', 'Admin\SubAdminController@store')->name('admin.storeSubAdmin');
         Route::get('admin/EditSubAdmin/{id}', 'Admin\SubAdminController@edit')->name('admin.EditSubAdmin');
         Route::put('admin/UpdateSubAdmin/{id}', 'Admin\SubAdminController@update')->name('admin.UpdateSubAdmin');
-        Route::delete('admin/DeleteSubAdmin/{id}', 'Admin\SubAdminController@destroy')->name('admin.DeleteSubAdmin');
+        Route::delete('admin/DeleteSubAdm   in/{id}', 'Admin\SubAdminController@destroy')->name('admin.DeleteSubAdmin');
 
         // Booking
         Route::resource('admin/booking', 'Admin\BookingController');
@@ -67,7 +67,7 @@
         Route::delete('User/booking/cancel/{id}', 'User\UserBookingController@cancel')->name('user.booking.cancel');
 
         // razorpay    
-        Route::get('/razorpay', 'RazorpayController@index');
+        // Route::get('/razorpay', 'RazorpayController@index');
         Route::post('/razorpay/success', 'RazorpayController@success')->name('razorpay.success');
 
         // payment method in tickets booking logic

@@ -17,19 +17,17 @@ class UserBookingController extends Controller
         //  event booking no code razorpay  controller in payment method maa che  
     }
 
-    public function cancel($id)
+    public function cancel(Booking $id)
     {
-        $booking = Booking::findOrFail($id);
-
         // Add tickets back to event
-        $event = Event::find($booking->event_id);
+        $event = Event::find($id->event_id);
         if ($event) {
-            $event->total_tickets += $booking->tickets_booked;
+            $event->total_tickets += $id->tickets_booked;
             $event->save();
         }
 
-        Mail::to($booking->user->email)->send(new BookingCancelledMail($booking));
-        $booking->update(['status' => 'Cancelled']);
+        Mail::to($id->user->email)->send(new BookingCancelledMail($id));
+        $id->update(['status' => 'Cancelled']);
 
         return back()->with('success', 'Booking cancelled successfully.');
     }

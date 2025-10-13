@@ -91,95 +91,6 @@
                      </div>
                  </div>
              </div>
-
-             {{--  <div class="col-lg-3 col-md-6">
-                 <div class="card">
-                     <div class="card-body">
-                         <div class="d-flex align-items-center">
-                             <div class="flex-shrink-0">
-                                 <div class="avtar bg-light-primary">
-                                     <svg class="pc-icon">
-                                         <use xlink:href="#custom-shopping-bag"></use>
-                                     </svg>
-                                 </div>
-                             </div>
-                             <div class="flex-grow-1 ms-3">
-                                 <p class="mb-1">Total Category</p>
-                                 <div class="d-flex align-items-center justify-content-between">
-                                     <h6 class="mb-0">0</h6>
-                                     <a href="" class="text-success fw-medium">View All</a>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-             <div class="col-lg-3 col-md-6">
-                 <div class="card">
-                     <div class="card-body">
-                         <div class="d-flex align-items-center">
-                             <div class="flex-shrink-0">
-                                 <div class="avtar bg-light-warning">
-                                     <svg class="pc-icon">
-                                         <use xlink:href="#custom-layer"></use>
-                                     </svg>
-                                 </div>
-                             </div>
-                             <div class="flex-grow-1 ms-3">
-                                 <p class="mb-1">Total Slider</p>
-                                 <div class="d-flex align-items-center justify-content-between">
-                                     <h6 class="mb-0">0</h6>
-                                     <a href="" class="text-warning fw-medium">View All</a>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-             <div class="col-lg-3 col-md-6">
-                 <div class="card">
-                     <div class="card-body">
-                         <div class="d-flex align-items-center">
-                             <div class="flex-shrink-0">
-                                 <div class="avtar bg-light-success">
-                                     <svg class="pc-icon">
-                                         <use xlink:href="#custom-story"></use>
-                                     </svg>
-                                 </div>
-                             </div>
-                             <div class="flex-grow-1 ms-3">
-                                 <p class="mb-1">Total Revenue</p>
-                                 <div class="d-flex align-items-center justify-content-between">
-                                     <h6 class="mb-0">0</h6>
-                                     <a href="" class="text-success fw-medium">View All</a>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-             <div class="col-lg-3 col-md-6">
-                 <div class="card">
-                     <div class="card-body">
-                         <div class="d-flex align-items-center">
-                             <div class="flex-shrink-0">
-                                 <div class="avtar bg-light-danger">
-                                     <svg class="pc-icon">
-                                         <use xlink:href="#custom-user-square"></use>
-                                     </svg>
-                                 </div>
-                             </div>
-                             <div class="flex-grow-1 ms-3">
-                                 <p class="mb-1">Total Contact</p>
-                                 <div class="d-flex align-items-center justify-content-between">
-                                     <h6 class="mb-0">0</h6>
-                                     <a href="" class="text-danger fw-medium">View All</a>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             </div> --}}
          </div>
          <!-- new user authentication data table-->
          <div class="cards_design p-3 mb-4 bg-white border">
@@ -229,7 +140,7 @@
                          $.ajax({
                              url: form.action,
                              type: 'POST',
-                             data: $(form).serialize(),
+                             data: $(form).serialize(), // all form fields
                              success: function(response) {
                                  Swal.fire(
                                      "Deleted!",
@@ -245,4 +156,4 @@
              });
          });
      </script>
- @endpush
+ @endpush           

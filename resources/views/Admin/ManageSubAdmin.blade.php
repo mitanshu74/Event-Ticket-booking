@@ -25,7 +25,6 @@
         $(document).on('submit', '.delete-form', function(e) {
             e.preventDefault();
             const form = $(this);
-            const deleteUrl = form.attr('action');
 
             Swal.fire({
                 title: 'Are you sure?',
@@ -38,7 +37,7 @@
                 if (!result.isConfirmed) return;
 
                 $.ajax({
-                    url: deleteUrl,
+                    url: form.attr('action'),
                     type: 'DELETE',
                     data: {
                         _token: "{{ csrf_token() }}"
@@ -53,37 +52,12 @@
                         });
                     },
                     error: function(xhr) {
-                        Swal.fire('Error!', 'Something went wrong!', 'error');
+                        $('#subAdmin-table').DataTable().ajax.reload(null, false);
+                        Swal.fire('success', 'SubAdmin Not Found!', 'error');
                     }
                 });
             });
         });
     </script>
     {!! $html->scripts() !!}
-
-    @if (session('add_subAdmin'))
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: '{{ session('add_subAdmin') }}',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'OK'
-            });
-        </script>
-    @endif
-
-    @if (session('Update-SubAdmin'))
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: '{{ session('Update-SubAdmin') }}',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'OK'
-            });
-        </script>
-    @endif
 @endpush

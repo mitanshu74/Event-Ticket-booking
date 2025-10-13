@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Mail\WelcomeMail;
 use App\Models\Event;
+use App\Models\booking;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Client\Request as ClientRequest;
@@ -22,15 +23,19 @@ class UserController extends Controller
 {
     public function home(Request $request)
     {
-        $events = Event::orderBy('date', 'asc')->get();
+        $events = Event::orderBy('id', 'asc')->get();
 
         return view('User.home', compact('events'));
     }
 
     public function eventDetails($id)
     {
-        $event = Event::findOrFail($id);
-        return view('User.event-details', compact('event'));
+        $event = Event::find($id);
+        if ($event) {
+            return view('User.event-details', compact('event'));
+        } else {
+            return redirect()->to(route('user.home') . '#events')->with('success', 'Event not Found');
+        }
     }
 
     public function showRegisterForm()
@@ -138,13 +143,10 @@ class UserController extends Controller
 
     public function booked_ticket(Request $request)
     {
-        $userId = auth()->id();
+        $userId = Auth::guard('web')->id();
 
         // Get bookings of the logged-in user with related event data
-        $bookings = \App\Models\booking::with('event')
-            ->where('user_id', $userId)
-            ->latest()
-            ->get();
+        $bookings = booking::with('event')->where('user_id', $userId)->latest()->get();
 
         return view('User.ticket_booked', compact('bookings'));
     }

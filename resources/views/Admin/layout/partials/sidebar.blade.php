@@ -10,7 +10,6 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
                             <h6 class="mb-0"></h6>
-
                             @if (Auth::guard('admin')->user()->role == 1)
                                 <small>Administrator</small>
                             @elseif(Auth::guard('admin')->user()->role == 2)

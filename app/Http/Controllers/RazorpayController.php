@@ -151,7 +151,6 @@ class RazorpayController extends Controller
             return redirect()->back()->with(['error' => 'Event not found']);
         }
 
-
         // Check if booking is pending
         if ($booking->status !== 'pending') {
             return redirect()->back()->with('error', 'Booking is already paid or cancelled.');
@@ -185,7 +184,6 @@ class RazorpayController extends Controller
             return redirect()->back()->with('error', 'Tickets not available');
         }
 
-
         // Razorpay Order
         $amount = $booking->total_price;
         $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
@@ -209,6 +207,9 @@ class RazorpayController extends Controller
                 'status' => 0
             ]
         );
+        // Decrement available tickets
+        $event->total_tickets -= $booking->tickets_booked;
+        $event->save();
 
         // Show Razorpay payment page
         return view('razorpay.payment', [

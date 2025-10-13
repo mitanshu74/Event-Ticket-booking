@@ -23,6 +23,9 @@
 
                             {{-- Hidden images for lightbox --}}
                             @if (count($images) > 1)
+                                {{-- array_slice work array index start 0 
+                                array_slice($img ,1)array start index = 1
+                            --}}
                                 @foreach (array_slice($images, 1) as $img)
                                     <a href="{{ asset('storage/' . $img) }}" data-lightbox="event-gallery"
                                         class="d-none"></a>
@@ -66,7 +69,7 @@
                                     @endif
                                 </div>
 
-                                <p><strong>📅 Date :</strong> {{ $event->date->format('d-m-Y') }}
+                                <p><strong>📅 Date :</strong> {{ $event->date->format('jS M Y') }}
                                     @error('date')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror

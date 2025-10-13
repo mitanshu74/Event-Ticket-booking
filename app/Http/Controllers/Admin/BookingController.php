@@ -66,7 +66,7 @@ class BookingController extends Controller
             Mail::to($booking->user->email)->send(new BookingConfirmationMail($booking));
 
             return redirect()->route('booking.index')
-                ->with('booking', 'Booking Created Successfully!');
+                ->with('success', 'Booking Created Successfully!');
         }
 
         // tickets Not available
@@ -88,8 +88,11 @@ class BookingController extends Controller
     }
     public function cancel($id)
     {
-        $booking = booking::findOrFail($id);
+        $booking = booking::find($id);
 
+        if (!$booking) {
+            return redirect()->route('booking.index')->with('Error', 'Booked Ticket Not Found.');
+        }
         if ($booking->status === 'confirmed') {
             $booking->status = 'cancelled';
             $booking->save();
@@ -102,27 +105,28 @@ class BookingController extends Controller
             }
             Mail::to($booking->user->email)->send(new BookingCancelledMail($booking));
 
-            return redirect()->back()->with('booking', 'Booking cancelled successfully!');
+            return redirect()->back()->with('success', 'Booking cancelled successfully!');
         }
 
         return redirect()->back()->with('error', 'Booking cannot be cancelled.');
+    }
+
+    public function destroy(Booking $booking)
+    {
+        $booking->delete();
+        return redirect()->back()->with('success', 'Booking deleted successfully.');
     }
 
     public function MultiDelete(MultiDeleteRequest $request)
     {
         $ids = $request->ids;
 
+        
         Booking::whereIn('id', $ids)->delete();
 
         return response()->json([
             'success' => true,
             'message' => 'Selected bookings deleted successfully',
         ]);
-    }
-
-    public function destroy(booking $booking)
-    {
-        $booking->delete();
-        return redirect()->back()->with('delete-booking', 'Booking deleted successfully.');
     }
 }

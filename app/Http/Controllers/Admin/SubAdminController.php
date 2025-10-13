@@ -47,7 +47,7 @@ class SubAdminController extends Controller
         Mail::to($subAdmin->email)->send(new SubAdminPasswordMail($subAdmin, $randomPassword));
 
         return redirect()->route('admin.manageSubAdmin')
-            ->with('add_subAdmin', 'SubAdmin created successfully! Password has been sent to email.');
+            ->with('success', 'SubAdmin created successfully! Password has been sent to email.');
     }
 
     public function show(string $id)
@@ -57,29 +57,30 @@ class SubAdminController extends Controller
 
     public function edit(string $id)
     {
-        $admin = Admin::findOrFail($id);
+        $admin = Admin::find($id);
+
+        if (!$admin) {
+            return redirect()->route('admin.manageSubAdmin')->with('success', 'SubAdmin Not Found.');
+        }
+
         return view('Admin.edit_SubAdmin', compact('admin'));
     }
 
     public function update(editSubAdminRequest $request, string $id)
     {
-        $admin = Admin::findOrFail($id);
+        $admin = Admin::find($id);
 
         $validated = $request->validated();
 
         $admin->update($validated);
 
         return redirect()->route('admin.manageSubAdmin')
-            ->with('Update-SubAdmin', 'SubAdmin updated successfully!');
+            ->with('success', 'SubAdmin updated successfully!');
     }
 
     public function destroy(Admin $id)
     {
-        if ($id) {
-            $id->delete();
-            return response()->json(['success' => true, 'message' => 'SubAdmin deleted successfully.']);
-        } else {
-            return response()->json(['success' => true, 'message' => 'Event not found.']);
-        }
+        $id->delete();
+        return response()->json(['success' => true, 'message' => 'SubAdmin deleted successfully.']);
     }
 }
