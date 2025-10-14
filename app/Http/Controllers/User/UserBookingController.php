@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Domain\Api\Request\UserBookingRequest;
 use App\Mail\BookingCancelledMail;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Http\Request;
 use App\Models\booking;
 use App\Models\Event;
 

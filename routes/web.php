@@ -18,7 +18,7 @@
         Route::delete('admin/DeleteUser/{id}', 'Admin\AdminController@destroy')->name('admin.DeleteUser');
 
         // Event Routes
-        Route::get('admin/manageEvent', 'Admin\a@index')->name('admin.manageEvent');
+        Route::get('admin/manageEvent', 'Admin\EventController@index')->name('admin.manageEvent');
         Route::get('admin/addEvent', 'Admin\EventController@create')->name('admin.addEvent');
         Route::post('admin/storeEvent', 'Admin\EventController@store')->name('admin.storeEvent');
         Route::get('admin/EditEvent/{id}', 'Admin\EventController@edit')->name('admin.EditEvent');

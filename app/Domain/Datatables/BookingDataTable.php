@@ -6,6 +6,7 @@ use App\Domain\Util\Datatables\BaseDatatableScope;
 use App\Models\booking;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class BookingDataTable extends BaseDatatableScope
 {
@@ -33,7 +34,6 @@ class BookingDataTable extends BaseDatatableScope
                 'searchable' => true,
                 'orderable' => true,
             ],
-
             [
                 'data' => 'location',
                 'name' => 'events.location',
@@ -70,18 +70,19 @@ class BookingDataTable extends BaseDatatableScope
                 'orderable' => true,
             ],
             [
+                'data' => 'checkout',
+                'name' => 'checkout',
+                'title' => '<input type="checkbox"  id="select-all">',
+                'orderable' => false,
+                'searchable' => false,
+            ],
+
+            [
                 'data' => 'status',
                 'name' => 'status',
                 'title' => 'Status',
                 'searchable' => true,
                 'orderable' => true,
-            ],
-            [
-                'data' => 'checkbox',
-                'name' => 'checkbox',
-                'title' => '<input type="checkbox"  id="select-all">',
-                'orderable' => false,
-                'searchable' => false,
             ],
         ]);
     }
@@ -101,33 +102,39 @@ class BookingDataTable extends BaseDatatableScope
 
         return DataTables::of($query)
             ->addIndexColumn()
+
+            // Action column
             ->addColumn('action', function ($row) {
-                // Check admin role
                 $admin = Auth::guard('admin')->user();
                 if ($admin->role == 2) {
                     return ''; // hide buttons for role 2
                 }
+
                 $btn = '<div style="display:flex; gap:5px;">';
 
-                // Cancel button (only show on booking is confirmed  delete btn show on Cancelled Pending )
+                // Cancel button if confirmed, else delete
                 if ($row->status === 'confirmed') {
                     $cancelUrl = route('admin.booking.cancel', $row->id);
-                    $btn .= '<form action="' . $cancelUrl . '" method="POST" style="display:inline;" class="cancel-form">
-                ' . csrf_field() . '
-                <button type="submit" class="btn btn-warning btn-sm">Cancel</button>
-            </form>';
+                    $btn .= '<form action="' . $cancelUrl . '" method="POST" class="cancel-form" style="display:inline;">
+                        ' . csrf_field() . '
+                        <button type="submit" class="btn btn-warning btn-sm">Cancel</button>
+                    </form>';
                 } else {
                     $deleteUrl = route('booking.destroy', $row->id);
-                    $btn .= '<form action="' . $deleteUrl . '" method="POST" style="display:inline;" class="delete-form">
-                        ' . csrf_field() . '
-                        ' . method_field('DELETE') . '
+                    $btn .= '<form action="' . $deleteUrl . '" method="POST" class="delete-form" style="display:inline;">
+                        ' . csrf_field() . method_field('DELETE') . '
                         <button type="submit" class="btn btn-danger btn-sm" style="margin:5px;">
                             <i class="fa fa-trash-o" style="font-size:20px;color:white;"></i>
                         </button>
                     </form>';
                 }
+
+                $btn .= '</div>';
                 return $btn;
-            })->editColumn('status', function ($row) {
+            })
+
+            // Status badge
+            ->editColumn('status', function ($row) {
                 if ($row->status === 'confirmed') {
                     return '<span class="badge bg-success">Confirmed</span>';
                 } elseif ($row->status === 'cancelled') {
@@ -135,12 +142,27 @@ class BookingDataTable extends BaseDatatableScope
                 } else {
                     return '<span class="badge bg-secondary">Pending</span>';
                 }
-            })->addColumn('checkbox', function ($row) {
-                if ($row->status === 'cancelled') {
-                    return '<input type="checkbox" class="task-checkbox" value="' . $row->id . '">';
+            })
+
+            // Date with badge + formatting
+            ->editColumn('date', function ($row) {
+                return '<span>'
+                    . Carbon::parse($row->date)->format('d-m-Y')
+                    . '</span>';
+            })
+
+            // Checkout column
+            ->addColumn('checkout', function ($row) {
+                $admin = Auth::guard('admin')->user();
+                if ($admin && $admin->role == 1) {
+                    if ($row->status === 'confirmed') {
+                        return '<input type="checkbox" class="task-checkbox" value="' . $row->id . '">';
+                    }
                 }
                 return '';
-            })->rawColumns(['status', 'action', 'checkbox'])
+            })
+
+            ->rawColumns(['date', 'status', 'action', 'checkout'])
             ->make(true);
     }
 }

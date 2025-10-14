@@ -51,6 +51,7 @@ abstract class BaseDatatableScope
                     'searchable' => false,
                     'orderable' => false,
                 ];
+                
             }
         } elseif ($user) {
             $columns[] = [

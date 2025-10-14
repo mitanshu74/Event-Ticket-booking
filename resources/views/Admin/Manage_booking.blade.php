@@ -12,9 +12,12 @@
                     </div>
 
                 </div>
-                <div class="mx-3 mt-3">
-                    <button id="bulkDeleteBtn" class="btn btn-danger ">Delete Selected</button>
-                </div>
+                @if (Auth::guard('admin')->user()->role == 1)
+                    <div class="mx-3 mt-3">
+                        <button id="bulkDeleteBtn" class="btn btn-danger ">Delete Selected</button>
+                    </div>
+                @endif
+
                 <div class="card-body">
                     <div class="table-responsive">
 
@@ -56,7 +59,8 @@
                         Swal.fire({
                             icon: 'warning',
                             title: 'No Booking Selected',
-                            text: 'Please select at least one booking to delete.'
+                            text: 'Please select at least one booking to delete.',
+                            showCancelButton: true,
                         });
                         return;
                     }

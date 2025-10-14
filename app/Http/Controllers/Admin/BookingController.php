@@ -34,7 +34,7 @@ class BookingController extends Controller
         $events = Event::all();
         return view('Admin.booking', compact('users', 'events'));
     }
-
+    
     public function store(bookingRequest $request)
     {
         $validated = $request->validated();
@@ -111,22 +111,21 @@ class BookingController extends Controller
         return redirect()->back()->with('error', 'Booking cannot be cancelled.');
     }
 
-    public function destroy(Booking $booking)
-    {
-        $booking->delete();
-        return redirect()->back()->with('success', 'Booking deleted successfully.');
-    }
-
     public function MultiDelete(MultiDeleteRequest $request)
     {
         $ids = $request->ids;
 
-        
         Booking::whereIn('id', $ids)->delete();
 
         return response()->json([
             'success' => true,
             'message' => 'Selected bookings deleted successfully',
         ]);
+    }
+
+    public function destroy(Booking $booking)
+    {
+        $booking->delete();
+        return redirect()->back()->with('success', 'Booking deleted successfully.');
     }
 }
