@@ -41,8 +41,103 @@
     {{-- lightbox --}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
+
     <style>
-        .table-responsive {
+        .dz-success-mark,
+        .dz-error-mark {
+            display: none;
+        }
+
+        .error-image {
+            font-size: 12px;
+        }
+
+        /* Normal Dropzone border */
+        #dropzoneDragArea {
+            border: 1px dashed #bec8d0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        #dropzoneDragArea.is-invalid {
+            border: 1px solid #dc3545 !important;
+            /* Bootstrap danger red */
+        }
+
+        #dropzoneDragArea:hover {
+            border-color: black;
+        }
+
+        .dz-filename {
+            display: none;
+        }
+
+        /* Each preview box */
+        .dz-preview.dz-image-preview {
+            width: 180px;
+            display: inline-block;
+            margin: 10px;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Image inside preview */
+        .dz-image img {
+            border-radius: 12px;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        /* File name + size */
+        .dz-details {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 6px;
+            color: #555;
+        }
+
+        /* Progress bar */
+        .dz-progress {
+            height: 5px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 5px;
+            background: #eee;
+        }
+
+        .dz-upload {
+            background: #6c63ff;
+            height: 5px;
+            display: block;
+        }
+
+        /* Remove button */
+        .dz-remove {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-size: 12px;
+            padding: 3px 6px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .dz-remove:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        */ .table-responsive {
             overflow-x: auto;
         }
 

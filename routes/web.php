@@ -12,7 +12,7 @@
     Route::middleware(['admin'])->group(function () {
         Route::get('/admin/home', 'Admin\AdminController@home')->name('admin.home');
         Route::get('/admin/profile', 'Admin\AdminController@profile')->name('admin.profile');
-        Route::post('/admin/profile', 'Admin\AdminController@ProfileUpdate')->name('admin.profile.update');
+        Route::post('/admin/profile', 'Admin\AdminContupdate_Fileroller@ProfileUpdate')->name('admin.profile.update');
 
         // User delete
         Route::delete('admin/DeleteUser/{id}', 'Admin\AdminController@destroy')->name('admin.DeleteUser');
@@ -24,6 +24,9 @@
         Route::get('admin/EditEvent/{id}', 'Admin\EventController@edit')->name('admin.EditEvent');
         Route::post('admin/UpdateEvent/{id}', 'Admin\EventController@update')->name('admin.UpdateEvent');
         Route::delete('admin/DeleteEvent/{id}', 'Admin\EventController@destroy')->name('admin.DeleteEvent');
+        Route::post('store-file', 'Admin\EventController@storeFile')->name('store_file');
+        Route::post('update-file', 'Admin\EventController@updateFile')->name('update_File');
+
 
         // SubAdmin Routes
         Route::get('admin/manageSubAdmin', 'Admin\SubAdminController@index')->name('admin.manageSubAdmin');

@@ -70,8 +70,8 @@ class BookingDataTable extends BaseDatatableScope
                 'orderable' => true,
             ],
             [
-                'data' => 'checkout',
-                'name' => 'checkout',
+                'data' => 'checkbox',
+                'name' => 'checkbox',
                 'title' => '<input type="checkbox"  id="select-all">',
                 'orderable' => false,
                 'searchable' => false,
@@ -151,8 +151,8 @@ class BookingDataTable extends BaseDatatableScope
                     . '</span>';
             })
 
-            // Checkout column
-            ->addColumn('checkout', function ($row) {
+            // checkbox column
+            ->addColumn('checkbox', function ($row) {
                 $admin = Auth::guard('admin')->user();
                 if ($admin && $admin->role == 1) {
                     if ($row->status === 'confirmed') {
@@ -162,7 +162,7 @@ class BookingDataTable extends BaseDatatableScope
                 return '';
             })
 
-            ->rawColumns(['date', 'status', 'action', 'checkout'])
+            ->rawColumns(['date', 'status', 'action', 'checkbox'])
             ->make(true);
     }
 }
