@@ -4,7 +4,7 @@
         <div class="row g-4">
             @forelse($events as $event)
                 @php
-                    $images = json_decode($event->image, true) ?? []; // decode JSON array
+                    $images = json_decode($event->image, true) ?? [];
                     $firstImage = $images[0];
                 @endphp
                 <div class="col-md-4">
@@ -14,7 +14,6 @@
                                 style="height:280px; object-fit:cover;">
                         </a>
 
-                        {{-- Add hidden images for lightbox --}}
                         @if (count($images) > 1)
                             @foreach (array_slice($images, 1) as $img)
                                 <a href="{{ asset('storage/' . $img) }}" data-lightbox="event-{{ $event->id }}"

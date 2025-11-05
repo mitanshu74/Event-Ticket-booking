@@ -10,22 +10,16 @@ class UpdateUserProfileRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // user must be logged in, middleware handles this
+        return true;
     }
 
     public function rules(): array
     {
-        $userId = Auth::guard('web')->id(); // get current user id for unique email
+        $userId = Auth::guard('web')->id();
 
         return [
             'username' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'email',
-                'regex:/@gmail\.com$/',
-                'unique:users,email,' . $userId,
-            ],
-
+            'email' => 'required|email|ends_with:gmail.com|unique:users,email,' . $userId,
             'password' => ['nullable', Password::min(6)->letters()->numbers()->symbols()],
             'number' => 'required|digits:10',
             'address' => 'required|string',

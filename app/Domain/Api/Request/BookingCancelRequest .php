@@ -9,15 +9,13 @@ class BookingCancelRequest extends FormRequest
 {
     public function authorize()
     {
-        // Only allow logged-in admin
         return Auth::guard('admin')->check();
     }
 
     public function rules()
     {
         return [
-            // This is optional because we get ID from route
-            'booking_id' => 'sometimes|exists:booking,id',
+            'booking_id' => 'exists:booking,id',
         ];
     }
 }

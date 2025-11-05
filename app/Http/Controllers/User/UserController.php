@@ -25,14 +25,14 @@ class UserController extends Controller
     {
         $events = Event::orderBy('id', 'asc')->get();
 
-        return view('User.home', compact('events'));
+        return view('user.home', compact('events'));
     }
 
     public function eventDetails($id)
     {
         $event = Event::find($id);
         if ($event) {
-            return view('User.event-details', compact('event'));
+            return view('user.event-details', compact('event'));
         } else {
             return redirect()->to(route('user.home') . '#events')->with('success', 'Event not Found');
         }
@@ -40,29 +40,25 @@ class UserController extends Controller
 
     public function showRegisterForm()
     {
-        return view('User.register');
+        return view('user.register');
     }
 
     public function register(UserRegisterRequest $request)
     {
         $validated = $request->validated();
-        // $imagePath = null;
 
-        // Handle image upload
         if ($request->hasFile('UserImage')) {
             $imagePath = $request->file('UserImage')->store('users', 'public');
             $validated['image'] = $imagePath;
         }
         $validated['password'] = Hash::make($request->password);
 
-        // Generate OTP and expiry
         $otp = rand(100000, 999999);
         $validated['otp'] = $otp;
         $validated['otp_expires_at'] = Carbon::now()->addMinutes(10);
 
         $user = User::create($validated);
 
-        // Send OTP via email
         Mail::to($user->email)->send(new WelcomeMail($user->username, $otp));
 
         session(['otp_email' => $user->email]);
@@ -72,8 +68,8 @@ class UserController extends Controller
 
     public function showVerifyForm()
     {
-        $email = session('otp_email'); // get from session
-        return view('User.verifyOtp', compact('email'));
+        $email = session('otp_email');
+        return view('user.verifyOtp', compact('email'));
     }
 
     public function verifyOtp(VerifyOtpRequest $request)
@@ -114,7 +110,7 @@ class UserController extends Controller
 
     public function showLoginForm()
     {
-        return view('User.login');
+        return view('user.login');
     }
 
     public function login(UserLoginRequest $request)
@@ -129,7 +125,6 @@ class UserController extends Controller
                 ->withInput();
         }
 
-        // Attempt login
 
         if (Auth::guard('web')->attempt($credentials)) {
             return redirect()->route('user.home')
@@ -145,15 +140,14 @@ class UserController extends Controller
     {
         $userId = Auth::guard('web')->id();
 
-        // Get bookings of the logged-in user with related event data
         $bookings = booking::with('event')->where('user_id', $userId)->latest()->get();
 
-        return view('User.ticket_booked', compact('bookings'));
+        return view('user.ticket_booked', compact('bookings'));
     }
 
     public function view_profile()
     {
-        return view('User.update_profile');
+        return view('user.update_profile');
     }
 
     public function User_profile(UpdateUserProfileRequest $request)
@@ -166,19 +160,15 @@ class UserController extends Controller
         $user->address = $request->address;
         $user->gender = $request->gender;
 
-        // Update password if provided
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
 
-        // Update image if uploaded
         if ($request->hasFile('UserImage')) {
-            // Delete old image if exists
             if ($user->image && Storage::disk('public')->exists($user->image)) {
                 Storage::disk('public')->delete($user->image);
             }
 
-            // Corrected assignment
             $user->image = $request->file('UserImage')->store('users', 'public');
         }
 
@@ -189,7 +179,7 @@ class UserController extends Controller
 
     public function logout()
     {
-        Auth::guard('web')->logout(); // Only logout user
+        Auth::guard('web')->logout();
         return redirect()->route('user.home');
     }
 }

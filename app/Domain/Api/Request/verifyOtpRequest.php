@@ -8,7 +8,6 @@ class VerifyOtpRequest extends FormRequest
 {
     public function authorize()
     {
-        // Allow all users (authenticated or not) to attempt verification
         return true;
     }
 

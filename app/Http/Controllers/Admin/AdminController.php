@@ -17,7 +17,7 @@ class AdminController extends Controller
 {
     public function show_login()
     {
-        return view('Admin.login');
+        return view('admin.login');
     }
 
     public function login(LoginRequest $request)
@@ -32,7 +32,6 @@ class AdminController extends Controller
                 ->withInput();
         }
 
-        // Attempt login
         if (Auth::guard('admin')->attempt($credentials)) {
             return redirect()->route('admin.home')
                 ->with('login', 'Successfully logged in!');
@@ -53,12 +52,12 @@ class AdminController extends Controller
         $totalSubAdmin = Admin::where('role', 2)->count();
         $totalevent = Event::count();
         $totalbooking = booking::count();
-        return view('Admin.home', ['html' => $datatable->html()], compact('totalSubAdmin', 'totalevent', 'totalbooking', 'totalUser'));
+        return view('admin.home', ['html' => $datatable->html()], compact('totalSubAdmin', 'totalevent', 'totalbooking', 'totalUser'));
     }
 
     public function profile()
     {
-        return view('Admin.profile');
+        return view('admin.profile');
     }
 
     public function ProfileUpdate(UpdateProfileRequest $request)
@@ -91,10 +90,8 @@ class AdminController extends Controller
         return Auth::guard('admin');
     }
 
-    // user delete
     public function destroy(User $id)
     {
-        // Delete user image if exists
         if ($id->image && file_exists(storage_path('app/public/' . $id->image))) {
             unlink(storage_path('app/public/' . $id->image));
         }

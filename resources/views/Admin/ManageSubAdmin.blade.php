@@ -12,7 +12,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    {!! $html->table(['class' => 'table table-striped table-bordered', 'id' => 'subAdmin-table']) !!}
+                    {!! $html->table() !!}
                 </div>
             </div>
         </div>
@@ -43,7 +43,7 @@
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(data) {
-                        $('#subAdmin-table').DataTable().ajax.reload(null, false);
+                        $('.dataTable').DataTable().ajax.reload(null, false);
                         Swal.fire({
                             icon: data.success ? 'success' : 'error',
                             title: data.success ? 'Deleted!' : 'Error',
@@ -52,8 +52,8 @@
                         });
                     },
                     error: function(xhr) {
-                        $('#subAdmin-table').DataTable().ajax.reload(null, false);
-                        Swal.fire('success', 'SubAdmin Not Found!', 'error');
+                        $('.dataTable').DataTable().ajax.reload(null, false);
+                        Swal.fire('error', 'SubAdmin Not Found!', 'error');
                     }
                 });
             });

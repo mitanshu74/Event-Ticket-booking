@@ -21,9 +21,8 @@
                 <div class="card-body">
                     <div class="table-responsive">
 
-                        {!! $html->table(['class' => 'table table-striped table-bordered', 'id' => 'bookingTable']) !!}
+                        {!! $html->table() !!}
                     </div>
-                    {{-- loader --}}
                     <div id="loading-overlay">
                         <div class="spinner"></div>
                     </div>
@@ -38,17 +37,15 @@
             $(document).ready(function() {
 
                 const overlay = document.getElementById('loading-overlay');
-                // Show overlay
+
                 function showLoader() {
                     overlay.style.display = 'flex';
                 }
 
-                // Select/Deselect All Checkboxes
                 $(document).on('click', '#select-all', function() {
                     $('.task-checkbox').prop('checked', this.checked);
                 });
 
-                // Multi-delete
                 $('#bulkDeleteBtn').on('click', function() {
                     let ids = [];
                     $('.task-checkbox:checked').each(function() {
@@ -94,7 +91,6 @@
                     });
                 });
 
-                // delete button
                 $(document).on('click', '.delete-form button', function(e) {
                     e.preventDefault();
                     const form = $(this).closest('form');
@@ -121,11 +117,10 @@
                                             'Booking deleted successfully.',
                                         showConfirmButton: true,
                                     });
-                                    // Refresh datatable
-                                    $('#bookingTable').DataTable().ajax.reload();
+                                    $('.dataTable').DataTable().ajax.reload();
                                 },
                                 error: function(xhr) {
-                                    $('#bookingTable').DataTable().ajax.reload();
+                                    $('.dataTable').DataTable().ajax.reload();
                                     Swal.fire('Error!', 'Booked Ticket Not Found!',
                                         'error');
                                 }
@@ -134,9 +129,8 @@
                     });
                 });
 
-                // Cancel confirmation with AJAX
                 $(document).on('submit', '.cancel-form', function(e) {
-                    e.preventDefault(); // prevent default submit
+                    e.preventDefault();
                     const form = this;
                     Swal.fire({
                         title: 'Are you sure?',
@@ -148,7 +142,6 @@
                         confirmButtonText: 'Yes, cancel it!'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            // submit the form normally
                             showLoader();
                             form.submit();
                         }

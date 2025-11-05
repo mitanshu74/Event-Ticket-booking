@@ -7,7 +7,6 @@
                 <div class="card shadow-lg p-4">
                     <div class="row align-items-center">
 
-                        {{-- Event Images --}}
                         <div class="col-md-6 text-center">
                             @php
                                 $images = json_decode($event->image, true) ?? [];
@@ -20,19 +19,14 @@
                                         class="img-fluid rounded mb-3" style="max-height:500px; object-fit:cover;">
                                 </a>
                             @endif
-
-                            {{-- Hidden images for lightbox --}}
                             @if (count($images) > 1)
-                                {{-- array_slice work array index start 0 
-                                array_slice($img ,1)array start index = 1
-                            --}}
+                              
                                 @foreach (array_slice($images, 1) as $img)
                                     <a href="{{ asset('storage/' . $img) }}" data-lightbox="event-gallery"
                                         class="d-none"></a>
                                 @endforeach
                             @endif
 
-                            {{-- 🔹 Static Additional Facilities --}}
                             <div class="text-start">
                                 <h5 class="fw-bold mb-3 text-primary">
                                     🍽 Additional Facilities
@@ -53,7 +47,6 @@
                                 </ul>
                             </div>
                         </div>
-                        {{-- Booking Form --}}
                         <div class="col-md-6">
                             <form id="bookingForm" method="POST" action="{{ route('razorpay.payment') }}">
                                 @csrf

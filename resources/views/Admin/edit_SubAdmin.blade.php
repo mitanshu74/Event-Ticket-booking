@@ -2,9 +2,7 @@
  @section('title', 'Admin - Add SubAdmin ')
  @section('content')
      <div class="pc-content">
-         <!-- [ Main Content ] start -->
          <div class="row">
-             <!-- [ Form Validation ] start -->
              <div class="col-sm-12">
                  <div class="card">
                      <div class="card-header d-flex justify-content-between">
@@ -14,11 +12,11 @@
                      </div>
                      <div class="card-body">
                          <div class="card-body">
-                             <form action="{{ route('admin.UpdateSubAdmin', $admin->id) }}" method="POST">
+                             <form action="{{ route('admin.UpdateSubAdmin', $admin->id) }}" id="editSubadminForm"
+                                 method="POST">
                                  @csrf
                                  @method('PUT')
 
-                                 {{-- Name --}}
                                  <div class="col-md-6 mt-3">
                                      <label for="Name" class="form-label">Name</label>
                                      <input type="text" class="form-control @error('name') is-invalid @enderror"
@@ -31,7 +29,6 @@
                                      @enderror
                                  </div>
 
-                                 {{-- Email --}}
                                  <div class="col-md-6 mt-3">
                                      <label for="email" class="form-label">Email</label>
                                      <input type="email" class="form-control @error('email') is-invalid @enderror"
@@ -44,19 +41,28 @@
                                      @enderror
                                  </div>
 
-                                 {{-- Submit --}}
                                  <div class="col-12 mt-3">
                                      <button class="btn btn-success" type="submit">Update</button>
                                  </div>
                              </form>
-
+                             <div id="loading-overlay">
+                                 <div class="spinner"></div>
+                             </div>
                          </div>
 
                      </div>
                  </div>
              </div>
-             <!-- [ Form Validation ] end -->
          </div>
-         <!-- [ Main Content ] end -->
      </div>
  @endsection
+ @push('script')
+     <script>
+         const form = document.getElementById('editSubadminForm');
+         const overlay = document.getElementById('loading-overlay');
+
+         form.addEventListener('submit', function() {
+             overlay.style.display = 'flex';
+         });
+     </script>
+ @endpush

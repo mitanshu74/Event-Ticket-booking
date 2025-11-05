@@ -44,8 +44,61 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
 
     <style>
+        /* Style Dropzone preview box */
+        .dz-preview {
+            position: relative;
+            display: inline-block;
+            margin: 10px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            background: #fff;
+        }
+
+        /* Image inside the preview */
+        .dz-image img {
+            display: block;
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        /* Remove button style */
+        .dz-remove {
+            display: block !important;
+            position: relative !important;
+            margin-top: 8px;
+            text-align: center;
+            background-color: black;
+            color: #fff !important;
+            font-weight: 500;
+            font-size: 13px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none !important;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        /* Hover effect */
+        .dz-remove:hover {
+            background-color: rgba(0, 0, 0, 0.466);
+            color: #fff !important;
+        }
+
+        /* Fix for the gray overlay text (filename) */
+        .dz-details {
+            display: none !important;
+        }
+
+
+        /* old dropzone */
         .dz-success-mark,
-        .dz-error-mark {
+        .dz-error-mark,
+        .dz-details,
+        .dz-progress,
+        .dz-success-mark {
             display: none;
         }
 
@@ -54,7 +107,7 @@
         }
 
         /* Normal Dropzone border */
-        #dropzoneDragArea {
+        #dropzoneArea {
             border: 1px dashed #bec8d0;
             border-radius: 12px;
             padding: 20px;
@@ -63,12 +116,7 @@
             transition: border-color 0.3s ease;
         }
 
-        #dropzoneDragArea.is-invalid {
-            border: 1px solid #dc3545 !important;
-            /* Bootstrap danger red */
-        }
-
-        #dropzoneDragArea:hover {
+        #dropzoneArea:hover {
             border-color: black;
         }
 
@@ -87,8 +135,13 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        .dz-image {
+            position: relative;
+            left: 29px;
+        }
+
         /* Image inside preview */
-        .dz-image img {
+        .dz-image {
             border-radius: 12px;
             width: 120px;
             height: 120px;
@@ -118,7 +171,7 @@
             display: block;
         }
 
-        /* Remove button */
+        /* Remove button
         .dz-remove {
             position: absolute;
             top: 6px;
@@ -135,7 +188,7 @@
 
         .dz-remove:hover {
             background: rgba(0, 0, 0, 0.9);
-        }
+        } */
 
         */ .table-responsive {
             overflow-x: auto;
@@ -242,7 +295,9 @@
                 text: '{{ session('success') }}',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'OK'
-            });
+            }).then(() => {
+                localStorage.removeItem('event_images');
+            });;
         </script>
     @endif
     @if (session('Error'))
@@ -257,9 +312,7 @@
         </script>
     @endif
     @stack('script')
-    {{-- <script>
-        layout_rtl_change("false");
-    </script> --}}
+
 </body>
 
 </html>

@@ -30,12 +30,10 @@ class RazorpayController extends Controller
             return redirect()->back()->withErrors(['event_id' => 'Event not found']);
         }
 
-        // Check event date
         if ($event->date->isPast()) {
             return redirect()->back()->withErrors(['date' => 'This event has already occurred.']);
         }
 
-        // Check total tickets already booked by this user
         $existingTickets = booking::where('user_id', $user->id)
             ->where('event_id', $event->id)->where('status', 'confirmed')
             ->sum('tickets_booked');
@@ -46,12 +44,10 @@ class RazorpayController extends Controller
             ]);
         }
 
-        // Check if tickets are available
         if ($event->total_tickets < $data['tickets_booked']) {
             return redirect()->back()->withErrors(['tickets_booked' => 'Tickets not available']);
         }
 
-        // --- Create  booking with panding data  ---
         $booking = booking::create([
             'user_id' => $user->id,
             'event_id' => $event->id,
@@ -60,11 +56,9 @@ class RazorpayController extends Controller
             'status' => 'pending'
         ]);
 
-        // Decrement available tickets
         $event->total_tickets -= $data['tickets_booked'];
         $event->save();
 
-        // Razorpay Order 
         $amount = $booking->total_price; // total amount in ₹
         $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
         $order = $api->order->create([
@@ -74,7 +68,6 @@ class RazorpayController extends Controller
             'payment_capture' => 1
         ]);
 
-        // Create Payment  
         $payment = Payment::create([
             'booking_id' => $booking->id,
             'user_id' => $user->id,
@@ -87,7 +80,6 @@ class RazorpayController extends Controller
         ]);
 
 
-        // Open Razorpay Payment Page 
         return view('razorpay.payment', [
             'orderId' => $order['id'],
             'name' => $payment->name,
@@ -105,25 +97,21 @@ class RazorpayController extends Controller
     public function success(PaymentRequest $request)
     {
         $validated = $request->validated();
-        // Find payment record
         $payment = Payment::where('order_id', $validated['razorpay_order_id'])->first();
 
         if (!$payment) {
             return back()->with('error', 'Invalid payment record');
         }
 
-        // Update payment
         $payment->update([
             'razorpay_payment_id' => $validated['razorpay_payment_id'],
             'status' => 1
         ]);
 
-        // Confirm booking
         $booking = booking::find($payment->booking_id);
         if ($booking) {
             $booking->update(['status' => 'confirmed']);
 
-            // Send booking confirmation email
             Mail::to($booking->user->email)->send(new BookingConfirmationMail($booking));
         }
 
@@ -135,7 +123,6 @@ class RazorpayController extends Controller
                 ->with('success', 'Payment successfully ! Your booking has been confirmed.');
         }
 
-        // Default → event details page
         return redirect()
             ->route('user.home')
             ->with('success', 'Payment successfully! Your booking has been confirmed.');
@@ -143,15 +130,12 @@ class RazorpayController extends Controller
 
     public function redirectToPayment($bookingId)
     {
-        // Fetch the booking
         $booking = booking::find($bookingId);
 
-        // check in database this record existing or not
         if (!$booking) {
             return redirect()->back()->with(['error' => 'Event not found']);
         }
 
-        // Check if booking is pending
         if ($booking->status !== 'pending') {
             return redirect()->back()->with('error', 'Booking is already paid or cancelled.');
         }
@@ -163,28 +147,23 @@ class RazorpayController extends Controller
             return redirect()->back()->with(['error' => 'Event not found']);
         }
 
-        // Check event date
         if ($event->date->isPast()) {
             return redirect()->back()->with(['error' => 'This event has already occurred.']);
         }
 
-        // Check total tickets already booked by this user
         $existingTickets = booking::where('user_id', $user->id)
             ->where('event_id', $event->id)
             ->where('status', 'confirmed')
             ->sum('tickets_booked');
 
-        // Cannot book more than 5 tickets
         if ($existingTickets + $booking->tickets_booked > 5) {
             return redirect()->back()->with('error', 'You cannot book more than 5 tickets for this event in total.');
         }
 
-        // Check if tickets are available
         if ($event->total_tickets < $booking->tickets_booked) {
             return redirect()->back()->with('error', 'Tickets not available');
         }
 
-        // Razorpay Order
         $amount = $booking->total_price;
         $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
         $order = $api->order->create([
@@ -194,7 +173,6 @@ class RazorpayController extends Controller
             'payment_capture' => 1
         ]);
 
-        // Update or create payment record 
         $payment = Payment::updateOrCreate(
             ['booking_id' => $booking->id],
             [
@@ -207,11 +185,9 @@ class RazorpayController extends Controller
                 'status' => 0
             ]
         );
-        // Decrement available tickets
         $event->total_tickets -= $booking->tickets_booked;
         $event->save();
 
-        // Show Razorpay payment page
         return view('razorpay.payment', [
             'orderId' => $order['id'],
             'name' => $payment->name, // Fixed typo here

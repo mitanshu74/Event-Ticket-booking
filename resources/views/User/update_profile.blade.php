@@ -110,7 +110,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Success alert for profile update
             @if (session('user_profile_update'))
                 Swal.fire({
                     icon: 'success',
@@ -121,7 +120,6 @@
                 });
             @endif
 
-            // Password toggle
             const togglePassword = document.querySelector('.password-wrapper .toggle-password');
             const passwordInput = document.querySelector('.password-wrapper input[name="password"]');
             if (togglePassword) {
@@ -133,7 +131,6 @@
                 });
             }
 
-            // Image preview
             const imageInput = document.getElementById('imageInput');
             const previewImage = document.getElementById('previewImage');
             if (imageInput) {

@@ -14,7 +14,6 @@
                             novalidate>
                             @csrf
 
-                            {{-- Name --}}
                             <div class="row">
                                 <div class="col-md-6 mt-3">
                                     <label for="adminName" class="form-label">Name</label>
@@ -28,7 +27,6 @@
                                 </div>
                             </div>
 
-                            {{-- Email --}}
                             <div class="row">
                                 <div class="col-md-6 mt-3">
                                     <label for="adminEmail" class="form-label">Email</label>
@@ -41,7 +39,6 @@
                                     @enderror
                                 </div>
                             </div>
-                            {{-- Password --}}
                             <div class="row">
                                 <div class="col-md-6 mt-3 position-relative">
                                     <label for="adminPassword" class="form-label">Password</label>
@@ -57,7 +54,6 @@
                                 </div>
                             </div>
 
-                            <!-- Submit -->
                             <div class="col-12 mt-3">
                                 <button class="btn btn-success" type="submit">Update</button>
                             </div>

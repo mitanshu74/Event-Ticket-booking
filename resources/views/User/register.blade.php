@@ -68,8 +68,8 @@
                 <label class="form-label">Password</label>
                 <input type="password" name="password" id="password"
                     class="form-control pe-5 @error('password') is-invalid @enderror" placeholder="Enter password">
-                <!-- Eye icon -->
-                <span class="toggle-password"
+
+                    <span class="toggle-password"
                     style="position: absolute; top: 70%; right: 15px; transform: translateY(-50%); cursor: pointer;">
                     <i class="fa fa-eye-slash" id="toggleIcon"></i>
                 </span>
@@ -115,7 +115,6 @@
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
 
-                <!-- Image Preview -->
                 <div class="mt-2">
                     <img id="previewImage" src="#" alt="Preview"
                         style="width: 120px; height: 100px; display: none; border:1px solid #ccc; padding:3px;">
@@ -140,7 +139,6 @@
                 reader.readAsDataURL(this.files[0]);
             });
         });
-    </script> <!-- jQuery Password Toggle Script -->
     <script>
         $(document).ready(function() {
             $('.toggle-password').on('click', function() {

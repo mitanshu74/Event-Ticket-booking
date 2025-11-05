@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\booking;
 
 class Event extends Model
 {
@@ -11,7 +12,6 @@ class Event extends Model
 
     protected $table = 'events';
 
-    // Fillable fields for mass assignment
     protected $fillable = [
         'name',
         'date',
@@ -23,7 +23,6 @@ class Event extends Model
         'image',
     ];
 
-    // Optional: Cast columns to specific types
     protected $casts = [
         'date' => 'date',
         'start_time' => 'datetime:H:i:s A',
@@ -31,4 +30,9 @@ class Event extends Model
         'price' => 'integer',
         'total_tickets' => 'integer',
     ];
+
+    public function bookings()
+    {
+        return $this->hasMany(booking::class, 'event_id');
+    }
 }

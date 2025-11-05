@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\booking;
 
 class User extends Authenticatable
 {
@@ -39,6 +40,6 @@ class User extends Authenticatable
     // This user owns multiple bookings in the bookings table, and they are connected using the user_id column.
     public function bookings()
     {
-        return $this->hasMany(\App\Models\Booking::class, 'user_id');
+        return $this->hasMany(booking::class, 'user_id');
     }
 }

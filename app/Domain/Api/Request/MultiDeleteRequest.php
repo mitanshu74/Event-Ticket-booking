@@ -15,7 +15,7 @@ class MultiDeleteRequest  extends FormRequest
     {
         return [
             'ids'   => 'required|array',
-            'ids.*' => 'integer|exists:bookings,id', // validate each id
+            'ids.*' => 'integer|exists:bookings,id', 
         ];
     }
 

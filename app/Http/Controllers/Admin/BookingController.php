@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\domain\Api\Request\MultiDeleteRequest;
 use App\domain\Datatables\BookingDataTable;
-use App\domain\Api\Request\bookingRequest;
+use App\domain\Api\Request\BookingRequest;
 use App\Mail\BookingConfirmationMail;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BookingCancelledMail;
@@ -23,7 +23,7 @@ class BookingController extends Controller
         if (request()->ajax()) {
             return $datatable->query();
         }
-        return view('Admin.Manage_booking', [
+        return view('admin.manage_booking', [
             'html' => $datatable->html(),
         ]);
     }
@@ -32,19 +32,18 @@ class BookingController extends Controller
     {
         $users = User::all();
         $events = Event::all();
-        return view('Admin.booking', compact('users', 'events'));
+        return view('admin.booking', compact('users', 'events'));
     }
-    
-    public function store(bookingRequest $request)
+
+    public function store(BookingRequest $request)
     {
         $validated = $request->validated();
         $validated['status'] = 'confirmed';
         $userId = $validated['user_id'];
         $eventId = $validated['event_id'];
-        // Find the event
+
         $event = Event::find($validated['event_id']);
 
-        // Check total tickets already booked by this user for this event
         $existingTickets = booking::where('user_id', $userId)
             ->where('event_id', $eventId)
             ->sum('tickets_booked');
@@ -54,22 +53,20 @@ class BookingController extends Controller
                 'tickets_booked' => 'You cannot book more than 5 tickets for this event in total.'
             ]);
         }
-        // Check if tickets are available 
+
+        // Check tickets are available 
         if ($event && $event->total_tickets >= $validated['tickets_booked']) {
-            // Decrement total tickets
             $event->total_tickets -= $validated['tickets_booked'];
+
             $event->save();
 
-            // Create booking
             $booking = booking::create($validated);
-            // send mail
             Mail::to($booking->user->email)->send(new BookingConfirmationMail($booking));
 
             return redirect()->route('booking.index')
                 ->with('success', 'Booking Created Successfully!');
         }
 
-        // tickets Not available
         return redirect()->back()->withErrors(['tickets_booked' => 'tickets Not available.']);
     }
 
@@ -97,7 +94,6 @@ class BookingController extends Controller
             $booking->status = 'cancelled';
             $booking->save();
 
-            // Optionally: add tickets back to event
             $event = Event::find($booking->event_id);
             if ($event) {
                 $event->total_tickets += $booking->tickets_booked;

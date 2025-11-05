@@ -2,9 +2,9 @@
 
 namespace App\Domain\Api\Request;
 
-use App\Http\Requests\ApiRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class editSubAdminRequest extends ApiRequest
+class EditSubAdminRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -17,12 +17,7 @@ class editSubAdminRequest extends ApiRequest
 
         return [
             'name'  => 'required|string|max:255',
-            'email' => [
-                'required',
-                'email',
-                'regex:/^[A-Za-z0-9._%+-]+@gmail\.com$/',
-                'unique:admins,email,' . $id . ',id',
-            ],
+            'email' => 'required|email|ends_with:gmail.com|unique:admins,email,' . $id . ',id',
         ];
     }
 
@@ -31,7 +26,7 @@ class editSubAdminRequest extends ApiRequest
         return [
             'name.required'  => 'Please enter the name.',
             'email.required' => 'Please enter an email.',
-            'email.email'    => 'Please enter a valid email.',
+            'email.ends_with'    => 'Only Gmail addresses are allowed.',
             'email.unique'   => 'This email is already taken.',
         ];
     }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Domain\Api\Request\AddSubAdminRequest;
-use App\Domain\Api\Request\editSubAdminRequest;
+use App\Domain\Api\Request\EditSubAdminRequest;
 use App\Domain\Datatables\SubAdminDataTable;
 use Illuminate\Http\Request;
 use App\Models\Admin;
@@ -20,21 +20,20 @@ class SubAdminController extends Controller
         if (request()->ajax()) {
             return $datatable->query();
         }
-        return view('Admin.ManageSubAdmin', [
+        return view('admin.manageSubAdmin', [
             'html' => $datatable->html(),
         ]);
     }
 
     public function create()
     {
-        return view('Admin.add_subadmin');
+        return view('admin.add_subadmin');
     }
 
     public function store(AddSubAdminRequest $request)
     {
         $validated = $request->validated();
 
-        // Generate random password
         $randomPassword = Str::random(10);
 
         $subAdmin = Admin::create([
@@ -43,11 +42,10 @@ class SubAdminController extends Controller
             'password' => Hash::make($randomPassword),
         ]);
 
-        // Send email with password
         Mail::to($subAdmin->email)->send(new SubAdminPasswordMail($subAdmin, $randomPassword));
 
         return redirect()->route('admin.manageSubAdmin')
-            ->with('success', 'SubAdmin created successfully! Password has been sent to email.');
+            ->with('success', 'SubAdmin created successfully ! Password has been sent to email.');
     }
 
     public function show(string $id)
@@ -63,10 +61,10 @@ class SubAdminController extends Controller
             return redirect()->route('admin.manageSubAdmin')->with('success', 'SubAdmin Not Found.');
         }
 
-        return view('Admin.edit_SubAdmin', compact('admin'));
+        return view('admin.edit_SubAdmin', compact('admin'));
     }
 
-    public function update(editSubAdminRequest $request, string $id)
+    public function update(EditSubAdminRequest $request, string $id)
     {
         $admin = Admin::find($id);
 

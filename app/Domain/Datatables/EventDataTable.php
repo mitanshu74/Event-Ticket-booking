@@ -74,14 +74,12 @@ class EventDataTable extends BaseDatatableScope
             ->addColumn('action', function ($row) {
                 $btn = '<div style="display:flex; gap:5px;">';
 
-                // Edit button
                 $editUrl = route('admin.EditEvent', $row->id);
 
                 $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm" style="height:31px;position:relative;top:5px">
                         <i class="fa fa-edit" style="font-size:20px;color:white"></i>
                     </a>';
 
-                // Delete button
                 $deleteUrl = route('admin.DeleteEvent', $row->id);
                 $btn .= '<form action="' . $deleteUrl . '" method="POST" style="display:inline;" class="delete-form">
                 ' . csrf_field() . '
@@ -101,17 +99,15 @@ class EventDataTable extends BaseDatatableScope
                     return 'No Image';
                 }
 
-                $images = json_decode($event->image, true); // decode JSON array
-                $firstImage = $images[0]; // show only the first as thumbnail
+                $images = json_decode($event->image, true);
+                $firstImage = $images[0]; 
 
-                // Hidden links for lightbox (for other images)
                 $html = '<a href="' . asset('storage/' . $firstImage) . '" data-lightbox="event-' . $event->id . '" data-title="' . $event->name . '">';
                 $html .= '<img src="' . asset('storage/' . $firstImage) . '" style="width:80px;height:80px;object-fit:cover;margin:2px;">';
                 $html .= '</a>';
 
-                // Add remaining images as hidden links for Lightbox gallery
                 foreach ($images as $key => $img) {
-                    if ($key == 0) continue; // skip first, already shown
+                    if ($key == 0) continue; 
                     $html .= '<a href="' . asset('storage/' . $img) . '" data-lightbox="event-' . $event->id . '" data-title="' . $event->name . '" style="display:none;"></a>';
                 }
 

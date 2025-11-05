@@ -38,7 +38,6 @@ class SubAdminDataTable extends BaseDatatableScope
             ->addColumn('action', function ($row) {
                 $btn = '<div style="display:flex; gap:5px;">';
 
-                // Edit button
                 $editUrl = route('admin.EditSubAdmin', $row->id);
 
                 $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm" style="height:31px;position:relative;top:5px">

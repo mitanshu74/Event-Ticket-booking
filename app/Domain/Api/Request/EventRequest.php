@@ -5,7 +5,7 @@ namespace App\Domain\Api\Request;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class EditEventRequest extends FormRequest
+class EventRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -23,6 +23,7 @@ class EditEventRequest extends FormRequest
             'price'                 => 'required|integer|min:1',
             'total_tickets'         => 'required|integer|min:1',
             'existing_images'       => 'nullable',
+            'image'                 => 'nullable',
         ];
 
         if (empty(json_decode($this->input('existing_images', null)))) {

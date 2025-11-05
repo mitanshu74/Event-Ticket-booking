@@ -92,12 +92,8 @@
                  </div>
              </div>
          </div>
-         <!-- new user authentication data table-->
          <div class="cards_design p-3 mb-4 bg-white border">
-             <!-- <div class="card-header"> -->
              <h5 class="mb-0 p-2 border rounded text-dark bg-light-secondary">All User</h5>
-
-             <!-- </div> -->
 
              <div class="card-body">
                  <div class="table-responsive pt-3 rounded-1">
@@ -140,7 +136,7 @@
                          $.ajax({
                              url: form.action,
                              type: 'POST',
-                             data: $(form).serialize(), // all form fields
+                             data: $(form).serialize(), 
                              success: function(response) {
                                  Swal.fire(
                                      "Deleted!",
@@ -148,7 +144,7 @@
                                      "success"
                                  );
                                  $('#User-table').DataTable().ajax
-                                     .reload(); // reload datatable
+                                     .reload(); 
                              },
                          });
                      }

@@ -8,11 +8,10 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h4>Edit Event</h4>
-                        <a href="{{ route('admin.manageEvent') }}" id="backButton"
-                            class="btn btn-success rounded text-white">Back</a>
+                        <a href="{{ route('admin.manageEvent') }}" class="btn btn-success rounded text-white">Back</a>
                     </div>
                     <div class="card-body">
-                        <form id="editform" method="POST" action="{{ route('admin.UpdateEvent', $event->id) }}"
+                        <form id="demoform" method="POST" action="{{ route('admin.UpdateEvent', $event->id) }}"
                             enctype="multipart/form-data">
                             @csrf
                             @method('POST')
@@ -89,15 +88,12 @@
 
                             <div class="row">
                                 <div class="row mx-3">
-                                    <label class="form-label"><b>Images</b></label>
-                                    <div class="dropzone border rounded  @error('image') is-invalid @enderror"
-                                        id="dropzoneArea">
+                                    <label for="Image" class="form-label"><b>Image</b></label>
+                                    <div id="dropzoneDragArea" class="dz-default dz-message dropzoneDragArea">
+                                        <span>Drag & drop or click to upload</span>
+                                        <div class="dropzone-previews"></div>
                                     </div>
-
-                                    @error('image')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-
+                                    <p class="error-image text-danger"></p>
                                 </div>
 
                                 <input type="hidden" id="event_id" value="{{ $event->id }}">
@@ -105,23 +101,18 @@
 
                             </div>
 
-
                             <div class="row mt-3 mx-3">
                                 <div class="col-12">
                                     <button class="btn btn-success" type="submit">Update</button>
                                 </div>
                             </div>
                         </form>
-                        <div id="loading-overlay">
-                            <div class="spinner"></div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
-
 @push('script')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
@@ -149,103 +140,164 @@
         });
     </script>
 
+    {{-- <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
     <script>
-        const form = document.getElementById('editform');
-        const overlay = document.getElementById('loading-overlay');
-
-        form.addEventListener('submit', function() {
-            overlay.style.display = 'flex';
-        });
-
-        $('#backButton').on('click', function() {
-            localStorage.removeItem('event_images');
-        });
         Dropzone.autoDiscover = false;
 
-        $(document).ready(function() {
-            const localKey = "event_images";
+        $(function() {
+            const csrfToken = $('input[name="_token"]').val();
+            const eventIdField = $("#event_id");
+            const eventForm = $("#demoform");
 
-            let existingImages = @json(json_decode($event->image ?? '[]'));
-            localStorage.setItem(localKey, JSON.stringify(existingImages));
-
-            const myDropzone = new Dropzone("#dropzoneArea", {
-                url: "#", // 
+            const showImageDropzone = new Dropzone("#dropzoneDragArea", {
+                url: "{{ route('update_File') }}",
                 autoProcessQueue: false,
                 uploadMultiple: true,
                 parallelUploads: 5,
                 maxFiles: 5,
-                maxFilesize: 5,
+                maxFilesize: 5, // MB
+                paramName: "file",
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken
+                },
                 addRemoveLinks: true,
-                acceptedFiles: ".jpg,.jpeg,.png,.gif",
-                dictDefaultMessage: "Drag & drop or click to upload images",
+                acceptedFiles: ".jpeg,.jpg,.png,.gif"
 
-                init: function() {
-                    const dz = this;
+            });
 
-                    existingImages.forEach(path => {
-                        const mockFile = {
-                            name: path.split("/").pop(),
-                            size: 12345,
-                            accepted: true,
-                            existing: true,
-                            path: path
-                        };
-                        dz.emit("addedfile", mockFile);
-                        dz.emit("thumbnail", mockFile, "{{ asset('storage') }}/" + path);
-                        dz.emit("complete", mockFile);
-                        dz.files.push(mockFile);
-                        $(mockFile.previewElement).addClass("dz-success dz-complete");
-                    });
+            let existingEventImages = @json(json_decode($event->image ?? '[]', true));
+            // @-json converts the PHP array into a JavaScript array
 
-                    dz.on("removedfile", file => {
-                        let images = JSON.parse(localStorage.getItem(localKey) || "[]");
-                        const removeItem = file.path || file.dataUrl;
-                        images = images.filter(img => img !== removeItem);
-                        localStorage.setItem(localKey, JSON.stringify(images));
-                    });
+            existingEventImages.forEach(imagePath => {
+                const showfile = {
+                    name: imagePath.split('/').pop(),
+                    size: 12345,
+                    accepted: true,
+                    existing: true,
+                    path: imagePath
+                };
+                showImageDropzone.emit("addedfile", showfile);
+                showImageDropzone.emit("thumbnail", showfile, "{{ asset('storage') }}/" + imagePath);
+                showImageDropzone.emit("complete", showfile);
+                showImageDropzone.files.push(showfile);
+            });
+
+            showImageDropzone.on("removedfile", function(file) {
+                if (file.existing) {
+                    let updatedList = [];
+                    for (let i = 0; i < existingEventImages.length; i++) {
+                        let imagePath = existingEventImages[i];
+
+                        if (imagePath !== file.path) {
+                            updatedList.push(imagePath);
+                        }
+                    }
+
+                    existingEventImages = updatedList;
                 }
             });
 
-            myDropzone.on("thumbnail", (file, dataUrl) => {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const base64 = e.target.result;
-                    let stored = JSON.parse(localStorage.getItem(localKey) || "[]");
+            // file      → the file that is currently being uploaded.
+            // xhr       → the XMLHttpRequest object for this upload.
+            // formData  → the FormData object that will be sent to the server.
 
-                    stored.push(base64);
-                    localStorage.setItem(localKey, JSON.stringify(stored));
+            showImageDropzone.on("sending", function(file, xhr, formData) {
 
-                    file.dataUrl = base64;
-                };
-                reader.readAsDataURL(file);
+                let eventId = eventIdField.val();
+
+                formData.append("event_id", eventId);
+
+                for (let i = 0; i < existingEventImages.length; i++) {
+                    let imageName = existingEventImages[i];
+                    formData.append("existing_images[]", imageName);
+                }
+
+            });
+
+            eventForm.on("submit", event => {
+                event.preventDefault();
+
+                $(".error-image").text("");
+                $(".is-invalid").removeClass("is-invalid");
+                $(".invalid-feedback").remove();
+
+                const newImagesCount = showImageDropzone.getQueuedFiles().length;
+                const oldImagesCount = showImageDropzone.files.filter(file => file.existing).length;
+
+                let imageMissing = false;
+                if (newImagesCount + oldImagesCount < 1) {
+                    $(".error-image").text("Please select at least 1 image.");
+                    imageMissing = true;
+                }
+
+                const formData = new FormData(eventForm[0]);
+
+                if (existingEventImages && existingEventImages.length > 0) {
+                    for (let i = 0; i < existingEventImages.length; i++) {
+                        let imageName = existingEventImages[i];
+                        formData.append("existing_images[]", imageName);
+                    }
+                }
+
+                $.ajax({
+                    url: eventForm.attr("action"),
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: response => {
+                        if (newImagesCount + oldImagesCount < 1) {
+                            $(".error-image").text("Please select at least 1 image.");
+                            return;
+                        }
+
+                        eventIdField.val(response.event_id);
+
+                        if (newImagesCount) {
+                            eventForm.data("submitted", true);
+                            showImageDropzone.processQueue();
+                        } else {
+                            $.post("{{ route('update_File') }}", {
+                                _token: csrfToken,
+                                event_id: response.event_id,
+                                existing_images: existingEventImages
+                            }).done(() => {
+                                Swal.fire("Success", "Event updated successfully!",
+                                        "success")
+                                    .then(() => location.href =
+                                        "{{ route('admin.manageEvent') }}");
+                            });
+                        }
+                    },
+                    error: (xhr) => {
+                        if (xhr.status === 422) {
+                            const errors = xhr.responseJSON.errors;
+                            for (const key in errors) {
+                                const input = $(`[name="${key}"]`);
+                                input.addClass("is-invalid");
+                                input.after(
+                                    `<div class="invalid-feedback">${errors[key][0]}</div>`
+                                );
+                            }
+
+                            if (newImagesCount + oldImagesCount < 1) {
+                                $(".error-image").text("Please select at least 1 image.");
+                            }
+
+                        } else {
+                            Swal.fire("Error", "Something went wrong", "error");
+                        }
+                    }
+                });
             });
 
 
-            $("#editform").on("submit", function(e) {
-                // e.preventDefault(); 
-                const dropzonefile = new DataTransfer();
-
-                myDropzone.getAcceptedFiles().forEach(file => {
-                    if (!file.existing) dropzonefile.items.add(file);
-                });
-
-                const storedImages = JSON.parse(localStorage.getItem(localKey) || "[]");
-
-                const existingInput = document.createElement("input");
-                existingInput.type = "hidden";
-                existingInput.name = "existing_images";
-                existingInput.value = JSON.stringify(storedImages);
-                this.appendChild(existingInput);
-
-                const input = document.createElement("input");
-                input.type = "file";
-                input.name = "image[]";
-                input.multiple = true;
-                input.hidden = true;
-                input.files = dropzonefile.files;
-                document.getElementById("editform").appendChild(input);
-
+            showImageDropzone.on("queuecomplete", () => {
+                if (eventForm.data("submitted")) {
+                    Swal.fire("Success", "Event updated successfully!", "success")
+                        .then(() => location.href = "{{ route('admin.manageEvent') }}");
+                }
             });
         });
     </script>

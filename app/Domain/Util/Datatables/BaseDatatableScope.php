@@ -39,21 +39,8 @@ abstract class BaseDatatableScope
         );
 
         $admin = Auth::guard('admin')->user();
-        $user = Auth::guard('web')->user();
 
-        if ($admin && isset($admin->role)) {
-            // action column are show only admin role ==1
-            if ($admin->role == 1) {
-                $columns[] = [
-                    'data' => 'action',
-                    'name' => 'action',
-                    'title' => 'Action',
-                    'searchable' => false,
-                    'orderable' => false,
-                ];
-                
-            }
-        } elseif ($user) {
+        if ($admin->role == 1) {
             $columns[] = [
                 'data' => 'action',
                 'name' => 'action',

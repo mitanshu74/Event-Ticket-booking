@@ -1,4 +1,3 @@
-<!-- About -->
 <section id="about" class="py-5 text-center">
     <div class="container">
         <h2 class="fw-bold mb-3">About </h2>
@@ -8,7 +7,6 @@
             live experiences safely and easily.
         </p>
 
-        <!-- Additional Info / Features -->
         <div class="row text-center g-4">
             <div class="col-md-4">
                 <i class="fa-solid fa-calendar-check fa-3x mb-3 text-primary"></i>
@@ -28,7 +26,6 @@
             </div>
         </div>
 
-        <!-- Statistics / Highlights -->
         <div class="row text-center g-4 mt-5">
             <div class="col-md-4">
                 <h3 class="fw-bold text-primary">500+</h3>

@@ -125,7 +125,7 @@
         const previewContainer = document.getElementById('previewContainer');
 
         input.addEventListener('change', function() {
-            previewContainer.innerHTML = ''; // clear previews
+            previewContainer.innerHTML = ''; 
             const files = input.files;
 
             Array.from(files).forEach(file => {

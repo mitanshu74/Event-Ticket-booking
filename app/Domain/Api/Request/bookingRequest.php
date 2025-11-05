@@ -5,7 +5,7 @@ namespace App\Domain\Api\Request;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class bookingRequest extends FormRequest
+class BookingRequest extends FormRequest
 {
     public function authorize()
     {

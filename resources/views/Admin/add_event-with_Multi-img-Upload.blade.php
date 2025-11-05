@@ -15,7 +15,6 @@
                             enctype="multipart/form-data" novalidate>
                             @csrf
 
-                            {{-- Event Name --}}
                             <div class="row mx-2">
                                 <div class="col-md-6 mt-3">
                                     <label for="Name" class="form-label"><b>Name</b></label>
@@ -28,7 +27,6 @@
                                 </div>
                             </div>
 
-                            {{-- Event Date --}}
                             <div class="row mx-2">
                                 <div class="col-md-6 mt-3">
                                     <label for="Date" class="form-label"><b>Date</b></label>
@@ -40,7 +38,6 @@
                                 </div>
                             </div>
 
-                            {{-- Start & End Time --}}
                             <div class="row mx-2">
                                 <div class="col-md-3 mt-3">
                                     <label for="start_time" class="form-label"><b>Start Time</b></label>
@@ -61,7 +58,6 @@
                                 </div>
                             </div>
 
-                            {{-- Location --}}
                             <div class="row mx-2">
                                 <div class="col-md-6 mt-3">
                                     <label for="Location" class="form-label"><b>Location</b></label>
@@ -74,7 +70,6 @@
                                 </div>
                             </div>
 
-                            {{-- Price --}}
                             <div class="row mx-2">
                                 <div class="col-md-6 mt-3">
                                     <label for="Price" class="form-label"><b>Price</b></label>
@@ -87,7 +82,6 @@
                                 </div>
                             </div>
 
-                            {{-- Tickets --}}
                             <div class="row mx-2">
                                 <div class="col-md-6 mt-3">
                                     <label for="total_tickets" class="form-label"><b>Tickets</b></label>
@@ -99,14 +93,12 @@
                                     @enderror
                                 </div>
                             </div>
-                            {{-- Image --}}
                             <div class="row mx-2">
                                 <div class="col-md-6 mt-3">
                                     <label for="EventImages" class="form-label"><b>Choose Images</b></label>
                                     <input type="file" class="form-control" name="EventImages[]" id="EventImages"
                                         accept="image/*" multiple required>
 
-                                    {{-- Show array-level message first, else show first file-level message --}}
                                     @if ($errors->has('EventImages'))
                                         <div class="invalid-feedback d-block">{{ $errors->first('EventImages') }}</div>
                                     @elseif ($errors->first('EventImages.*'))
@@ -114,13 +106,9 @@
                                     @endif
                                 </div>
 
-                                {{-- ✅ Add this container for previews --}}
                                 <div class="col-md-6 mt-3" id="previewContainer"></div>
                             </div>
 
-
-
-                            {{-- Submit --}}
                             <div class="row">
                                 <div class="col-12 m-3">
                                     <button class="btn btn-primary" type="submit" name="submit">Submit</button>
@@ -140,7 +128,7 @@
         const previewContainer = document.getElementById('previewContainer');
 
         input.addEventListener('change', function() {
-            previewContainer.innerHTML = ''; // clear previous previews
+            previewContainer.innerHTML = '';
             const files = input.files;
 
             Array.from(files).forEach(file => {

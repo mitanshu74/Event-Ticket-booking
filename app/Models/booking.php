@@ -11,10 +11,8 @@ class booking extends Model
 {
     use HasFactory;
 
-    // Define table name if it's not plural of model name
     protected $table = 'bookings';
 
-    // Mass assignable fields
     protected $fillable = [
         'user_id',
         'event_id',
@@ -24,11 +22,6 @@ class booking extends Model
         'status',
     ];
 
-    /**
-     * Relationships
-     */
-
-    // A booking belongs to a user
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

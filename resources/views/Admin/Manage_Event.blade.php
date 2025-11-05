@@ -14,7 +14,7 @@
             <div class="card-body">
                 <div class="table-responsive">
 
-                    {!! $html->table(['class' => 'table table-striped table-bordered', 'id' => 'events-table']) !!}
+                    {!! $html->table() !!}
                 </div>
             </div>
         </div>
@@ -44,7 +44,7 @@
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(data) {
-                        $('#events-table').DataTable().ajax.reload();
+                        $('.dataTable').DataTable().ajax.reload();
                         Swal.fire({
                             icon: data.success ? 'success' : 'error',
                             title: data.success ? 'Deleted!' : 'Error',
@@ -53,6 +53,7 @@
                         });
                     },
                     error: function(xhr) {
+                        $('.dataTable').DataTable().ajax.reload(null, false);
                         Swal.fire('Error!', 'Event Not Found!', 'error');
                     }
                 });

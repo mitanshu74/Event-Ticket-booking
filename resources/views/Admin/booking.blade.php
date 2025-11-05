@@ -11,10 +11,10 @@
                         <a href="{{ route('booking.index') }}" class="btn btn-success rounded text-white">Back</a>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('booking.store') }}" method="POST" class="needs-validation" novalidate>
+                        <form action="{{ route('booking.store') }}" id="bookingform" method="POST" class="needs-validation"
+                            novalidate>
                             @csrf
 
-                            <!-- User -->
                             <div class="mb-3">
                                 <label for="user_id" class="form-label">User</label>
                                 <select name="user_id" id="user_id"
@@ -32,7 +32,6 @@
                                 @enderror
                             </div>
 
-                            <!-- Email -->
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
                                 <input type="email" name="email" id="email"
@@ -43,7 +42,6 @@
                                 @enderror
                             </div>
 
-                            <!-- Event -->
                             <div class="mb-3">
                                 <label for="event_id" class="form-label">Event</label>
                                 <select name="event_id" id="event_id"
@@ -62,7 +60,6 @@
                                 @enderror
                             </div>
 
-                            <!-- Date -->
                             <div class="mb-3">
                                 <label for="date" class="form-label">Date</label>
                                 <input type="date" name="date" id="date"
@@ -73,7 +70,6 @@
                                 @enderror
                             </div>
 
-                            <!-- Price -->
                             <div class="mb-3">
                                 <label for="price" class="form-label">Price</label>
                                 <input type="number" name="price" id="price"
@@ -84,7 +80,6 @@
                                 @enderror
                             </div>
 
-                            <!-- Tickets Booked -->
                             <div class="mb-3">
                                 <label for="tickets_booked" class="form-label">Tickets Booked</label>
                                 <input type="number" name="tickets_booked" id="tickets_booked"
@@ -95,7 +90,6 @@
                                 @enderror
                             </div>
 
-                            <!-- Total Price -->
                             <div class="mb-3">
                                 <label for="total_price" class="form-label">Total Price</label>
                                 <input type="number" name="total_price" id="total_price"
@@ -106,7 +100,6 @@
                                 @enderror
                             </div>
 
-                            <!-- Booking Type -->
                             <div class="mb-3">
                                 <label class="form-label d-block">Booking Type</label>
                                 <div class="form-check form-check-inline">
@@ -119,6 +112,9 @@
 
                             <button type="submit" class="btn btn-primary">Booking</button>
                         </form>
+                        <div id="loading-overlay">
+                            <div class="spinner"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -130,7 +126,7 @@
 
     <script>
         $(document).on('submit', '.delete-form', function(e) {
-            e.preventDefault(); // Prevent default form submit
+            e.preventDefault();
 
             const form = this;
 
@@ -144,7 +140,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit(); // Only submit if confirmed
+                    form.submit();
                 }
             });
         });
@@ -152,6 +148,12 @@
 
 
     <script>
+        const form = document.getElementById('bookingform');
+        const overlay = document.getElementById('loading-overlay');
+
+        form.addEventListener('submit', function() {
+            overlay.style.display = 'flex';
+        });
         const userSelect = document.getElementById('user_id');
         const emailInput = document.getElementById('email');
         const eventSelect = document.getElementById('event_id');

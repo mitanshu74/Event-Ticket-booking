@@ -15,12 +15,10 @@ class AdminMiddleware
         if (!$user) {
             return redirect()->route('admin.login')->with('error', 'Access Denied!');
         }
-        // Role-based login
         if ($user->role == 1) {
             // dd($user);
-            return $next($request); //  admin all access
+            return $next($request);
         } elseif ($user->role == 2) {
-            // sub admin limited access
             if (
                 $request->routeIs('admin.home') ||
                 $request->routeIs('admin.profile') ||

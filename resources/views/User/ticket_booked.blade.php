@@ -14,7 +14,6 @@
                     <div class="card-header bg-white border-0">
                         <h5 class="mb-0">🎟 My Booked Events</h5>
                     </div>
-                    {{-- loader --}}
                     <div id="loading-overlay">
                         <div class="spinner"></div>
                     </div>
@@ -35,7 +34,6 @@
                                                 alt="{{ $event->name }}" style="height: 250px; object-fit: cover;">
                                         </a>
 
-                                        {{-- Hidden images for lightbox --}}
                                         @if (count($images) > 1)
                                             @foreach (array_slice($images, 1) as $img)
                                                 <a href="{{ asset('storage/' . $img) }}"
@@ -59,20 +57,14 @@
                                             <p class="mb-2">⌚
                                                 {{ \Carbon\Carbon::parse($event->start_time)->format('h:i A') . ' to ' . \Carbon\Carbon::parse($event->end_time)->format('h:i A') }}
                                             </p>
-                                            {{-- Tickets --}}
                                             <p class="mb-2">💰<span class="ms-1">Price : {{ $event->price }}</span>
                                             </p>
                                             <p class="mb-2"> 🎟 Tickets :<span
                                                     class="ms-2">{{ $booking->tickets_booked }}</span></p>
 
-                                            {{-- <p class="mb-2"> <span
-                                                    class="total-price mb-2">{{ $booking->total_price }}</span>
-                                            </p> --}}
                                             <p class="mb-2">💸<span class="ms-1">Total :
                                                     {{ $booking->total_price }}</span>
-                                                {{-- <p class="mb-2"> ₹ <span class="ms-1">{{ $booking->total_price }}</span> --}}
 
-                                                {{-- ₹ --}}
                                             <div class="mt-3">
                                                 @if ($booking->status === 'pending')
                                                     <a href="{{ route('razorpay.payment.redirect', ['bookingId' => $booking->id, 'from' => 'ticket_booked']) }}"
@@ -87,13 +79,10 @@
                                                         </button>
                                                     </form>
                                                 @endif
-
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
-
                             @empty
                                 <div class="col-12 text-center">
                                     <p>No booked tickets found.</p>
@@ -113,12 +102,10 @@
         document.addEventListener("DOMContentLoaded", function() {
 
             const overlay = document.getElementById('loading-overlay');
-            // Show overlay
             function showLoader() {
                 overlay.style.display = 'flex';
             }
 
-            // Pay Now confirmation
             document.querySelectorAll('.pay-booking-btn').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -140,7 +127,6 @@
                 });
             });
 
-            // Cancel confirmation
             document.querySelectorAll('.cancel-booking-form').forEach(form => {
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
@@ -160,7 +146,7 @@
                     });
                 });
             });
-            // Pay Now confirmation
+            
             document.querySelectorAll('.pay-booking-btn').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
