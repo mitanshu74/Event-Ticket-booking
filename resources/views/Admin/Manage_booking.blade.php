@@ -78,13 +78,13 @@
                                     _token: "{{ csrf_token() }}"
                                 },
                                 success: function(data) {
-                                    if (data.success) {
-                                        Swal.fire('Deleted!', data.message, 'success');
-                                        $('#bookingTable').DataTable().ajax.reload();
-                                        $('#select-all').prop('checked', false);
-                                    } else {
-                                        Swal.fire('Error!', data.message, 'error');
-                                    }
+                                    $('.dataTable').DataTable().ajax.reload();
+                                    Swal.fire({
+                                        icon: data.success ? 'success' : 'Error',
+                                        title: data.success ? 'Deleted !' : 'Error',
+                                        text: data.message,
+                                        confirmButtonText: 'OK'
+                                    });
                                 },
                             });
                         }
@@ -97,7 +97,7 @@
 
                     Swal.fire({
                         title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
+                        text: "Do you really want to Delete this booking ?",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -109,13 +109,12 @@
                                 url: form.attr('action'),
                                 type: 'POST',
                                 data: form.serialize(),
-                                success: function(response) {
+                                success: function(data) {
                                     Swal.fire({
-                                        icon: 'success',
-                                        title: 'Deleted!',
-                                        text: response.message ||
-                                            'Booking deleted successfully.',
-                                        showConfirmButton: true,
+                                        icon: data.success ? 'success' : 'error',
+                                        title: data.success ? 'Deleted!' : 'Error',
+                                        text: data.message,
+                                        confirmButtonText: 'OK'
                                     });
                                     $('.dataTable').DataTable().ajax.reload();
                                 },
@@ -134,7 +133,7 @@
                     const form = this;
                     Swal.fire({
                         title: 'Are you sure?',
-                        text: "You want to cancel this booking?",
+                        text: "Do you really want to Cansel this booking ?",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',

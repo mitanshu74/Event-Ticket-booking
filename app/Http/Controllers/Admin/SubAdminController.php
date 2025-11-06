@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Domain\Api\Request\AddSubAdminRequest;
 use App\Domain\Api\Request\EditSubAdminRequest;
 use App\Domain\Datatables\SubAdminDataTable;
-use Illuminate\Http\Request;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;

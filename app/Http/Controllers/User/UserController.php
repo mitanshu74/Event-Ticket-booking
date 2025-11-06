@@ -17,7 +17,6 @@ use App\Models\Event;
 use App\Models\booking;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Client\Request as ClientRequest;
 
 class UserController extends Controller
 {

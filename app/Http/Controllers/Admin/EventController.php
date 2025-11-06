@@ -5,11 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Domain\Datatables\EventDataTable;
 use App\Domain\Api\Request\AddEventRequest;
 use App\Domain\Api\Request\EditEventRequest;
-use App\Domain\Api\Request\EventRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Event;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Intervention\Image\Laravel\Facades\Image;
 

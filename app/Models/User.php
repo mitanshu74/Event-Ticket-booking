@@ -35,9 +35,6 @@ class User extends Authenticatable
         'otp_expires_at' => 'datetime',
     ];
 
-    // booking table maa user_id ne foregoing key aaypi che 
-    // relationships one to many
-    // This user owns multiple bookings in the bookings table, and they are connected using the user_id column.
     public function bookings()
     {
         return $this->hasMany(booking::class, 'user_id');

@@ -9,7 +9,7 @@
 
                         <div class="col-md-6 text-center">
                             @php
-                                $images = json_decode($event->image, true) ?? [];
+                                $images = json_decode($event->image, true) ?? null;
                                 $firstImage = $images[0] ?? null;
                             @endphp
 
@@ -20,7 +20,6 @@
                                 </a>
                             @endif
                             @if (count($images) > 1)
-                              
                                 @foreach (array_slice($images, 1) as $img)
                                     <a href="{{ asset('storage/' . $img) }}" data-lightbox="event-gallery"
                                         class="d-none"></a>

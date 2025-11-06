@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Domain\Api\Request\UserBookingRequest;
 use App\Domain\Api\Request\PaymentRequest;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\BookingConfirmationMail;
 use Illuminate\Support\Facades\Mail;
@@ -89,7 +88,7 @@ class RazorpayController extends Controller
             'razorpayKey' => env('RAZORPAY_KEY'),
             //send event-id payment.blade file
             'event' => $event,
-            'from_page' => request('from', 'event_details'), // page request handel
+            'from_page' => request('from', 'event_details'),
 
         ]);
     }
@@ -137,11 +136,11 @@ class RazorpayController extends Controller
         }
 
         if ($booking->status !== 'pending') {
-            return redirect()->back()->with('error', 'Booking is already paid or cancelled.');
+            return redirect()->back()->with('error', 'Booking is already paid.');
         }
 
-        $event = $booking->event; // Related event
-        $user = $booking->user;   // Related user
+        $event = $booking->event;
+        $user = $booking->user;
 
         if (!$event) {
             return redirect()->back()->with(['error' => 'Event not found']);
@@ -190,13 +189,13 @@ class RazorpayController extends Controller
 
         return view('razorpay.payment', [
             'orderId' => $order['id'],
-            'name' => $payment->name, // Fixed typo here
+            'name' => $payment->name,
             'email' => $payment->email,
             'phone' => $payment->phone,
             'amount' => $amount,
             'razorpayKey' => env('RAZORPAY_KEY'),
             'event' => $event,
-            'from_page' => request('from', 'ticket_booked'), // page request handel
+            'from_page' => request('from', 'ticket_booked'),
         ]);
     }
 }

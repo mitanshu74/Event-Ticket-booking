@@ -4,7 +4,6 @@ namespace App\Domain\Datatables;
 
 use App\Domain\Util\Datatables\BaseDatatableScope;
 use App\Models\booking;
-use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -23,7 +22,7 @@ class BookingDataTable extends BaseDatatableScope
             ],
             [
                 'data' => 'event_name',
-                'name' => 'event',
+                'name' => 'event_name',
                 'title' => 'Event Name',
                 'searchable' => true,
                 'orderable' => true,
@@ -99,10 +98,10 @@ class BookingDataTable extends BaseDatatableScope
                 'total_price',
                 'booking_type',
                 'status'
-            ]);
+            ])->get();
 
         // dd($bookings);
-        return DataTables::eloquent($bookings)
+        return DataTables::of($bookings)
             ->addIndexColumn()
             ->addColumn('username', function ($row) {
 
@@ -118,10 +117,8 @@ class BookingDataTable extends BaseDatatableScope
             ->addColumn('price', function ($row) {
                 return $row->event ? $row->event->price : 'N/A';
             })
-            ->editColumn('date', function ($row) {
-                return '<span>'
-                    . Carbon::parse($row->date)->format('d-m-Y')
-                    . '</span>';
+            ->addColumn('date', function ($row) {
+                return $row->event->date->format('d-m-Y');
             })
 
             ->addColumn('action', function ($row) {
@@ -166,7 +163,7 @@ class BookingDataTable extends BaseDatatableScope
                 }
                 return '';
             })
-            ->rawColumns(['date', 'status', 'action', 'checkbox'])
+            ->rawColumns(['status', 'action', 'checkbox'])
             ->make(true);
     }
 }

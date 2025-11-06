@@ -17,7 +17,7 @@ class EditSubAdminRequest extends FormRequest
 
         return [
             'name'  => 'required|string|max:255',
-            'email' => 'required|email|ends_with:gmail.com|unique:admins,email,' . $id . ',id',
+            'email' => 'required|email|ends_with:gmail.com|unique:admins,email,' . $id . 'id',
         ];
     }
 
