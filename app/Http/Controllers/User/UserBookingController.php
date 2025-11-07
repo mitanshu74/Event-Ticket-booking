@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Domain\Api\Request\UserBookingRequest;
+use App\Domain\User\Request\UserBookingRequest;
 use App\Mail\BookingCancelledMail;
 use Illuminate\Support\Facades\Mail;
-use App\Models\booking;
+use App\Models\booking;             
 use App\Models\Event;
 
 class UserBookingController extends Controller

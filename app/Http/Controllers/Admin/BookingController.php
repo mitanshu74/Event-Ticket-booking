@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\domain\Api\Request\MultiDeleteRequest;
+use App\domain\Admin\Request\MultiDeleteRequest;
 use App\domain\Datatables\BookingDataTable;
-use App\domain\Api\Request\BookingRequest;
+use App\domain\Admin\Request\BookingRequest;
 use App\Mail\BookingConfirmationMail;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BookingCancelledMail;
@@ -23,7 +23,7 @@ class BookingController extends Controller
         if (request()->ajax()) {
             return $datatable->query();
         }
-        return view('admin.manage_booking', [
+        return view('admin.booking.index', [
             'html' => $datatable->html(),
         ]);
     }
@@ -32,12 +32,12 @@ class BookingController extends Controller
     {
         $users = User::all();
         $events = Event::all();
-        return view('admin.booking', compact('users', 'events'));
+        return view('admin.booking.create', compact('users', 'events'));
     }
 
     public function store(BookingRequest $request)
     {
-        $validated = $request->validated();
+        $validated = $request->persist();
         $validated['status'] = 'confirmed';
         $userId = $validated['user_id'];
         $eventId = $validated['event_id'];
@@ -61,7 +61,7 @@ class BookingController extends Controller
             $event->save();
 
             $booking = booking::create($validated);
-            Mail::to($booking->user->email)->send(new BookingConfirmationMail($booking));
+            // Mail::to($booking->user->email)->send(new BookingConfirmationMail($booking));
 
             return redirect()->route('booking.index')
                 ->with('success', 'Booking Created Successfully!');
@@ -122,6 +122,9 @@ class BookingController extends Controller
     public function destroy(Booking $booking)
     {
         $booking->delete();
-        return redirect()->back()->with('success', 'Booking deleted successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking deleted successfully.',
+        ]);
     }
 }

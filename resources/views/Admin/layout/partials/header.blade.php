@@ -69,7 +69,7 @@
                 cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.getElementById('logoutForm').submit(); // Submit form if confirmed
+                    document.getElementById('logoutForm').submit();
                 }
             });
         });

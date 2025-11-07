@@ -20,9 +20,9 @@ class AdminMiddleware
             return $next($request);
         } elseif ($user->role == 2) {
             if (
-                $request->routeIs('admin.home') ||
+                $request->routeIs('admin.deshboard') ||
                 $request->routeIs('admin.profile') ||
-                $request->routeIs('admin.profile.update') ||
+                $request->routeIs('admin.update') ||
                 $request->routeIs('admin.logout') ||
                 str_starts_with($request->path(), 'admin/booking')
             ) {

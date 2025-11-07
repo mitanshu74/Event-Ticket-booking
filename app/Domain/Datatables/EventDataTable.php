@@ -74,13 +74,13 @@ class EventDataTable extends BaseDatatableScope
             ->addColumn('action', function ($row) {
                 $btn = '<div style="display:flex; gap:5px;">';
 
-                $editUrl = route('admin.EditEvent', $row->id);
+                $editUrl = route('event.edit', $row->id);
 
                 $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm" style="height:31px;position:relative;top:5px">
                         <i class="fa fa-edit" style="font-size:20px;color:white"></i>
                     </a>';
 
-                $deleteUrl = route('admin.DeleteEvent', $row->id);
+                $deleteUrl = route('event.destroy', $row->id);
                 $btn .= '<form action="' . $deleteUrl . '" method="POST" style="display:inline;" class="delete-form">
                 ' . csrf_field() . '
                         <button type="submit" class="btn btn-danger btn-sm" style="margin:5px;">
@@ -100,14 +100,14 @@ class EventDataTable extends BaseDatatableScope
                 }
 
                 $images = json_decode($event->image, true);
-                $firstImage = $images[0]; 
+                $firstImage = $images[0];
 
                 $html = '<a href="' . asset('storage/' . $firstImage) . '" data-lightbox="event-' . $event->id . '" data-title="' . $event->name . '">';
                 $html .= '<img src="' . asset('storage/' . $firstImage) . '" style="width:80px;height:80px;object-fit:cover;margin:2px;">';
                 $html .= '</a>';
 
                 foreach ($images as $key => $img) {
-                    if ($key == 0) continue; 
+                    if ($key == 0) continue;
                     $html .= '<a href="' . asset('storage/' . $img) . '" data-lightbox="event-' . $event->id . '" data-title="' . $event->name . '" style="display:none;"></a>';
                 }
 

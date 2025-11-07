@@ -2,36 +2,44 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Admin\Request\EventRequest;
 use App\Domain\Datatables\EventDataTable;
-use App\Domain\Api\Request\AddEventRequest;
-use App\Domain\Api\Request\EditEventRequest;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage;
-use App\Models\Event;
 use Illuminate\Support\Str;
 use Intervention\Image\Laravel\Facades\Image;
+use App\Models\Event;
+use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(EventDataTable $datatable)
     {
         if (request()->ajax()) {
             return $datatable->query();
         }
-        return view('admin.manage_event', [
+        return view('admin.events.index', [
             'html' => $datatable->html(),
         ]);
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
-        return view('admin.add_event');
+        return view('admin.events.create');
     }
 
-    public function store(AddEventRequest $request)
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(EventRequest $request)
     {
         // dd($request->all());
-        $validated = $request->validated();
+        $validated = $request->persist();
 
         $validated['start_time'] = date('h:i A', strtotime($validated['start_time']));
         $validated['end_time']   = date('h:i A', strtotime($validated['end_time']));
@@ -63,25 +71,39 @@ class EventController extends Controller
 
         Event::create($validated);
 
-        return redirect()->route('admin.manageEvent')->with('success', 'Event created successfully !');
+        return redirect()->route('event.index')->with('success', 'Event created successfully !');
     }
 
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
     public function edit(string $id)
     {
         $event = Event::find($id);
 
         if (!$event) {
-            return redirect()->route('admin.manageEvent')->with('success', 'Event Not Found.');
+            return redirect()->route('admin.home')->with('success', 'Event Not Found.');
         }
 
-        return view('admin.edit_Event', compact('event'));
+        return view('admin.events.edit', compact('event'));
     }
 
-    public function update(EditEventRequest $request, $id)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(EventRequest $request,  $id)
     {
         // dd($request->all());
         $event = Event::findOrFail($id);
-        $validated = $request->validated();
+        $validated = $request->persist();
 
 
         $validated['start_time'] = date('h:i A', strtotime($validated['start_time']));
@@ -128,10 +150,12 @@ class EventController extends Controller
 
         $event->update($validated);
 
-        // return response()->json(['status' => 'success']);
-        return redirect()->route('admin.manageEvent')->with('success', 'Event Updated Successfully');
+        return redirect()->route('event.index')->with('success', 'Event Updated Successfully');
     }
 
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(Event $id)
     {
         if ($id->image) {

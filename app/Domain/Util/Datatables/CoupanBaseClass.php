@@ -23,25 +23,27 @@ abstract class CoupanBaseClass
      */
     public function html($url = null)
     {
-         $columns = array_merge([
+        $columns = array_merge(
             [
-                'data' => 'DT_RowIndex',
-                'name' => 'DT_RowIndex',
-                'title' =>'SR NO',
-                'searchable' => false,
-                'orderable' => false,
+                [
+                    'data' => 'DT_RowIndex',
+                    'name' => 'DT_RowIndex',
+                    'title' => 'SR NO',
+                    'searchable' => false,
+                    'orderable' => false,
+                ],
             ],
-        ],
-        $this->partialHtml,
-        [
+            $this->partialHtml,
             [
-                'data' => 'actions',
-                'name' => 'actions',
-                'title' => 'Action',
-                'searchable' => false,
-                'orderable' => false,
-            ],
-        ]);
+                [
+                    'data' => 'actions',
+                    'name' => 'actions',
+                    'title' => 'Action',
+                    'searchable' => false,
+                    'orderable' => false,
+                ],
+            ]
+        );
 
         /**
          * @var Builder
@@ -50,11 +52,13 @@ abstract class CoupanBaseClass
 
         return $builder->columns($columns)->parameters([
             'lengthMenu'
-                    =>
-                    [
-                        50,100,200
-                    ]
-                ])
+            =>
+            [
+                50,
+                100,
+                200
+            ]
+        ])
             ->ajax($url ?: request()->fullUrl());
     }
     /**

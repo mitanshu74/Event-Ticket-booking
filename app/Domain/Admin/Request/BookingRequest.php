@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Domain\Admin\Request;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+
+class BookingRequest extends FormRequest
+{
+    public function authorize()
+    {
+        return Auth::guard('admin')->check();
+    }
+
+    public function rules()
+    {
+        return [
+            'user_id'        => 'required|exists:users,id',
+            'event_id'       => 'required|exists:events,id',
+            'tickets_booked' => 'required|integer|min:1|max:5',
+            'total_price'    => 'required|numeric|min:1',
+            'booking_type'   => 'required|in:offline',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'user_id.required'        => 'Please select a user.',
+            'event_id.required'       => 'Please select an event.',
+            'tickets_booked.required' => 'Please enter number of tickets.',
+            'tickets_booked.min'      => 'At least 1 ticket is required.',
+            'tickets_booked.max'      => 'You can book a maximum of 5 tickets.',
+        ];
+    }
+    public function persist()
+    {
+        return array_merge($this->only('user_id', 'event_id', 'tickets_booked', 'total_price', 'booking_type'));
+    }
+}

@@ -46,19 +46,6 @@
                     </ul>
                 </li>
 
-                {{-- <li class="nav-item">
-                    @auth
-                        <form id="logout-form" action="{{ route('user.logout') }}" method="POST" style="display: inline;">
-                            @csrf
-                            <button type="submit" class="btn btn-signup ms-3">Logout</button>
-                        </form>
-                    @else
-                        <a class="btn btn-signup ms-3" href="{{ route('user.login') }}">Login</a>
-                    @endauth
-
-                </li> --}}
-                <!-- Add this script at the bottom of your Blade (before </body>) -->
-
             </ul>
         </div>
     </div>

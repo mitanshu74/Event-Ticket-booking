@@ -118,7 +118,7 @@ class BookingDataTable extends BaseDatatableScope
                 return $row->event ? $row->event->price : 'N/A';
             })
             ->addColumn('date', function ($row) {
-                return $row->event->date->format('d-m-Y');
+                return $row->event ? $row->event->date->format('d-m-Y') : 'N/A';
             })
 
             ->addColumn('action', function ($row) {

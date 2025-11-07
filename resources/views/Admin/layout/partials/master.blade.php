@@ -44,7 +44,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
 
     <style>
-        /* Style Dropzone preview box */
         .dz-preview {
             position: relative;
             display: inline-block;
@@ -55,7 +54,6 @@
             background: #fff;
         }
 
-        /* Image inside the preview */
         .dz-image img {
             display: block;
             width: 140px;
@@ -64,7 +62,6 @@
             border-radius: 10px;
         }
 
-        /* Remove button style */
         .dz-remove {
             display: block !important;
             position: relative !important;
@@ -81,19 +78,16 @@
             transition: background-color 0.2s ease-in-out;
         }
 
-        /* Hover effect */
         .dz-remove:hover {
             background-color: rgba(0, 0, 0, 0.466);
             color: #fff !important;
         }
 
-        /* Fix for the gray overlay text (filename) */
         .dz-details {
             display: none !important;
         }
 
 
-        /* old dropzone */
         .dz-success-mark,
         .dz-error-mark,
         .dz-details,
@@ -106,7 +100,6 @@
             font-size: 12px;
         }
 
-        /* Normal Dropzone border */
         #dropzoneArea {
             border: 1px dashed #bec8d0;
             border-radius: 12px;
@@ -124,7 +117,6 @@
             display: none;
         }
 
-        /* Each preview box */
         .dz-preview.dz-image-preview {
             width: 180px;
             display: inline-block;
@@ -140,7 +132,6 @@
             left: 29px;
         }
 
-        /* Image inside preview */
         .dz-image {
             border-radius: 12px;
             width: 120px;
@@ -148,7 +139,6 @@
             object-fit: cover;
         }
 
-        /* File name + size */
         .dz-details {
             text-align: center;
             font-size: 12px;
@@ -156,7 +146,6 @@
             color: #555;
         }
 
-        /* Progress bar */
         .dz-progress {
             height: 5px;
             border-radius: 5px;
@@ -170,25 +159,6 @@
             height: 5px;
             display: block;
         }
-
-        /* Remove button
-        .dz-remove {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            background: rgba(0, 0, 0, 0.6);
-            color: #fff;
-            font-size: 12px;
-            padding: 3px 6px;
-            border-radius: 8px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.3s;
-        }
-
-        .dz-remove:hover {
-            background: rgba(0, 0, 0, 0.9);
-        } */
 
         */ .table-responsive {
             overflow-x: auto;
@@ -226,7 +196,6 @@
             width: 60px;
         }
 
-        /* loader show on cansel end pa */
         #loading-overlay {
             position: fixed;
             top: 0;
@@ -258,7 +227,7 @@
             }
         }
     </style>
-</head><!-- [Head] end --><!-- [Body] Start -->
+</head>
 
 <body>
 
@@ -269,21 +238,19 @@
         @yield('content')
     </div>
 
-    <!-- [ Main Content ] end -->
     @include('Admin.layout.partials.footer')
 
     <script>
-        // Get all the dropdown toggle elements
         const dropdownToggles = document.querySelectorAll('.pc-link');
         this.addEventListener('click', function(event) {
-            this.classList.toggle('show'); // Toggle the 'show' class to show/hide the submenu
+            this.classList.toggle('show');
         });
     </script>
     <script src="{{ asset('Admin/assets/js/plugins/popper.min.js') }}"></script>
     <script src="{{ asset('Admin/assets/js/plugins/bootstrap.min.js') }}"></script>
     <script src="{{ asset('Admin/assets/js/fonts/custom-font.js') }}"></script>
     <script src="{{ asset('Admin/assets/js/pcoded.js') }}"></script>
-    <script src="{{ asset('Admin/assets/js/plugins/feather.min.js') }}"></script>
+    {{-- <script src="{{ asset('Admin/assets/js/plugins/feather.min.js') }}"></script> --}}
     {{-- light box --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

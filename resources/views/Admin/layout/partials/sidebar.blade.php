@@ -23,7 +23,6 @@
                 <li class="pc-item pc-caption mx-0 px-4">
                     <label>Admin Panel</label>
                 </li>
-                {{-- Role 1: Show Event & Sub Admin --}}
                 @if (Auth::guard('admin')->user()->role == 1)
                     <li class="pc-item pc-hasmenu">
                         <a class="pc-link">
@@ -37,7 +36,7 @@
                         </a>
                         <ul class="pc-submenu">
                             <li class="pc-item">
-                                <a class="pc-link" href="{{ route('admin.manageSubAdmin') }}">Manage Sub Admin</a>
+                                <a class="pc-link" href="{{ route('subadmin.index') }}">Manage Sub Admin</a>
                             </li>
                         </ul>
                     </li>
@@ -53,7 +52,7 @@
                         </a>
                         <ul class="pc-submenu">
                             <li class="pc-item">
-                                <a class="pc-link" href="{{ route('admin.manageEvent') }}">Manage Event</a>
+                                <a class="pc-link" href="{{ route('event.index') }}">Manage Event</a>
                             </li>
                         </ul>
                     </li>
@@ -77,7 +76,6 @@
                     </li>
                 @endif
 
-                {{-- Role 2: Show Booking --}}
                 @if (Auth::guard('admin')->user()->role == 2)
                     <li class="pc-item pc-hasmenu">
                         <a class="pc-link">

@@ -2,36 +2,44 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Admin\Request\SubAdminRequest;
 use App\Http\Controllers\Controller;
-use App\Domain\Api\Request\AddSubAdminRequest;
-use App\Domain\Api\Request\EditSubAdminRequest;
 use App\Domain\Datatables\SubAdminDataTable;
-use App\Models\Admin;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Models\Admin;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SubAdminPasswordMail;
+use Illuminate\Support\Facades\Hash;
 
 class SubAdminController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(SubAdminDataTable $datatable)
     {
         if (request()->ajax()) {
             return $datatable->query();
         }
-        return view('admin.manageSubAdmin', [
+        return view('admin.subAdmin.index', [
             'html' => $datatable->html(),
         ]);
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
-        return view('admin.add_subadmin');
+        return view('admin.subAdmin.create');
     }
 
-    public function store(AddSubAdminRequest $request)
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(SubAdminRequest $request)
     {
-        $validated = $request->validated();
+        $validated = $request->persist();
 
         $randomPassword = Str::random(10);
 
@@ -43,41 +51,53 @@ class SubAdminController extends Controller
 
         Mail::to($subAdmin->email)->send(new SubAdminPasswordMail($subAdmin, $randomPassword));
 
-        return redirect()->route('admin.manageSubAdmin')
+        return redirect()->route('subadmin.index')
             ->with('success', 'SubAdmin created successfully ! Password has been sent to email.');
     }
 
+    /**
+     * Display the specified resource.
+     */
     public function show(string $id)
     {
         //
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     */
     public function edit(string $id)
     {
         $admin = Admin::find($id);
 
         if (!$admin) {
-            return redirect()->route('admin.manageSubAdmin')->with('success', 'SubAdmin Not Found.');
+            return redirect()->route('subadmin.index')->with('success', 'SubAdmin Not Found.');
         }
 
-        return view('admin.edit_SubAdmin', compact('admin'));
+        return view('admin.subAdmin.edit', compact('admin'));
     }
 
-    public function update(EditSubAdminRequest $request, string $id)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(SubAdminRequest $request, string $id)
     {
         $admin = Admin::find($id);
 
-        $validated = $request->validated();
+        $validated = $request->persist();
 
         $admin->update($validated);
 
-        return redirect()->route('admin.manageSubAdmin')
+        return redirect()->route('subadmin.index')
             ->with('success', 'SubAdmin updated successfully!');
     }
 
-    public function destroy(Admin $id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(admin $subadmin)
     {
-        $id->delete();
+        $subadmin->delete();
         return response()->json(['success' => true, 'message' => 'SubAdmin deleted successfully.']);
     }
 }
