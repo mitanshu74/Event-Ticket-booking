@@ -54,7 +54,7 @@
                     },
                     error: function(xhr) {
                         $('.dataTable').DataTable().ajax.reload(null, false);
-                        Swal.fire('Error!', 'Event Not Found!', 'error');
+                        Swal.fire('Error !', 'Event Not Found!', 'error');
                     }
                 });
             });

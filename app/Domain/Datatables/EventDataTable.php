@@ -75,7 +75,6 @@ class EventDataTable extends BaseDatatableScope
                 $btn = '<div style="display:flex; gap:5px;">';
 
                 $editUrl = route('event.edit', $row->id);
-
                 $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm" style="height:31px;position:relative;top:5px">
                         <i class="fa fa-edit" style="font-size:20px;color:white"></i>
                     </a>';

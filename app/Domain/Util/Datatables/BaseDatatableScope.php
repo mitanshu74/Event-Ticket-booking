@@ -41,6 +41,7 @@ abstract class BaseDatatableScope
         $admin = Auth::guard('admin')->user();
 
         if ($admin->role == 1) {
+           
             $columns[] = [
                 'data' => 'action',
                 'name' => 'action',
@@ -48,6 +49,7 @@ abstract class BaseDatatableScope
                 'searchable' => false,
                 'orderable' => false,
             ];
+           
         }
 
         /** @var Builder $builder */

@@ -26,7 +26,7 @@ class LoginController extends Controller
         }
 
         if (Auth::guard('admin')->attempt($credentials)) {
-            return redirect()->route('admin.home')
+            return redirect()->route('admin.deshboard')
                 ->with('login', 'Successfully logged in!');
         }
 

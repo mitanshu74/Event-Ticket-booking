@@ -90,7 +90,7 @@ class EventController extends Controller
         $event = Event::find($id);
 
         if (!$event) {
-            return redirect()->route('admin.home')->with('success', 'Event Not Found.');
+            return redirect()->route('admin.deshboard')->with('success', 'Event Not Found.');
         }
 
         return view('admin.events.edit', compact('event'));

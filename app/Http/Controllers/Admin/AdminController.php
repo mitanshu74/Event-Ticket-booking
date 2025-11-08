@@ -37,14 +37,15 @@ class AdminController extends Controller
     {
         $admin = Auth::guard('admin')->user();
 
-        $admin->name = $request->name;
-        $admin->email = $request->email;
+        $validated = $request->persist();
 
         if (!empty($request->password)) {
             $admin->password = Hash::make($request->password);
+        } else {
+            unset($validated['password']);
         }
 
-        $admin->save();
+        $admin->update($validated);
 
         return redirect()->back()->with('profile-updated', 'Profile updated successfully!');
     }

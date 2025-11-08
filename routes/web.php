@@ -21,6 +21,7 @@
         Route::resource('admin/event', 'Admin\EventController')->names('event');
 
         Route::resource('admin/booking', 'Admin\BookingController')->names('booking');
+
         Route::post('admin/booking/cancel/{id}', 'Admin\BookingController@cancel')->name('admin.booking.cancel');
         Route::post('/admin/booking/multi-delete', 'Admin\BookingController@MultiDelete')->name('admin.MultiDelete');
     });

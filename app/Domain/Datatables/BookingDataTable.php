@@ -104,7 +104,6 @@ class BookingDataTable extends BaseDatatableScope
         return DataTables::of($bookings)
             ->addIndexColumn()
             ->addColumn('username', function ($row) {
-
                 return $row->user ? $row->user->username : 'N/A';
             })
 
@@ -133,7 +132,7 @@ class BookingDataTable extends BaseDatatableScope
                 } else {
                     $deleteUrl = route('booking.destroy', $row->id);
                     $btn .= '<form action="' . $deleteUrl . '" method="POST" class="delete-form" style="display:inline;">
-                        ' . csrf_field() . method_field('DELETE') . '
+                        ' . csrf_field() . '
                         <button type="submit" class="btn btn-danger btn-sm" style="margin:5px;">
                             <i class="fa fa-trash-o" style="font-size:20px;color:white;"></i>
                         </button>

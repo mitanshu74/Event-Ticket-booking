@@ -32,4 +32,8 @@ class UpdateProfileRequest extends FormRequest
             'email.unique'          => 'This email is already taken.',
         ];
     }
+    public function persist()
+    {
+        return ($this->only('name', 'email', 'password'));
+    }
 }

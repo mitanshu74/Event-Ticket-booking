@@ -91,43 +91,6 @@
                     });
                 });
 
-                $(document).on('click', '.delete-form button', function(e) {
-                    e.preventDefault();
-                    const form = $(this).closest('form');
-
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "Do you really want to Delete this booking ?",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                url: form.attr('action'),
-                                type: 'POST',
-                                data: form.serialize(),
-                                success: function(data) {
-                                    Swal.fire({
-                                        icon: data.success ? 'success' : 'error',
-                                        title: data.success ? 'Deleted!' : 'Error',
-                                        text: data.message,
-                                        confirmButtonText: 'OK'
-                                    });
-                                    $('.dataTable').DataTable().ajax.reload();
-                                },
-                                error: function(xhr) {
-                                    $('.dataTable').DataTable().ajax.reload();
-                                    Swal.fire('Error!', 'Booked Ticket Not Found!',
-                                        'error');
-                                }
-                            });
-                        }
-                    });
-                });
-
                 $(document).on('submit', '.cancel-form', function(e) {
                     e.preventDefault();
                     const form = this;
@@ -144,6 +107,42 @@
                             showLoader();
                             form.submit();
                         }
+                    });
+                });
+
+                $(document).on('submit', '.delete-form', function(e) {
+                    e.preventDefault();
+                    const form = $(this);
+                    Swal.fire({
+                        title: 'Are you sure ?',
+                        text: "this booking will be deleted permantly",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'yes ,delete',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (!result.isConfirmed) return;
+
+                        $.ajax({
+                            url: form.attr('action'),
+                            type: 'DELETE',
+                            data: {
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function(data) {
+                                $('.dataTable').DataTable().ajax.reload();
+                                Swal.fire({
+                                    icon: data.success ? 'success' : 'Error',
+                                    title: data.success ? 'Deleted' : 'Error',
+                                    text: data.message,
+                                    confirmButtonText: 'ok'
+                                });
+                            },
+                            error: function(xhr) {
+                                $('.dataTable').DataTable().ajax.reload();
+                                Swal.fire('Error!', 'Event Not Found', 'error');
+                            }
+                        });
                     });
                 });
             });
