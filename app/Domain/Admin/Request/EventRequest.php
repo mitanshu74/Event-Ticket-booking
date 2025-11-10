@@ -4,6 +4,9 @@ namespace App\Domain\Admin\Request;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\Laravel\Facades\Image;
+use Illuminate\Support\Str;
+
 
 class EventRequest extends FormRequest
 {
@@ -64,5 +67,34 @@ class EventRequest extends FormRequest
             $this->only(['name', 'date', 'start_time', 'end_time', 'location', 'price', 'total_tickets']),
             ['image' => $this->file('image')]
         );
+    }
+
+    public function datatime()
+    {
+        return date('h:i A', strtotime($this['start_time']));
+        return date('h:i A', strtotime($this['end_time']));
+    }
+
+    public function UploadImage()
+    {
+        $imageNames = [];
+        if ($this->hasFile('image')) {
+
+            foreach ($this->file('image') as $file) {
+                $extension = $file->getClientOriginalExtension();
+                $eventname = Str::slug($this['name']);
+                $filename = $eventname . '_' . Str::random(10) . '.' . $extension;
+                $path = $file->storeAs('events', $filename, 'public');
+                $imageNames[] = $path;
+                $image = Image::read($file)
+                    ->resize(800, 600, fn($c) => $c->aspectRatio()->upsize());
+
+                file_put_contents(
+                    storage_path('app/public/events') . '/' . $filename,
+                    $image->encode(new \Intervention\Image\Encoders\AutoEncoder(quality: 70))
+                );
+            }
+        }
+        return $imageNames;
     }
 }

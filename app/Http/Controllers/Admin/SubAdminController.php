@@ -82,11 +82,7 @@ class SubAdminController extends Controller
      */
     public function update(SubAdminRequest $request, string $id)
     {
-        $admin = Admin::find($id);
-
-        $validated = $request->persist();
-
-        $admin->update($validated);
+        Admin::findOrFail($id)->update($request->persist());
 
         return redirect()->route('subadmin.index')
             ->with('success', 'SubAdmin updated successfully!');
@@ -95,9 +91,10 @@ class SubAdminController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(admin $subadmin)
+    public function destroy(string $id)
     {
-        $subadmin->delete();
+        $subAdmin = admin::find($id);
+        $subAdmin->delete();
         return response()->json(['success' => true, 'message' => 'SubAdmin deleted successfully.']);
     }
 }

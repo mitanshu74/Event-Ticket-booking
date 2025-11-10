@@ -23,9 +23,7 @@
 
                         {!! $html->table() !!}
                     </div>
-                    <div id="loading-overlay">
-                        <div class="spinner"></div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -35,13 +33,6 @@
     @push('script')
         <script>
             $(document).ready(function() {
-
-                const overlay = document.getElementById('loading-overlay');
-
-                function showLoader() {
-                    overlay.style.display = 'flex';
-                }
-
                 $(document).on('click', '#select-all', function() {
                     $('.task-checkbox').prop('checked', this.checked);
                 });
@@ -70,6 +61,7 @@
                         cancelButtonText: 'Cancel'
                     }).then((result) => {
                         if (result.isConfirmed) {
+                            showLoader();
                             $.ajax({
                                 url: "{{ route('admin.MultiDelete') }}",
                                 type: "POST",
@@ -78,6 +70,7 @@
                                     _token: "{{ csrf_token() }}"
                                 },
                                 success: function(data) {
+                                    hideLoader();
                                     $('.dataTable').DataTable().ajax.reload();
                                     Swal.fire({
                                         icon: data.success ? 'success' : 'Error',
@@ -86,63 +79,13 @@
                                         confirmButtonText: 'OK'
                                     });
                                 },
+                                error: function(xhr) {
+                                    hideLoader();
+                                    $('.dataTable').DataTable().ajax.reload(null, false);
+                                    Swal.fire('Error !', 'Record Not Found!', 'error');
+                                }
                             });
                         }
-                    });
-                });
-
-                $(document).on('submit', '.cancel-form', function(e) {
-                    e.preventDefault();
-                    const form = this;
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "Do you really want to Cansel this booking ?",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, cancel it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            showLoader();
-                            form.submit();
-                        }
-                    });
-                });
-
-                $(document).on('submit', '.delete-form', function(e) {
-                    e.preventDefault();
-                    const form = $(this);
-                    Swal.fire({
-                        title: 'Are you sure ?',
-                        text: "this booking will be deleted permantly",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'yes ,delete',
-                        cancelButtonText: 'Cancel'
-                    }).then((result) => {
-                        if (!result.isConfirmed) return;
-
-                        $.ajax({
-                            url: form.attr('action'),
-                            type: 'DELETE',
-                            data: {
-                                _token: "{{ csrf_token() }}"
-                            },
-                            success: function(data) {
-                                $('.dataTable').DataTable().ajax.reload();
-                                Swal.fire({
-                                    icon: data.success ? 'success' : 'Error',
-                                    title: data.success ? 'Deleted' : 'Error',
-                                    text: data.message,
-                                    confirmButtonText: 'ok'
-                                });
-                            },
-                            error: function(xhr) {
-                                $('.dataTable').DataTable().ajax.reload();
-                                Swal.fire('Error!', 'Event Not Found', 'error');
-                            }
-                        });
                     });
                 });
             });

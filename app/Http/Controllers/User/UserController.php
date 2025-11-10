@@ -31,8 +31,6 @@ class UserController extends Controller
         }
     }
 
-
-
     public function booked_ticket(Request $request)
     {
         $userId = Auth::guard('web')->id();

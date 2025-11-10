@@ -35,25 +35,13 @@ class SubAdminDataTable extends BaseDatatableScope
 
         return DataTables::of($query)
             ->addIndexColumn()
-            ->addColumn('action', function ($row) {
-                $btn = '<div style="display:flex; gap:5px;">';
-
-                $editUrl = route('subadmin.edit', $row->id);
-
-                $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm" style="height:31px;position:relative;top:5px">
-                        <i class="fa fa-edit" style="font-size:20px;color:white;height:30px;"></i>
-                    </a>';
-
-                $deleteUrl = route('subadmin.destroy', $row->id);
-                $btn .= '<form action="' . $deleteUrl . '" method="POST" style="display:inline;" class="delete-form">
-            ' . csrf_field() . '
-            <button type="submit" class="btn btn-danger btn-sm" style="margin:5px;">
-                <i class="fa fa-trash-o" style="font-size:20px;color:white;"></i>
-            </button>
-        </form>';
-                $btn .= '</div>';
-
-                return $btn;
+            ->addColumn('action', function ($model) {
+                return view('admin.shared.dtcontrols-without-ajax')
+                    ->with('id', $model->getKey())
+                    ->with('model', $model)
+                    ->with('editUrl', route('subadmin.edit', $model->getKey()))
+                    ->with('deleteUrl', route('subadmin.destroy', $model->getKey()))
+                    ->render();
             })
             ->rawColumns(['action'])
             ->make(true);

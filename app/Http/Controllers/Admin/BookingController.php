@@ -54,14 +54,13 @@ class BookingController extends Controller
             ]);
         }
 
-        // Check tickets are available 
         if ($event && $event->total_tickets >= $validated['tickets_booked']) {
             $event->total_tickets -= $validated['tickets_booked'];
 
             $event->save();
 
             $booking = booking::create($validated);
-            // Mail::to($booking->user->email)->send(new BookingConfirmationMail($booking));
+            Mail::to($booking->user->email)->send(new BookingConfirmationMail($booking));
 
             return redirect()->route('booking.index')
                 ->with('success', 'Booking Created Successfully!');
@@ -101,7 +100,10 @@ class BookingController extends Controller
             }
             Mail::to($booking->user->email)->send(new BookingCancelledMail($booking));
 
-            return redirect()->back()->with('success', 'Booking cancelled successfully!');
+            return response()->json([
+                'success' => true,
+                'message' => 'Booking cancelled successfully.'
+            ]);
         }
 
         return redirect()->back()->with('error', 'Booking cannot be cancelled.');
@@ -119,8 +121,9 @@ class BookingController extends Controller
         ]);
     }
 
-    public function destroy(Booking $booking)
+    public function destroy(string $id)
     {
+        $booking = booking::find($id);
         $booking->delete();
         return response()->json([
             'success' => true,

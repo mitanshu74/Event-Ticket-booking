@@ -64,13 +64,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
 
     <script>
-        const form = document.getElementById('eventform');
-        const overlay = document.getElementById('loading-overlay');
-
-        form.addEventListener('submit', function() {
-            overlay.style.display = 'flex';
-        });
-
         $('#backButton').on('click', function() {
             localStorage.removeItem('event_images');
         });

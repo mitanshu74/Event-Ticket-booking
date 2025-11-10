@@ -21,43 +21,4 @@
     </div>
     {!! $html->scripts() !!}
 @endsection
-@push('script')
-    <script>
-        $(document).on('submit', '.delete-form', function(e) {
-            e.preventDefault();
-            const form = $(this);
 
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "This event will be deleted permanently.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (!result.isConfirmed) return;
-
-                $.ajax({
-                    url: form.attr('action'),
-                    type: 'DELETE',
-                    data: {
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function(data) {
-                        $('.dataTable').DataTable().ajax.reload();
-                        Swal.fire({
-                            icon: data.success ? 'success' : 'error',
-                            title: data.success ? 'Deleted!' : 'Error',
-                            text: data.message,
-                            confirmButtonText: 'OK'
-                        });
-                    },
-                    error: function(xhr) {
-                        $('.dataTable').DataTable().ajax.reload(null, false);
-                        Swal.fire('Error !', 'Event Not Found!', 'error');
-                    }
-                });
-            });
-        });
-    </script>
-@endpush

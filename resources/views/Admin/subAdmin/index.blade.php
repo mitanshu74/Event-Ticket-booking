@@ -17,47 +17,5 @@
             </div>
         </div>
     </div>
-@endsection
-@push('script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
-        $(document).on('submit', '.delete-form', function(e) {
-            e.preventDefault();
-            const form = $(this);
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "This SubAdmin will be deleted permanently.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (!result.isConfirmed) return;
-
-                $.ajax({
-                    url: form.attr('action'),
-                    type: 'DELETE',
-                    data: {
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function(data) {
-                        $('.dataTable').DataTable().ajax.reload(null, false);
-                        Swal.fire({
-                            icon: data.success ? 'success' : 'error',
-                            title: data.success ? 'Deleted!' : 'Error',
-                            text: data.message,
-                            confirmButtonText: 'OK'
-                        });
-                    },
-                    error: function(xhr) {
-                        $('.dataTable').DataTable().ajax.reload(null, false);
-                        Swal.fire('error', 'SubAdmin Not Found!', 'error');
-                    }
-                });
-            });
-        });
-    </script>
     {!! $html->scripts() !!}
-@endpush
+@endsection

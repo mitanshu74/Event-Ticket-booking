@@ -71,50 +71,40 @@ class EventDataTable extends BaseDatatableScope
 
         return DataTables::of($query)
             ->addIndexColumn()
-            ->addColumn('action', function ($row) {
-                $btn = '<div style="display:flex; gap:5px;">';
-
-                $editUrl = route('event.edit', $row->id);
-                $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm" style="height:31px;position:relative;top:5px">
-                        <i class="fa fa-edit" style="font-size:20px;color:white"></i>
-                    </a>';
-
-                $deleteUrl = route('event.destroy', $row->id);
-                $btn .= '<form action="' . $deleteUrl . '" method="POST" style="display:inline;" class="delete-form">
-                ' . csrf_field() . '
-                        <button type="submit" class="btn btn-danger btn-sm" style="margin:5px;">
-                            <i class="fa fa-trash-o" style="font-size:20px;color:white;"></i>
-                        </button>
-                    </form>';
-                $btn .= '</div>';
-                return $btn;
-            })->editColumn('start_time', function ($event) {
-                $start = $event->start_time ? $event->start_time->format('h:i A') : '';
-                $end = $event->end_time ? $event->end_time->format('h:i A') : '';
+            ->addColumn('action', function ($model) {
+                return view('admin.shared.dtcontrols-without-ajax')
+                    ->with('id', $model->getKey())
+                    ->with('model', $model)
+                    ->with('editUrl', route('event.edit', $model->getKey()))
+                    ->with('deleteUrl', route('event.destroy', $model->getKey()))
+                    ->render();
+            })->editColumn('start_time', function ($model) {
+                $start = $model->start_time ? $model->start_time->format('h:i A') : '';
+                $end = $model->end_time ? $model->end_time->format('h:i A') : '';
                 return $start && $end ? "$start - $end" : "";
             })
-            ->editColumn('image', function ($event) {
-                if (!$event->image) {
+            ->editColumn('image', function ($model) {
+                if (!$model->image) {
                     return 'No Image';
                 }
 
-                $images = json_decode($event->image, true);
+                $images = json_decode($model->image, true);
                 $firstImage = $images[0];
 
-                $html = '<a href="' . asset('storage/' . $firstImage) . '" data-lightbox="event-' . $event->id . '" data-title="' . $event->name . '">';
+                $html = '<a href="' . asset('storage/' . $firstImage) . '" data-lightbox="event-' . $model->id . '" data-title="' . $model->name . '">';
                 $html .= '<img src="' . asset('storage/' . $firstImage) . '" style="width:80px;height:80px;object-fit:cover;margin:2px;">';
                 $html .= '</a>';
 
                 foreach ($images as $key => $img) {
                     if ($key == 0) continue;
-                    $html .= '<a href="' . asset('storage/' . $img) . '" data-lightbox="event-' . $event->id . '" data-title="' . $event->name . '" style="display:none;"></a>';
+                    $html .= '<a href="' . asset('storage/' . $img) . '" data-lightbox="event-' . $model->id . '" data-title="' . $model->name . '" style="display:none;"></a>';
                 }
 
                 return $html;
             })
 
-            ->editColumn('date', function ($event) {
-                return $event->date ? $event->date->format('d-m-Y') : '';
+            ->editColumn('date', function ($model) {
+                return $model->date ? $model->date->format('d-m-Y') : '';
             })
             ->rawColumns(['image', 'action'])
             ->make(true);

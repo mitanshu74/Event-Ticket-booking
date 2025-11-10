@@ -33,13 +33,3 @@
          </div>
      </div>
  @endsection
- @push('script')
-     <script>
-         const form = document.getElementById('editSubadminForm');
-         const overlay = document.getElementById('loading-overlay');
-
-         form.addEventListener('submit', function() {
-             overlay.style.display = 'flex';
-         });
-     </script>
- @endpush

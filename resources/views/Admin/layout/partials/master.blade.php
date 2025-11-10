@@ -237,14 +237,98 @@
     <div class="pc-container">
         @yield('content')
     </div>
+    <div id="loader" style="display:none;position:fixed;top:50%;left:50%;z-index:9999;">
+        <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+    </div>
 
     @include('Admin.layout.partials.footer')
 
     <script>
-        const dropdownToggles = document.querySelectorAll('.pc-link');
-        this.addEventListener('click', function(event) {
-            this.classList.toggle('show');
-        });
+        // const dropdownToggles = document.querySelectorAll('.pc-link');
+        // this.addEventListener('click', function(event) {
+        //     this.classList.toggle('show');
+        // });
+        function showLoader() {
+            $('#loader').show();
+        }
+
+        function hideLoader() {
+            $('#loader').hide();
+        }
+
+        function destroy(url) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showLoader();
+                    $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(data) {
+                            hideLoader();
+                            $('.dataTable').DataTable().ajax.reload();
+                            Swal.fire({
+                                icon: data.success ? 'success' : 'error',
+                                title: data.success ? 'Deleted!' : 'Error',
+                                text: data.message,
+                                confirmButtonText: 'OK'
+                            });
+                        },
+                        error: function(xhr) {
+                            hideLoader();
+                            $('.dataTable').DataTable().ajax.reload(null, false);
+                            Swal.fire('Error !', 'Event Not Found!', 'error');
+                        }
+                    });
+                }
+            });
+        }
+
+        function cansel(url) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showLoader();
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(data) {
+                            hideLoader();
+                            $('.dataTable').DataTable().ajax.reload();
+                            Swal.fire({
+                                icon: data.success ? 'success' : 'error',
+                                title: data.success ? 'Cansel!' : 'Error',
+                                text: data.message,
+                                confirmButtonText: 'OK'
+                            });
+                        },
+                        error: function(xhr) {
+                            hideLoader();
+                            $('.dataTable').DataTable().ajax.reload(null, false);
+                            Swal.fire('Error !', 'Record Not Found!', 'error');
+                        }
+                    });
+                }
+            });
+        }
     </script>
     <script src="{{ asset('Admin/assets/js/plugins/popper.min.js') }}"></script>
     <script src="{{ asset('Admin/assets/js/plugins/bootstrap.min.js') }}"></script>

@@ -89,7 +89,7 @@ class BookingDataTable extends BaseDatatableScope
     public function query()
     {
 
-        $bookings = Booking::with(['user', 'event'])
+        $query = Booking::with(['user', 'event'])
             ->select([
                 'id',
                 'user_id',
@@ -101,63 +101,56 @@ class BookingDataTable extends BaseDatatableScope
             ])->get();
 
         // dd($bookings);
-        return DataTables::of($bookings)
+        return DataTables::of($query)
             ->addIndexColumn()
-            ->addColumn('username', function ($row) {
-                return $row->user ? $row->user->username : 'N/A';
+            ->addColumn('username', function ($model) {
+                return $model->user ? $model->user->username : 'N/A';
             })
 
-            ->addColumn('event_name', function ($row) {
-                return $row->event ? $row->event->name : 'N/A';
+            ->addColumn('event_name', function ($model) {
+                return $model->event ? $model->event->name : 'N/A';
             })
-            ->addColumn('location', function ($row) {
-                return $row->event ? $row->event->location : 'N/A';
+            ->addColumn('location', function ($model) {
+                return $model->event ? $model->event->location : 'N/A';
             })
-            ->addColumn('price', function ($row) {
-                return $row->event ? $row->event->price : 'N/A';
+            ->addColumn('price', function ($model) {
+                return $model->event ? $model->event->price : 'N/A';
             })
-            ->addColumn('date', function ($row) {
-                return $row->event ? $row->event->date->format('d-m-Y') : 'N/A';
+            ->addColumn('date', function ($model) {
+                return $model->event ? $model->event->date->format('d-m-Y') : 'N/A';
             })
 
-            ->addColumn('action', function ($row) {
-                $btn = '<div style="display:flex; gap:5px;">';
-
-                if ($row->status === 'confirmed') {
-                    $cancelUrl = route('admin.booking.cancel', $row->id);
-                    $btn .= '<form action="' . $cancelUrl . '" method="POST" class="cancel-form" style="display:inline;">
-                        ' . csrf_field() . '
-                        <button type="submit" class="btn btn-warning btn-sm">Cancel</button>
-                    </form>';
+            ->addColumn('action', function ($model) {
+                if ($model->status === 'confirmed') {
+                    return view('admin.shared.dtcontrols-without-ajax')
+                        ->with('id', $model->getKey())
+                        ->with('model', $model)
+                        ->with('cancelUrl', route('admin.booking.cancel', $model->getKey()))
+                        ->render();
                 } else {
-                    $deleteUrl = route('booking.destroy', $row->id);
-                    $btn .= '<form action="' . $deleteUrl . '" method="POST" class="delete-form" style="display:inline;">
-                        ' . csrf_field() . '
-                        <button type="submit" class="btn btn-danger btn-sm" style="margin:5px;">
-                            <i class="fa fa-trash-o" style="font-size:20px;color:white;"></i>
-                        </button>
-                    </form>';
+                    return view('admin.shared.dtcontrols-without-ajax')
+                        ->with('id', $model->getKey())
+                        ->with('model', $model)
+                        ->with('deleteUrl', route('booking.destroy', $model->getKey()))
+                        ->render();
                 }
-
-                $btn .= '</div>';
-                return $btn;
             })
 
-            ->editColumn('status', function ($row) {
-                if ($row->status === 'confirmed') {
+            ->editColumn('status', function ($model) {
+                if ($model->status === 'confirmed') {
                     return '<span class="badge bg-success">Confirmed</span>';
-                } elseif ($row->status === 'cancelled') {
+                } elseif ($model->status === 'cancelled') {
                     return '<span class="badge bg-danger">Cancelled</span>';
                 } else {
                     return '<span class="badge bg-secondary">Pending</span>';
                 }
             })
 
-            ->addColumn('checkbox', function ($row) {
+            ->addColumn('checkbox', function ($model) {
                 $admin = Auth::guard('admin')->user();
                 if ($admin && $admin->role == 1) {
-                    if ($row->status === 'cancelled') {
-                        return '<input type="checkbox" class="task-checkbox" value="' . $row->id . '">';
+                    if ($model->status === 'cancelled') {
+                        return '<input type="checkbox" class="task-checkbox" value="' . $model->id . '">';
                     }
                 }
                 return '';

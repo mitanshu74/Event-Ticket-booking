@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Domain\Admin\Request\EventRequest;
 use App\Domain\Datatables\EventDataTable;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Str;
-use Intervention\Image\Laravel\Facades\Image;
 use App\Models\Event;
 use Illuminate\Support\Facades\Storage;
 
@@ -38,34 +36,9 @@ class EventController extends Controller
      */
     public function store(EventRequest $request)
     {
-        // dd($request->all());
         $validated = $request->persist();
 
-        $validated['start_time'] = date('h:i A', strtotime($validated['start_time']));
-        $validated['end_time']   = date('h:i A', strtotime($validated['end_time']));
-
-        $imageNames = [];
-
-        if ($request->hasFile('image')) {
-            foreach ($request->file('image') as $file) {
-
-                $extension = $file->getClientOriginalExtension();
-                $eventname = Str::slug($validated['name']);
-                $filename = $eventname . '_' . Str::random(10) . '.' . $extension;
-
-                $path = $file->storeAs('events', $filename, 'public');
-
-                $image = Image::read($file)
-                    ->resize(800, 600, fn($c) => $c->aspectRatio()->upsize());
-
-                file_put_contents(
-                    storage_path('app/public/events') . '/' . $filename,
-                    $image->encode(new \Intervention\Image\Encoders\AutoEncoder(quality: 70))
-                );
-
-                $imageNames[] = $path;
-            }
-        }
+        $imageNames = $request->UploadImage($request->images);
 
         $validated['image'] = json_encode($imageNames);
 
@@ -99,67 +72,97 @@ class EventController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(EventRequest $request,  $id)
+    // public function update(EventRequest $request,  $id)
+    // {
+    //     // dd($request->all());
+    //     $event = Event::findOrFail($id);
+    //     $validated = $request->persist();
+
+    //     $validated['start_time'] = date('h:i A', strtotime($validated['start_time']));
+    //     $validated['end_time']   = date('h:i A', strtotime($validated['end_time']));
+
+    //     $oldImages = $event->image ? json_decode($event->image) : null;
+    //     $existingImages = json_decode($request->existing_images ?? null);
+
+
+    //     $finalImages = [];
+
+    //     foreach ($oldImages as $oldPath) {
+    //         if (in_array($oldPath, $existingImages)) {
+    //             $finalImages[] = $oldPath;
+    //         } else {
+    //             Storage::disk('public')->delete($oldPath);
+    //         }
+    //     }
+
+    //     if ($request->hasFile('image')) {
+    //         foreach ($request->file('image') as $file) {
+    //             if (!$file->isValid()) continue;
+
+    //             $extension = $file->getClientOriginalExtension();
+    //             $eventname = Str::slug($event->name);
+    //             $filename = $eventname . '_' . Str::random(10) . '.' . $extension;
+
+    //             $path = $file->storeAs('events', $filename, 'public');
+
+
+    //             $image = Image::read($file)
+    //                 ->resize(800, 600, fn($c) => $c->aspectRatio()->upsize());
+
+    //             file_put_contents(
+    //                 storage_path('app/public/events') . '/' . $filename,
+    //                 $image->encode(new \Intervention\Image\Encoders\AutoEncoder(quality: 70))
+    //             );
+
+    //             $finalImages[] = $path;
+    //         }
+    //     }
+
+    //     $validated['image'] = $finalImages;
+
+    //     $event->update($validated);
+
+    //     return redirect()->route('event.index')->with('success', 'Event Updated Successfully');
+    // }
+
+
+    public function update(EventRequest $request, $id)
     {
-        // dd($request->all());
         $event = Event::findOrFail($id);
         $validated = $request->persist();
 
-
-        $validated['start_time'] = date('h:i A', strtotime($validated['start_time']));
-        $validated['end_time']   = date('h:i A', strtotime($validated['end_time']));
-
         $oldImages = $event->image ? json_decode($event->image) : null;
-        $existingImages = json_decode($request->existing_images ?? null);
-
+        $existingImages = $request->existing_images ? json_decode($request->existing_images) : null;
 
         $finalImages = [];
 
         foreach ($oldImages as $oldPath) {
-            if (in_array($oldPath, $existingImages)) {
+            if (in_array($oldPath, $existingImages, true)) {
                 $finalImages[] = $oldPath;
             } else {
                 Storage::disk('public')->delete($oldPath);
             }
         }
 
-        if ($request->hasFile('image')) {
-            foreach ($request->file('image') as $file) {
-                if (!$file->isValid()) continue;
+        $imageNames = $request->UploadImage();
+        $merged = array_merge($finalImages, $imageNames);
 
-                $extension = $file->getClientOriginalExtension();
-                $eventname = Str::slug($event->name);
-                $filename = $eventname . '_' . Str::random(10) . '.' . $extension;
-
-                $path = $file->storeAs('events', $filename, 'public');
-
-
-                $image = Image::read($file)
-                    ->resize(800, 600, fn($c) => $c->aspectRatio()->upsize());
-
-                file_put_contents(
-                    storage_path('app/public/events') . '/' . $filename,
-                    $image->encode(new \Intervention\Image\Encoders\AutoEncoder(quality: 70))
-                );
-
-                $finalImages[] = $path;
-            }
-        }
-
-        $validated['image'] = $finalImages;
+        $validated['image'] = $merged;
 
         $event->update($validated);
 
         return redirect()->route('event.index')->with('success', 'Event Updated Successfully');
     }
 
+
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Event $id)
+    public function destroy(string $id)
     {
-        if ($id->image) {
-            $images = json_decode($id->image, true);
+        $event = Event::find($id);
+        if ($event->image) {
+            $images = json_decode($event->image, true);
             if (is_array($images)) {
                 foreach ($images as $img) {
                     if (Storage::disk('public')->exists($img)) {
@@ -168,7 +171,7 @@ class EventController extends Controller
                 }
             }
         }
-        $id->delete();
+        $event->delete();
         return response()->json([
             'success' => true,
             'message' => 'Event deleted successfully.'

@@ -36,11 +36,10 @@ class AdminController extends Controller
     public function ProfileUpdate(UpdateProfileRequest $request)
     {
         $admin = Auth::guard('admin')->user();
-
         $validated = $request->persist();
 
         if (!empty($request->password)) {
-            $admin->password = Hash::make($request->password);
+            $validated['password'] = Hash::make($request->password);
         } else {
             unset($validated['password']);
         }
@@ -49,8 +48,6 @@ class AdminController extends Controller
 
         return redirect()->back()->with('profile-updated', 'Profile updated successfully!');
     }
-
-
 
     public function destroy(User $id)
     {
